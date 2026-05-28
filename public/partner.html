@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#060d1a">
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Devenir partenaire — Swell</title>
+  <meta name="description" content="Rejoins Swell : liste tes planches, touche 85% sur chaque location, accède à 8+ villes de la côte basque. Inscription shop en 2 minutes.">
+  <link rel="canonical" href="https://swell.polsia.app/partner">
+  <meta name="robots" content="index, follow">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Swell">
+  <meta property="og:url" content="https://swell.polsia.app/partner">
+  <meta property="og:title" content="Partenaires Swell — 85% sur chaque location">
+  <meta property="og:description" content="Rejoins Swell et liste tes planches sur la côte basque. 85% reversé sur chaque location, dashboard temps réel, zéro friction.">
+  <meta property="og:image" content="https://swell.polsia.app/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Devenir partenaire Swell — louez vos planches entre surfeurs">
+  <meta property="og:locale" content="fr_FR">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Partenaires Swell — 85% sur chaque location">
+  <meta name="twitter:description" content="Rejoins Swell et liste tes planches sur la côte basque. 85% reversé sur chaque location, dashboard temps réel, zéro friction.">
+  <meta name="twitter:image" content="https://swell.polsia.app/og-image.png">
+  <meta name="twitter:image:alt" content="Devenir partenaire Swell — louez vos planches entre surfeurs">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"></noscript>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fafaf8;
+      --surface: #f5f3f0;
+      --card: #ffffff;
+      --border: rgba(0,0,0,0.08);
+      --text: #1a1a1a;
+      --text-secondary: rgba(0,0,0,0.62);
+      --text-muted: rgba(0,0,0,0.45);
+      --primary: #0066aa;
+      --primary-glow: rgba(0,102,170,0.12);
+      --sunset: #ff6b35;
+      --sunset-glow: rgba(255,107,53,0.12);
+      --gold: #d4a574;
+      --sand: #ede7e0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ───────────────────────────────────── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1.1rem 6%;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(250,250,248,0.92);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border);
+    }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em;
+      color: var(--text); text-decoration: none;
+    }
+    .logo em { font-style: normal; color: var(--primary); }
+    .nav-right { display: flex; align-items: center; gap: 0.5rem; }
+    .nav-link {
+      color: var(--text-secondary); font-size: 0.9rem; text-decoration: none;
+      padding: 0.5rem 0.9rem; border-radius: 8px; transition: color 0.2s;
+    }
+    .nav-link:hover { color: var(--text); }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.6rem 1.4rem; border-radius: 100px;
+      background: var(--primary); color: white;
+      font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.9rem;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px var(--primary-glow);
+    }
+
+    /* ── HERO ───────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 6rem 1.5rem 4rem;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,102,170,0.08) 0%, transparent 70%),
+        linear-gradient(180deg, var(--bg) 60%, var(--surface) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 50% 40% at 70% 80%, rgba(212,165,116,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.4rem 1rem; border-radius: 100px;
+      background: var(--primary-glow); border: 1px solid rgba(0,102,170,0.2);
+      color: var(--primary); font-size: 0.8rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      margin-bottom: 1.5rem;
+    }
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      font-weight: 800; letter-spacing: -0.04em; line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 1.25rem;
+    }
+    .hero-title .accent { color: var(--primary); }
+    .hero-title .warm { color: var(--sunset); }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-secondary); max-width: 600px; margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+    .hero-cta {
+      display: flex; align-items: center; justify-content: center;
+      gap: 1rem; flex-wrap: wrap;
+    }
+    .btn-hero {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.9rem 2rem; border-radius: 100px;
+      background: var(--primary); color: white;
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1rem;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 2px 20px var(--primary-glow);
+    }
+    .btn-hero:hover { transform: translateY(-2px); box-shadow: 0 6px 30px var(--primary-glow); }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.9rem 2rem; border-radius: 100px;
+      background: transparent; color: var(--text-secondary);
+      font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 1rem;
+      text-decoration: none; border: 1.5px solid var(--border); cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-ghost:hover { color: var(--text); border-color: rgba(0,0,0,0.2); }
+
+    /* ── STATS ROW ──────────────────────────────── */
+    .stats {
+      background: var(--card);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 2.5rem 6%;
+    }
+    .stats-grid {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; flex-wrap: wrap; max-width: 800px; margin: 0 auto;
+    }
+    .stat-item {
+      flex: 1; min-width: 160px; text-align: center;
+      padding: 1rem 1.5rem;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.4rem; font-weight: 800; color: var(--primary);
+      letter-spacing: -0.03em; line-height: 1;
+      display: block; margin-bottom: 0.3rem;
+    }
+    .stat-label {
+      font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;
+    }
+
+    /* ── SECTION ────────────────────────────────── */
+    .section { padding: 5rem 6%; }
+    .section-center { text-align: center; }
+    .section-tag {
+      display: inline-block;
+      font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--primary);
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1.2;
+      color: var(--text); margin-bottom: 1rem;
+    }
+    .section-sub {
+      font-size: 1.05rem; color: var(--text-secondary);
+      max-width: 560px; margin: 0 auto 3rem; line-height: 1.7;
+    }
+
+    /* ── VALUE PROPS ────────────────────────────── */
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem; max-width: 1000px; margin: 0 auto;
+    }
+    .value-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2rem;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .value-card:hover {
+      box-shadow: 0 8px 32px rgba(0,0,0,0.06);
+      transform: translateY(-2px);
+    }
+    .value-icon {
+      font-size: 2rem; margin-bottom: 1rem; display: block;
+      line-height: 1;
+    }
+    .value-card h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem; font-weight: 700; color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .value-card p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; }
+
+    /* ── HOW IT WORKS ───────────────────────────── */
+    .steps-bg { background: var(--surface); }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem; max-width: 900px; margin: 0 auto;
+      position: relative;
+    }
+    .step {
+      text-align: center;
+      padding: 1.5rem 1rem;
+    }
+    .step-num {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--primary); color: white;
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    .step h3 {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 1rem; color: var(--text); margin-bottom: 0.4rem;
+    }
+    .step p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; }
+
+    /* ── TESTIMONIAL / TRUST ────────────────────── */
+    .trust-strip {
+      background: var(--primary);
+      color: white;
+      padding: 3.5rem 6%;
+      text-align: center;
+    }
+    .trust-strip h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      font-weight: 800; letter-spacing: -0.03em;
+      margin-bottom: 0.8rem;
+    }
+    .trust-strip p { font-size: 1.05rem; opacity: 0.85; max-width: 540px; margin: 0 auto; }
+
+    /* ── FORM SECTION ───────────────────────────── */
+    .form-section {
+      padding: 5rem 6%;
+      background: var(--bg);
+    }
+    .form-wrap {
+      max-width: 680px; margin: 0 auto;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2.5rem 2.5rem 3rem;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.05);
+    }
+    .form-wrap h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em;
+      color: var(--text); margin-bottom: 0.4rem;
+    }
+    .form-wrap .form-sub {
+      color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 2rem;
+    }
+    .form-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .form-group { margin-bottom: 1rem; display: flex; flex-direction: column; }
+    .form-group label {
+      font-size: 0.85rem; font-weight: 600; color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+    .form-group .required { color: var(--sunset); margin-left: 2px; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .form-group select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23666' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 2.5rem;
+      cursor: pointer;
+    }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-hint {
+      font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;
+    }
+    .form-submit {
+      width: 100%; padding: 1rem;
+      border-radius: 100px;
+      background: var(--primary); color: white;
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1rem;
+      border: none; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      margin-top: 1rem;
+    }
+    .form-submit:hover { transform: translateY(-1px); box-shadow: 0 4px 20px var(--primary-glow); }
+    .form-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* State messages */
+    .form-success, .form-error {
+      padding: 1rem 1.2rem; border-radius: 12px;
+      font-size: 0.95rem; margin-bottom: 1.2rem;
+      display: none;
+    }
+    .form-success {
+      background: #e8f5e9; color: #1b5e20;
+      border: 1px solid rgba(27,94,32,0.2);
+    }
+    .form-error {
+      background: #fff3f0; color: #c62828;
+      border: 1px solid rgba(198,40,40,0.2);
+    }
+    .form-success.visible, .form-error.visible { display: block; }
+
+    /* ── FOOTER ─────────────────────────────────── */
+    .site-footer {
+      background: #0a1628; color: rgba(255,255,255,0.75);
+      padding: 4rem 6% 2rem; border-top: 3px solid #ff6b35;
+    }
+    .site-footer-grid {
+      display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.3fr;
+      gap: 3rem; margin-bottom: 3rem;
+    }
+    .footer-brand .footer-logo {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 1.6rem; color: #fff; margin-bottom: 0.75rem;
+      display: block; text-decoration: none; letter-spacing: -0.02em;
+    }
+    .footer-brand .footer-logo em { font-style: normal; color: #ff6b35; }
+    .footer-brand p {
+      font-size: 0.88rem; line-height: 1.65; color: rgba(255,255,255,0.5);
+      margin-bottom: 1.5rem;
+    }
+    .footer-socials { display: flex; gap: 0.75rem; }
+    .footer-social-btn {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.6); font-size: 1rem; text-decoration: none;
+      transition: all 0.2s;
+    }
+    .footer-social-btn:hover {
+      background: #ff6b35; border-color: #ff6b35;
+      color: #fff; transform: translateY(-2px);
+    }
+    .footer-col h4 {
+      font-weight: 600; font-size: 0.78rem;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.35); margin-bottom: 1.25rem;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 0.65rem; }
+    .footer-col ul li a {
+      font-size: 0.9rem; color: rgba(255,255,255,0.65);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .footer-col ul li a:hover { color: #fff; }
+    .footer-spot-tag::before { content: "📍"; font-size: 0.75rem; margin-right: 0.3rem; }
+    .footer-newsletter p {
+      font-size: 0.88rem; color: rgba(255,255,255,0.5);
+      margin-bottom: 1rem; line-height: 1.55;
+    }
+    .footer-newsletter-form { display: flex; gap: 0.5rem; flex-direction: column; }
+    .footer-newsletter-form input[type="email"] {
+      padding: 0.75rem 1rem; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: #fff; font-size: 0.88rem; outline: none; transition: border 0.2s;
+    }
+    .footer-newsletter-form input[type="email"]::placeholder { color: rgba(255,255,255,0.3); }
+    .footer-newsletter-form input[type="email"]:focus { border-color: #0066aa; }
+    .footer-newsletter-form button {
+      padding: 0.75rem 1rem; border-radius: 10px;
+      background: #0066aa; color: #fff; border: none; cursor: pointer;
+      font-size: 0.88rem; font-weight: 600; transition: all 0.2s;
+    }
+    .footer-newsletter-form button:hover { background: #0077cc; transform: translateY(-1px); }
+    .footer-trust-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.25rem; }
+    .footer-badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.35rem 0.65rem; border-radius: 6px;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.75rem; color: rgba(255,255,255,0.55);
+    }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-bottom-copy { font-size: 0.8rem; color: rgba(255,255,255,0.3); }
+    .footer-bottom-links { display: flex; gap: 1.5rem; }
+    .footer-bottom-links a {
+      font-size: 0.8rem; color: rgba(255,255,255,0.3);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .footer-bottom-links a:hover { color: rgba(255,255,255,0.7); }
+
+    /* ── RESPONSIVE ─────────────────────────────── */
+    @media (max-width: 640px) {
+      .nav { padding: 1rem 5%; }
+      .hero { padding: 5rem 1.25rem 3rem; }
+      .section { padding: 3.5rem 5%; }
+      .form-section { padding: 3rem 1.25rem; }
+      .form-wrap { padding: 1.75rem 1.5rem 2rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .stats-grid { flex-direction: column; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat-item:last-child { border-bottom: none; }
+      .site-footer { padding: 3rem 4% 1.5rem; }
+      .site-footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; }
+    }
+    @media (min-width: 641px) and (max-width: 900px) {
+      .site-footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+      .footer-brand { grid-column: 1 / -1; }
+    }
+
+    /* ── PROTECTION BANNER ────────────────────────── */
+    .protect-banner {
+      padding: 4rem 6%;
+      background: linear-gradient(135deg, var(--primary) 0%, #005588 100%);
+      position: relative; overflow: hidden;
+    }
+    .protect-banner::before {
+      content: ''; position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse 60% 80% at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 60%);
+    }
+    .protect-banner-inner {
+      max-width: 960px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem;
+      align-items: center; position: relative; z-index: 1;
+    }
+    .protect-banner-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.35rem 0.9rem; border-radius: 100px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white; font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      margin-bottom: 1.25rem;
+    }
+    .protect-banner h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1.15;
+      color: white; margin-bottom: 1rem;
+    }
+    .protect-banner h2 span { color: var(--sunset); }
+    .protect-banner-body {
+      font-size: 0.95rem; line-height: 1.7;
+      color: rgba(255,255,255,0.82); margin-bottom: 1.75rem;
+    }
+    .protect-banner ul {
+      list-style: none; display: flex; flex-direction: column; gap: 0.7rem;
+      margin-bottom: 2rem;
+    }
+    .protect-banner ul li {
+      display: flex; align-items: flex-start; gap: 0.6rem;
+      font-size: 0.9rem; color: rgba(255,255,255,0.88);
+    }
+    .protect-banner ul li::before {
+      content: '✓'; font-size: 0.8rem;
+      color: var(--sunset); flex-shrink: 0; margin-top: 0.1rem;
+    }
+    .btn-protect-partner {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.85rem 2rem; border-radius: 100px;
+      background: white; color: var(--primary);
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.95rem;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .btn-protect-partner:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
+    .protect-banner-image {
+      border-radius: 20px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    .protect-banner-image img {
+      width: 100%; height: 280px; object-fit: cover; display: block;
+    }
+    @media (max-width: 640px) {
+      .protect-banner { padding: 3rem 5%; }
+      .protect-banner-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .protect-banner-image { order: -1; }
+    }
+
+    /* ── PARTNER SHACK SECTION ──────────────────────── */
+    .shack-section {
+      padding: 5rem 6%;
+      background: var(--sand);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .shack-inner {
+      max-width: 960px; margin: 0 auto; text-align: center;
+    }
+    .shack-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.35rem 0.9rem; border-radius: 100px;
+      background: var(--gold); color: white;
+      font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 1.5rem;
+    }
+    .shack-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 800; letter-spacing: -0.03em; line-height: 1.2;
+      color: var(--text); margin-bottom: 1.25rem;
+    }
+    .shack-title .shack-accent { color: var(--sunset); }
+    .shack-body {
+      font-size: 1rem; color: var(--text-secondary);
+      max-width: 620px; margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+    .shack-cards {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem; max-width: 800px; margin: 0 auto 2.5rem;
+    }
+    .shack-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem 1.5rem;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0.75rem;
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .shack-card:hover {
+      box-shadow: 0 6px 24px rgba(0,0,0,0.06);
+      transform: translateY(-2px);
+    }
+    .shack-card-icon {
+      font-size: 2rem; line-height: 1;
+    }
+    .shack-card-content h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem; font-weight: 700; color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+    .shack-card-content p {
+      font-size: 0.85rem; color: var(--text-secondary);
+      line-height: 1.55;
+    }
+    .shack-cta-row {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0.75rem;
+    }
+    .shack-cta-btn {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.95rem 2.4rem; border-radius: 100px;
+      background: var(--sunset); color: white;
+      font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1rem;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px var(--sunset-glow);
+    }
+    .shack-cta-btn:hover {
+      transform: translateY(-2px); box-shadow: 0 8px 30px var(--sunset-glow);
+    }
+    .shack-cta-note {
+      font-size: 0.8rem; color: var(--text-muted);
+    }
+    @media (max-width: 640px) {
+      .shack-section { padding: 3.5rem 5%; }
+      .shack-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+  <script src="/js/api.js" defer></script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/" class="logo">Q<em>i</em>ver</a>
+  <div class="nav-right">
+    <a href="/" class="nav-link">Accueil</a>
+    <a href="/app.html" class="btn-primary">Explorer les boards</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div>
+    <div class="hero-badge">🏄 Programme partenaires</div>
+    <h1 class="hero-title">
+      Ton shop sur la<br>
+      <span class="accent">côte basque</span>,<br>
+      <span class="warm">amplifié.</span>
+    </h1>
+    <p class="hero-sub">
+      Tes planches travaillent même quand le shop est fermé.
+      Inscris-toi en 2 minutes, touche <strong>85% sur chaque location</strong>,
+      et suis tout depuis ton dashboard.
+    </p>
+    <div class="hero-cta">
+      <a href="#formulaire" class="btn-hero">Rejoindre Swell →</a>
+      <a href="#comment-ca-marche" class="btn-ghost">Comment ça marche</a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-grid">
+    <div class="stat-item">
+      <span class="stat-num">85%</span>
+      <span class="stat-label">reversé sur chaque location</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">8+</span>
+      <span class="stat-label">villes de la côte basque</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">0€</span>
+      <span class="stat-label">frais d'inscription</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num">48h</span>
+      <span class="stat-label">pour être en ligne</span>
+    </div>
+  </div>
+</div>
+
+<!-- PROTECTION BANNER -->
+<section class="protect-banner" id="protection">
+  <div class="protect-banner-inner">
+    <div class="protect-banner-content">
+      <div class="protect-banner-badge">🛡️ Swell Shield — Partenaires</div>
+      <h2>
+        Tes boards, pas ton problème.<br>
+        <span>On protège le premier mois.</span>
+      </h2>
+      <p class="protect-banner-body">
+        Le plus gros frein pour lister ta flotte ? La peur des dommages. On a supprimé ce risque : <strong>le premier mois est couvert jusqu'à €200 par planche</strong>, sans frais caché. Swell Shield — vérifié, protégé, local.
+      </p>
+      <ul>
+        <li>Couverture automatique jusqu'à €200 par planche — aucun frais</li>
+        <li>Protocole check-in/check-out : photos obligatoires avant et après chaque location</li>
+        <li>Caution bloquée sur la carte du rider — tu loues serein</li>
+        <li>Résolution dommages gérée par Swell — pas de conflit direct</li>
+      </ul>
+      <a href="#formulaire" class="btn-protect-partner">
+        Devenir partenaire →
+      </a>
+    </div>
+    <div class="protect-banner-image">
+      <img src="https://pub-629428d185ca4960a0a73c850d32294b.r2.dev/generated-images/company_114849/a5d081a3-85a5-4ea0-ab0a-3b57dc9d16fc.jpg" alt="Protection dommages Swell — boards assurées">
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PARTNER SHACK PROGRAM ══════════════════════════ -->
+<section class="shack-section" id="shack">
+  <div class="shack-inner">
+    <div class="shack-badge">🏆 Programme Shop Champion</div>
+    <h2 class="shack-title">
+      Deviens shop champion.<br>
+      <span class="shack-accent">Zéro commission le premier mois.</span>
+    </h2>
+    <p class="shack-body">
+      Tu lists ta flotte ? On t'aide à rentabiliser chaque board. Pas de commission le premier mois, badge prioritaire, et 50€ de crédit par filleul qui s'inscrit.
+    </p>
+    <div class="shack-cards">
+      <div class="shack-card">
+        <span class="shack-card-icon">🏆</span>
+        <div class="shack-card-content">
+          <h3>Zéro commission 1er mois</h3>
+          <p>Toutes tes locations du premier mois sont à 100% pour toi. Pas de déduction, pas de surprise. On prend le risque avec toi.</p>
+        </div>
+      </div>
+      <div class="shack-card">
+        <span class="shack-card-icon">⬆️</span>
+        <div class="shack-card-content">
+          <h3>Position prioritaire</h3>
+          <p>Tes boards apparaissent en premier dans les résultats de recherche de ta zone. Plus de visibilité = plus de réservations.</p>
+        </div>
+      </div>
+      <div class="shack-card">
+        <span class="shack-card-icon">🎁</span>
+        <div class="shack-card-content">
+          <h3>Crédit filleul — 50€</h3>
+          <p>Chaque shop que tu recommandes et qui s'inscrit te rapporte 50€ de crédit advertising. Plus tu recommandes, plus tu grandis.</p>
+        </div>
+      </div>
+    </div>
+    <div class="shack-cta-row">
+      <a href="#formulaire" class="shack-cta-btn">
+        Deviens shop champion →
+      </a>
+      <span class="shack-cta-note">Offre limitée aux 10 premiers shops inscrits ce trimestre.</span>
+    </div>
+  </div>
+</section>
+
+<!-- VALUE PROPS -->
+<section class="section section-center">
+  <span class="section-tag">Pourquoi Swell</span>
+  <h2 class="section-title">Tout ce dont tu as besoin,<br>rien de ce dont tu n'as pas besoin.</h2>
+  <p class="section-sub">
+    On a conçu Swell avec et pour les shops — pas pour cocher des cases.
+  </p>
+  <div class="value-grid">
+    <div class="value-card">
+      <span class="value-icon">💰</span>
+      <h3>85% sur chaque location</h3>
+      <p>Le meilleur taux du marché. Zéro frais cachés, zéro surprise. Tu vois ce que tu gagnes en temps réel.</p>
+    </div>
+    <div class="value-card">
+      <span class="value-icon">📍</span>
+      <h3>Visibilité multi-spots</h3>
+      <p>Tes planches visibles sur Hossegor, Seignosse, Capbreton et 5 autres spots. Touche les surfeurs où qu'ils soient.</p>
+    </div>
+    <div class="value-card">
+      <span class="value-icon">📊</span>
+      <h3>Dashboard temps réel</h3>
+      <p>Réservations, revenus, calendrier de dispo. Tu gardes le contrôle — on gère la plateforme.</p>
+    </div>
+    <div class="value-card">
+      <span class="value-icon">🛡️</span>
+      <h3>Protection dommages incluse</h3>
+      <p>Waiver dommages intégré à chaque annonce. Le locataire paie, tu loues serein.</p>
+    </div>
+    <div class="value-card">
+      <span class="value-icon">🤙</span>
+      <h3>Aucune friction admin</h3>
+      <p>On gère paiements, messagerie, avis. Toi tu accueilles et tu encaisses.</p>
+    </div>
+    <div class="value-card">
+      <span class="value-icon">🚀</span>
+      <h3>En ligne en 48h</h3>
+      <p>Dès validation, tes planches sont live. Photos, descriptions, tarifs — on t'accompagne pour le setup.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section steps-bg section-center" id="comment-ca-marche">
+  <span class="section-tag">En pratique</span>
+  <h2 class="section-title">Simple par design.</h2>
+  <p class="section-sub">Quatre étapes pour transformer tes planches en revenus passifs.</p>
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Tu t'inscris</h3>
+      <p>Remplis le formulaire ci-dessous. Ça prend 2 minutes.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>On valide</h3>
+      <p>On te contacte sous 48h pour finaliser.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Tu listes tes boards</h3>
+      <p>Ajoute photos, specs, tarifs depuis ton dashboard. Simple.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h3>Tu encaisses</h3>
+      <p>Chaque location = 85% pour toi, versé directement.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust-strip">
+  <h2>Les surfeurs arrivent. Leurs boards ne les suivent pas.</h2>
+  <p>C'est le problème que Swell résout — et ton shop est la solution. La première plateforme de location peer-to-peer sur la côte basque.</p>
+</div>
+
+<!-- FORM SECTION -->
+<section class="form-section" id="formulaire">
+  <div class="form-wrap">
+    <h2>Rejoins Swell</h2>
+    <p class="form-sub">Inscris ton shop en 2 minutes. On revient vers toi sous 48h.</p>
+
+    <div class="form-success" id="formSuccess">
+      ✅ <strong>Demande envoyée !</strong> On te contacte sous 48h pour finaliser l'inscription. Guette l'email de confirmation dans ta boîte.
+    </div>
+    <div class="form-error" id="formError"></div>
+
+    <form id="partnerForm" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Nom du shop <span class="required">*</span></label>
+          <input type="text" id="name" name="name" placeholder="Marty Surf Shop" required autocomplete="organization">
+        </div>
+        <div class="form-group">
+          <label for="type">Type d'activité <span class="required">*</span></label>
+          <select id="type" name="type" required>
+            <option value="">Choisis...</option>
+            <option value="location">Location de boards</option>
+            <option value="ecole">École de surf</option>
+            <option value="shaper">Shaper</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="location">Ville <span class="required">*</span></label>
+          <input type="text" id="location" name="location" placeholder="Hossegor" required autocomplete="address-level2">
+        </div>
+        <div class="form-group">
+          <label for="fleet_estimate">Nombre de planches estimé</label>
+          <input type="number" id="fleet_estimate" name="fleet_estimate" min="1" max="500" placeholder="ex : 12">
+          <span class="form-hint">Approximatif, pas d'engagement.</span>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="email">Email professionnel <span class="required">*</span></label>
+          <input type="email" id="email" name="email" placeholder="contact@martysurfshop.fr" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="phone">Téléphone <span class="required">*</span></label>
+          <input type="tel" id="phone" name="phone" placeholder="+33 6 00 00 00 00" required autocomplete="tel">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="website">Site web</label>
+        <input type="url" id="website" name="website" placeholder="https://martysurfshop.fr" autocomplete="url">
+      </div>
+
+      <div class="form-group">
+        <label for="message">Message (facultatif)</label>
+        <textarea id="message" name="message" placeholder="Une question, un contexte particulier..."></textarea>
+      </div>
+
+      <button type="submit" class="form-submit" id="submitBtn">
+        Envoyer ma demande →
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="site-footer-grid">
+    <div class="footer-brand">
+      <a href="/" class="footer-logo">Q<em>i</em>ver</a>
+      <p>Arrive léger. Surfe local.<br>La marketplace peer-to-peer pour louer des planches entre surfeurs — sans shop, sans intermédiaire.</p>
+      <div class="footer-socials">
+        <a href="mailto:swell@polsia.app" class="footer-social-btn" aria-label="Email">&#9993;</a>
+        <a href="https://instagram.com/swell_surf" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Instagram">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
+            <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <ul>
+        <li><a href="/">À propos</a></li>
+        <li><a href="/#comment">Comment ça marche</a></li>
+        <li><a href="/app.html">Marketplace</a></li>
+        <li><a href="/partner">Devenir partenaire</a></li>
+        <li><a href="/#faq">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Spots populaires</h4>
+      <ul>
+        <li><a href="/app.html?spot=hossegor" class="footer-spot-tag">Hossegor</a></li>
+        <li><a href="/app.html?spot=seignosse" class="footer-spot-tag">Seignosse</a></li>
+        <li><a href="/app.html?spot=capbreton" class="footer-spot-tag">Capbreton</a></li>
+        <li><a href="/app.html">Tous les spots</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Reste dans le lineup</h4>
+      <div class="footer-newsletter">
+        <p>Spots, boards rares, nouveaux riders dans ta zone — dans ta boîte, pas ton feed.</p>
+        <form class="footer-newsletter-form" onsubmit="handleNewsletterSignup(event)">
+          <input type="email" placeholder="ton@email.com" required autocomplete="email">
+          <button type="submit">Rejoindre le lineup →</button>
+        </form>
+      </div>
+      <div class="footer-trust-badges">
+        <span class="footer-badge"><span>🔒</span> Paiement sécurisé</span>
+        <span class="footer-badge"><span>✓</span> Identité vérifiée</span>
+        <span class="footer-badge"><span>🛡️</span> Garantie dommages</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-bottom-copy">&copy; 2026 Swell — Hossegor d'abord. Puis partout.</span>
+    <div class="footer-bottom-links">
+      <a href="/cgu">CGU</a>
+      <a href="/confidentialite">Confidentialité</a>
+      <a href="mailto:swell@polsia.app">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // CSRF — inject X-CSRF-Token header on mutating requests
+  (function() {
+    const _origFetch = window.fetch;
+    function getCsrfToken() {
+      const m = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+      return m ? decodeURIComponent(m[1]) : '';
+    }
+    window.fetch = function(url, opts) {
+      opts = opts || {};
+      const method = (opts.method || 'GET').toUpperCase();
+      if (method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS') {
+        const token = getCsrfToken();
+        if (token) {
+          if (opts.headers instanceof Headers) {
+            if (!opts.headers.has('X-CSRF-Token')) opts.headers.set('X-CSRF-Token', token);
+          } else {
+            opts.headers = Object.assign({ 'X-CSRF-Token': token }, opts.headers || {});
+          }
+        }
+      }
+      return _origFetch.call(this, url, opts);
+    };
+  })();
+
+  // Bootstrap CSRF token — partner page has no auth GET calls,
+  // so we ping /api/auth/me to create a session + XSRF-TOKEN cookie
+  fetch('/api/auth/me').catch(() => {});
+
+  const form = document.getElementById('partnerForm');
+  const submitBtn = document.getElementById('submitBtn');
+  const successEl = document.getElementById('formSuccess');
+  const errorEl = document.getElementById('formError');
+
+  function showError(msg) {
+    errorEl.textContent = '⚠️ ' + msg;
+    errorEl.classList.add('visible');
+    successEl.classList.remove('visible');
+  }
+
+  function clearMessages() {
+    errorEl.classList.remove('visible');
+    successEl.classList.remove('visible');
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearMessages();
+
+    const data = {
+      name: form.name.value.trim(),
+      type: form.type.value,
+      location: form.location.value.trim(),
+      email: form.email.value.trim(),
+      phone: form.phone.value.trim(),
+      fleet_estimate: form.fleet_estimate.value || null,
+      website: form.website.value.trim() || null,
+      message: form.message.value.trim() || null,
+    };
+
+    if (!data.name || !data.type || !data.location || !data.email || !data.phone) {
+      return showError('Merci de remplir tous les champs obligatoires.');
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Envoi en cours…';
+
+    try {
+      const res = await fetch('/api/partners', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const json = await res.json();
+
+      if (res.ok) {
+        form.reset();
+        successEl.classList.add('visible');
+        successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        showError(json.error || 'Erreur inattendue. Réessaie ou contacte-nous à swell@polsia.app.');
+      }
+    } catch (err) {
+      showError('Problème réseau. Vérifie ta connexion et réessaie.');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Envoyer ma demande →';
+    }
+  });
+</script>
+<script>
+function handleNewsletterSignup(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('button');
+  const input = form.querySelector('input');
+  btn.textContent = 'Dans le lineup ✓';
+  btn.style.background = '#1b7a4e';
+  input.value = '';
+  input.disabled = true;
+  btn.disabled = true;
+}
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

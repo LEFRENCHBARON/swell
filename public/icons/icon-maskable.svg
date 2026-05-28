@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Maskable icon: extra padding for safe zone (80% center area) -->
+  <rect width="512" height="512" fill="#060d1a"/>
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff6b35"/>
+      <stop offset="100%" stop-color="#ff8c5a"/>
+    </linearGradient>
+  </defs>
+  <!-- Q letter — centered in safe zone -->
+  <circle cx="256" cy="235" r="100" fill="none" stroke="url(#g)" stroke-width="36"/>
+  <line x1="310" y1="305" x2="370" y2="370" stroke="url(#g)" stroke-width="36" stroke-linecap="round"/>
+</svg>

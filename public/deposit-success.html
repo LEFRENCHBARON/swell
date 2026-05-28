@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#060d1a">
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Caution confirmée — Swell</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"></noscript>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #fafaf8; --card: #ffffff; --border: rgba(0,0,0,0.08);
+      --text: #1a1a1a; --text-secondary: rgba(0,0,0,0.62); --text-muted: rgba(0,0,0,0.45);
+      --primary: #0066aa; --primary-soft: rgba(0,102,170,0.06);
+      --sunset: #ff6b35; --sunset-glow: rgba(255,107,53,0.1);
+      --green: #22c55e; --green-bg: rgba(34,197,94,0.08); --green-border: rgba(34,197,94,0.3);
+      --radius: 16px; --radius-sm: 10px;
+    }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; padding: 2.5rem 1.5rem 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    .logo {
+      font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800;
+      color: var(--primary); text-decoration: none;
+      display: block; margin-bottom: 1.75rem; letter-spacing: -0.02em;
+    }
+    .logo em { font-style: normal; color: var(--text); }
+
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 2rem 1.75rem;
+      max-width: 440px; width: 100%;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.07);
+    }
+
+    /* Loading */
+    .loading-state { text-align: center; padding: 1rem 0; }
+    .wave-loader {
+      display: flex; align-items: flex-end; justify-content: center;
+      gap: 5px; height: 36px; margin-bottom: 1.25rem;
+    }
+    .wave-bar {
+      width: 6px; border-radius: 3px; background: var(--sunset);
+      animation: wave 1.2s ease-in-out infinite;
+    }
+    .wave-bar:nth-child(1) { animation-delay: 0s; height: 18px; }
+    .wave-bar:nth-child(2) { animation-delay: 0.15s; height: 28px; }
+    .wave-bar:nth-child(3) { animation-delay: 0.3s; height: 34px; }
+    .wave-bar:nth-child(4) { animation-delay: 0.45s; height: 24px; }
+    .wave-bar:nth-child(5) { animation-delay: 0.6s; height: 14px; }
+    @keyframes wave {
+      0%, 100% { transform: scaleY(0.5); opacity: 0.5; }
+      50% { transform: scaleY(1); opacity: 1; }
+    }
+    .loading-state h1 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .loading-state p { font-size: 0.875rem; color: var(--text-muted); }
+
+    /* Success */
+    .success-state { display: none; }
+    .shield-hero {
+      background: linear-gradient(135deg, #c44a10 0%, #ff6b35 50%, #ff8c5f 100%);
+      border-radius: 12px; padding: 1.75rem 1.5rem 1.5rem;
+      text-align: center; margin-bottom: 1.5rem; color: white; position: relative; overflow: hidden;
+    }
+    .shield-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='60'%3E%3Cpath d='M0 30 Q25 10 50 30 Q75 50 100 30 Q125 10 150 30 Q175 50 200 30' fill='none' stroke='rgba(255,255,255,0.1)' stroke-width='2'/%3E%3C/svg%3E") repeat-x bottom;
+      pointer-events: none;
+    }
+    .shield-icon {
+      font-size: 3rem; margin-bottom: 0.6rem; display: block;
+      animation: heroFloat 3s ease-in-out infinite;
+    }
+    @keyframes heroFloat {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50% { transform: translateY(-5px) rotate(3deg); }
+    }
+    .shield-title {
+      font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800;
+      margin-bottom: 0.2rem; position: relative;
+    }
+    .shield-sub { font-size: 0.875rem; opacity: 0.85; position: relative; }
+
+    /* Deposit info box */
+    .deposit-box {
+      background: rgba(255,107,53,0.06);
+      border: 1px solid rgba(255,107,53,0.2);
+      border-radius: var(--radius-sm); padding: 1rem 1.1rem;
+      margin-bottom: 1.25rem;
+    }
+    .deposit-amount-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 0.6rem; padding-bottom: 0.6rem;
+      border-bottom: 1px solid rgba(255,107,53,0.12);
+    }
+    .deposit-amount-label {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.9rem;
+      color: var(--sunset);
+    }
+    .deposit-amount-value {
+      font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800;
+      color: var(--sunset);
+    }
+    .deposit-info-row {
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.8rem; color: var(--text-secondary); padding: 0.2rem 0;
+    }
+    .deposit-info-row .key { color: var(--text-muted); }
+
+    /* What's next */
+    .whats-next {
+      background: rgba(34,197,94,0.05); border: 1px solid rgba(34,197,94,0.15);
+      border-radius: var(--radius-sm); padding: 0.9rem 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .whats-next-title {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--green);
+      margin-bottom: 0.5rem;
+    }
+    .next-item {
+      display: flex; align-items: flex-start; gap: 0.5rem;
+      font-size: 0.8rem; color: var(--text-secondary);
+      line-height: 1.4; padding: 0.2rem 0;
+    }
+    .next-icon { flex-shrink: 0; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      padding: 0.7rem 1.25rem; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600;
+      text-decoration: none; cursor: pointer; border: none;
+      transition: all 0.2s; position: relative; overflow: hidden;
+    }
+    .btn-primary { background: var(--primary); color: #fff; width: 100%; margin-bottom: 0.6rem; }
+    .btn-primary:hover { background: #0055aa; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,102,170,0.25); }
+
+    /* Error */
+    .error-state { display: none; text-align: center; }
+    .error-icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.7; }
+    .error-state h1 { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .error-state p { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.5; }
+
+    .page-spacer { flex: 1; min-height: 3rem; }
+  </style>
+</head>
+<body>
+
+  <a href="/app.html" class="logo">qi<em>v</em>er 🌊</a>
+
+  <div class="card" id="loading-card">
+    <div class="loading-state">
+      <div class="wave-loader">
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+      </div>
+      <h1>Confirmation de la caution…</h1>
+      <p>Vérification en cours, deux secondes.</p>
+    </div>
+  </div>
+
+  <div class="card success-state" id="success-card">
+    <div class="shield-hero">
+      <span class="shield-icon">🔒</span>
+      <h1 class="shield-title">Swell Shield activé !</h1>
+      <p class="shield-sub">Caution enregistrée — ta planche est protégée.</p>
+    </div>
+
+    <div class="deposit-box" id="deposit-box">
+      <div class="deposit-amount-row">
+        <span class="deposit-amount-label">🔒 Caution bloquée</span>
+        <span class="deposit-amount-value" id="deposit-amount-display">—</span>
+      </div>
+      <div class="deposit-info-row">
+        <span class="key">Statut</span>
+        <span style="color:var(--sunset);font-weight:600;">Bloquée · non débitée</span>
+      </div>
+      <div class="deposit-info-row">
+        <span class="key">Libération automatique</span>
+        <span id="release-date-display" style="font-weight:600;">48h après le retour</span>
+      </div>
+    </div>
+
+    <div class="whats-next">
+      <div class="whats-next-title">✅ Comment ça marche</div>
+      <div class="next-item">
+        <span class="next-icon">🔒</span>
+        <span>La caution est <strong>bloquée</strong> sur ta carte — pas encore débitée.</span>
+      </div>
+      <div class="next-item">
+        <span class="next-icon">📸</span>
+        <span>Photos de la planche au check-in et check-out via l'app.</span>
+      </div>
+      <div class="next-item">
+        <span class="next-icon">✅</span>
+        <span>48h après le retour sans dommage → libération automatique.</span>
+      </div>
+      <div class="next-item">
+        <span class="next-icon">⚠️</span>
+        <span>En cas de dommage, Swell arbitre sur photos — tu es protégé.</span>
+      </div>
+    </div>
+
+    <a href="/app.html" class="btn btn-primary">Voir ma réservation</a>
+    <a href="/app.html?dashboard=messages" class="btn" style="width:100%;background:var(--surface,#f5f3f0);color:var(--text);border:1.5px solid var(--border);">Contacter l'hôte</a>
+  </div>
+
+  <div class="card error-state" id="error-card">
+    <div class="error-icon">⚠️</div>
+    <h1>Vérification impossible</h1>
+    <p id="error-msg">Impossible de confirmer la caution. Si tu as été débité, contacte swell@polsia.app.</p>
+    <a href="/app.html" class="btn btn-primary">Retour au marketplace</a>
+  </div>
+
+  <div class="page-spacer"></div>
+
+  <script>
+    // CSRF — inject X-CSRF-Token header on mutating requests
+    (function() {
+      const _origFetch = window.fetch;
+      function getCsrfToken() {
+        const m = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+        return m ? decodeURIComponent(m[1]) : '';
+      }
+      window.fetch = function(url, opts) {
+        opts = opts || {};
+        const method = (opts.method || 'GET').toUpperCase();
+        if (method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS') {
+          const token = getCsrfToken();
+          if (token) {
+            if (opts.headers instanceof Headers) {
+              if (!opts.headers.has('X-CSRF-Token')) opts.headers.set('X-CSRF-Token', token);
+            } else {
+              opts.headers = Object.assign({ 'X-CSRF-Token': token }, opts.headers || {});
+            }
+          }
+        }
+        return _origFetch.call(this, url, opts);
+      };
+    })();
+
+    (async () => {
+      const params = new URLSearchParams(window.location.search);
+      const depositSessionId = params.get('deposit_session_id');
+      const bookingId = params.get('booking_id');
+
+      function showError(msg) {
+        document.getElementById('loading-card').style.display = 'none';
+        document.getElementById('error-msg').textContent = msg;
+        document.getElementById('error-card').style.display = 'block';
+      }
+
+      if (!depositSessionId || !bookingId) {
+        showError('Paramètres manquants. Retourne à l\'app et contacte le support si le problème persiste.');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/deposits/${bookingId}/verify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ depositSessionId })
+        });
+        const data = await res.json();
+
+        document.getElementById('loading-card').style.display = 'none';
+
+        if (!res.ok || !data.success) {
+          showError(data.error || 'La caution n\'a pas pu être confirmée. Contacte le support.');
+          return;
+        }
+
+        // Show success
+        document.getElementById('success-card').style.display = 'block';
+
+        // Deposit amount
+        if (data.depositAmountCents > 0) {
+          document.getElementById('deposit-amount-display').textContent = `€${(data.depositAmountCents / 100).toFixed(0)}`;
+        }
+
+        // Release date
+        if (data.releaseAt) {
+          const releaseDate = new Date(data.releaseAt);
+          document.getElementById('release-date-display').textContent =
+            releaseDate.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+      } catch (e) {
+        showError('Erreur réseau. Vérifie ta connexion et réessaie.');
+      }
+    })();
+  </script>
+
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

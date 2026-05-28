@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  
+  <!-- Surfboard icon — narrow ellipse tilted 30deg, fin at bottom -->
+  <g transform="translate(32,32)">
+    <!-- Board body -->
+    <ellipse cx="0" cy="-4" rx="10" ry="22"
+      transform="rotate(-15)"
+      fill="#ff2d55" opacity="0.95"/>
+    <!-- Fin -->
+    <path d="M6 14 Q10 22 4 22 Q3 18 6 14Z"
+      transform="rotate(-15)"
+      fill="#ff2d55" opacity="0.7"/>
+    <!-- Accent stripe -->
+    <ellipse cx="0" cy="-4" rx="4" ry="10"
+      transform="rotate(-15)"
+      fill="#ff9f0a" opacity="0.4"/>
+  </g>
+</svg>

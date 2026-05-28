@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#060d1a">
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Comment Fonctionne la Location de Surfboards Entre Particuliers | Swell</title>
+  <meta name="description" content="Location planche surf entre particuliers été 2026. Paiements sécurisés, assurance dommages, feedback communautaire — tout fonctionne. boards livrés sur le spot en France.">
+  <meta name="keywords" content="location planche surf particuliers, peer-to-peer surfboard rental, partage board, economie partage">
+  <link rel="canonical" href="https://swell.polsia.app/blog/location-surfboard-particuliers">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Comment Fonctionne la Location de Surfboards Entre Particuliers">
+  <meta property="og:description" content="Guide complet sur le fonctionnement de la location de planches entre particuliers avec Swell.">
+  <meta property="og:url" content="https://swell.polsia.app/blog/location-surfboard-particuliers.html">
+  <meta property="og:image" content="https://swell.polsia.app/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Location de surfboards entre particuliers avec Swell">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Comment Fonctionne la Location de Surfboards Entre Particuliers">
+  <meta name="twitter:description" content="Guide complet de location de planches entre particuliers.">
+  <meta name="twitter:image" content="https://swell.polsia.app/og-image.png">
+
+  <!-- Schema.org Article -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Comment Fonctionne la Location de Surfboards Entre Particuliers",
+    "description": "Guide complet du fonctionnement de la location de surfboards entre particuliers.",
+    "image": "https://swell.polsia.app/og-image.png",
+    "datePublished": "2026-05-14",
+    "dateModified": "2026-05-14",
+    "author": {
+      "@type": "Organization",
+      "name": "Swell"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Swell"
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://swell.polsia.app/blog/location-surfboard-particuliers.html"
+    }
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #1a1410;
+      background: #fafaf8;
+    }
+    header {
+      background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+      color: white;
+      padding: 3rem 1rem;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    header p {
+      font-size: 1.1rem;
+      opacity: 0.95;
+    }
+    .breadcrumb {
+      background: white;
+      padding: 1rem;
+      border-bottom: 1px solid #e0e0e0;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .breadcrumb a { color: #ff6b35; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    article {
+      max-width: 800px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .article-meta {
+      font-size: 0.9rem;
+      color: #666;
+      padding: 2rem 0 1rem 0;
+      border-bottom: 2px solid #ffe0cc;
+      margin-bottom: 2rem;
+    }
+    h2 {
+      font-size: 1.8rem;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      color: #1a1410;
+      border-left: 4px solid #ff6b35;
+      padding-left: 1rem;
+    }
+    h3 {
+      font-size: 1.3rem;
+      margin-top: 1.8rem;
+      margin-bottom: 0.8rem;
+      color: #2c2c2c;
+    }
+    p {
+      margin-bottom: 1.2rem;
+      text-align: justify;
+    }
+    ul, ol {
+      margin-left: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+    li {
+      margin-bottom: 0.6rem;
+    }
+    .highlight-box {
+      background: #fff5f0;
+      border-left: 4px solid #ff6b35;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      border-radius: 8px;
+    }
+    .flow-chart {
+      background: #f9f9f9;
+      border: 2px solid #ffe0cc;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .flow-chart div {
+      margin: 0.8rem 0;
+      font-weight: 500;
+    }
+    .flow-chart .arrow {
+      color: #ff6b35;
+      font-size: 1.3rem;
+      margin: 0.4rem 0;
+    }
+    .cta-button {
+      display: inline-block;
+      background: #ff6b35;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      margin-top: 1rem;
+      transition: background 0.3s ease;
+    }
+    .cta-button:hover { background: #ff5522; }
+    .internal-link { color: #ff6b35; text-decoration: none; font-weight: 500; }
+    .internal-link:hover { text-decoration: underline; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+    }
+    table th, table td {
+      border: 1px solid #e0e0e0;
+      padding: 0.8rem;
+      text-align: left;
+    }
+    table th {
+      background: #fff5f0;
+      color: #1a1410;
+      font-weight: 600;
+    }
+    table tr:nth-child(even) {
+      background: #fafaf8;
+    }
+    footer {
+      background: #1a1410;
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+      margin-top: 3rem;
+    }
+    .related-articles {
+      background: #f5f5f5;
+      padding: 2rem;
+      border-radius: 8px;
+      margin-top: 3rem;
+    }
+    .related-articles h3 { margin-top: 0; }
+    .related-articles a { display: block; margin: 0.5rem 0; color: #ff6b35; text-decoration: none; }
+    .related-articles a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🤝 Comment Fonctionne la Location de Surfboards</h1>
+    <p>Tout ce qu'il faut savoir sur la location entre particuliers</p>
+  </header>
+
+  <div class="breadcrumb">
+    <a href="/">Accueil</a> > <a href="/blog">Blog</a> > Location Entre Particuliers
+  </div>
+
+  <article>
+    <div class="article-meta">
+      Publié le 14 mai 2026 • 6 min de lecture
+    </div>
+
+    <h2>L'économie du partage de planches</h2>
+    <p>
+      La location de planches de surf entre particuliers est le modèle d'économie de partage appliqué au monde du surf. Au lieu de louer chez un magasin commercial, vous louez directement auprès d'un surfer local qui possède une board en trop.
+    </p>
+    <p>
+      <strong>Pourquoi c'est meilleur :</strong> Moins d'intermédiaires = prix plus bas, plus de choix, rencontres authentiques. C'est du vrai partage.
+    </p>
+
+    <h2>Comment ça marche en 5 étapes</h2>
+
+    <div class="flow-chart">
+      <div>👤 Vous trouvez une planche sur Swell</div>
+      <div class="arrow">↓</div>
+      <div>💳 Vous réservez et payez via Stripe</div>
+      <div class="arrow">↓</div>
+      <div>📍 Vous rencontrez le loueur (lieu à convenir)</div>
+      <div class="arrow">↓</div>
+      <div>🌊 Vous surfez la planche</div>
+      <div class="arrow">↓</div>
+      <div>⭐ Vous rendez la planche et échangez des avis</div>
+    </div>
+
+    <p>
+      C'est aussi simple que ça. Pas d'agence, pas d'attente, pas de complications. Juste deux surfeurs qui échangent.
+    </p>
+
+    <h2>Sécurité et paiements</h2>
+    <p>
+      "Comment je sais que le paiement est sécurisé ?" C'est une bonne question. Voici comment ça fonctionne :
+    </p>
+    <ul>
+      <li><strong>Paiement via Stripe</strong> — Tous les paiements passent par Stripe, le leader mondialisé de la paiement. Vos données bancaires ne sont jamais partagées avec le loueur</li>
+      <li><strong>Confirmation par email</strong> — Vous recevez une facture par email de la réservation</li>
+      <li><strong>Protection contre les fraudes</strong> — Stripe détecte automatiquement les transactions suspectes</li>
+      <li><strong>Remboursement possible</strong> — Si vous annulez avant la date prévue, les conditions d'annulation s'affichent avant la réservation</li>
+    </ul>
+
+    <div class="highlight-box">
+      <strong>✓ Badge de confiance :</strong> Tous les paiements Swell affichent le badge Stripe sur la confirmation. C'est votre garantie que la transaction est sécurisée.
+    </div>
+
+    <h2>Division des revenus</h2>
+    <p>
+      Vous louez une planche 40€. Comment cet argent est divisé ?
+    </p>
+    <table>
+      <tr>
+        <th>Poste</th>
+        <th>Montant</th>
+        <th>Qui reçoit</th>
+      </tr>
+      <tr>
+        <td>Prix de location fixé</td>
+        <td>40€</td>
+        <td>Propriétaire de la board</td>
+      </tr>
+      <tr>
+        <td>Commission Swell (20%)</td>
+        <td>8€</td>
+        <td>Swell (pour maintenir la plateforme)</td>
+      </tr>
+      <tr>
+        <td><strong>Versement au loueur</strong></td>
+        <td><strong>32€</strong></td>
+        <td><strong>Propriétaire</strong></td>
+      </tr>
+    </table>
+
+    <p>
+      <strong>Transparence totale :</strong> Le propriétaire voit exactement combien il va recevoir avant d'accepter la réservation. Pas de surprise.
+    </p>
+
+    <h2>Assurance dégâts : optionnelle mais recommandée</h2>
+    <p>
+      Surfer, c'est prendre des risques. Que se passe-t-il si vous cassez la planche ?
+    </p>
+    <p>
+      Chaque propriétaire Swell peut proposer une <strong>assurance dégâts optionnelle</strong>. Voici comment ça marche :
+    </p>
+    <ul>
+      <li><strong>Petit ding ou rayure</strong> — Couvert par l'assurance (jusqu'à 50€)</li>
+      <li><strong>Cassure légère</strong> — Couvert jusqu'à 150€</li>
+      <li><strong>Cassure importante</strong> — Couvert jusqu'à 300€ (selon la planche)</li>
+      <li><strong>Dégâts intentionnels</strong> — Non couverts (assurance fraud)</li>
+    </ul>
+
+    <p>
+      <strong>Le coût ?</strong> Généralement 10–20€ par location. C'est une petite tranquillité psychologique pour un prix raisonnable.
+    </p>
+
+    <div class="highlight-box">
+      <strong>💡 Conseil :</strong> Si vous êtes débutant ou vous surfez des vagues puissantes, prenez l'assurance. Elle s'affiche clairement avant la réservation.
+    </div>
+
+    <h2>Avis et système de notation</h2>
+    <p>
+      Comment savoir si le loueur est honnête et la planche en bon état ? Grâce aux avis.
+    </p>
+    <p>
+      Sur Swell, chaque loueur reçoit des avis de renter. C'est comme Airbnb pour le surf :
+    </p>
+    <ul>
+      <li><strong>Note 1–5 étoiles</strong> — Basée sur l'état de la planche, la gentillesse du loueur, le respect de l'horaire</li>
+      <li><strong>Commentaires</strong> — Les renter écrivent ce qu'ils ont aimé (et ce qu'ils ont moins aimé)</li>
+      <li><strong>Photos</strong> — Les loueurs podem uploader des photos avant/après location</li>
+      <li><strong>Historique public</strong> — Vous voyez tous les avis précédents avant de réserver</li>
+    </ul>
+
+    <p>
+      Si un loueur a 4.8 étoiles sur 20 avis, vous pouvez être confiant. Si quelqu'un a 2 étoiles, cherchez ailleurs.
+    </p>
+
+    <h2>Qui sont les loueurs ?</h2>
+    <p>
+      Les propriétaires sur Swell sont des surfeurs comme vous. Pas des magasins. Voici les profils types :
+    </p>
+    <ul>
+      <li><strong>Le local</strong> — Habite la région, surfe tous les jours, a une board en trop</li>
+      <li><strong>Le passion</strong> — Collectionne les planches, adore les prêter et faire connaissance</li>
+      <li><strong>Le business</strong> — Propose 3–5 boards en bon état, répond rapidement, assure l'entretien</li>
+      <li><strong>Le voyageur</strong> — Emporte une planche partout, la loue quand elle reste inutilisée</li>
+    </ul>
+
+    <p>
+      Ils fixent eux-mêmes leur prix, disponibilité, et conditions. <strong>Aucun loueur n'est "officiel"</strong> — ce sont juste des surfeurs qui partagent.
+    </p>
+
+    <h2>Étiquette du renter (bonnes pratiques)</h2>
+    <p>
+      Si vous louez, respectez quelques règles simples :
+    </p>
+    <ul>
+      <li><strong>Soyez à l'heure</strong> — Arrivez à l'horaire convenu. Ne mettez pas le loueur en attente</li>
+      <li><strong>Nettoyez la planche</strong> — Rincez-la à l'eau douce après votre session</li>
+      <li><strong>Signalez les dégâts</strong> — Si vous avez cassé quelque chose, dites-le immédiatement. Le loueur appréciera votre honnêteté</li>
+      <li><strong>Respectez la board</strong> — Traitez-la comme si elle était la vôtre. Parce qu'elle ne l'est pas</li>
+      <li><strong>Laissez un avis honnête</strong> — Même si ce n'était pas parfait, un avis juste aide le loueur à s'améliorer</li>
+    </ul>
+
+    <h2>Devenir loueur : Comment ça marche</h2>
+    <p>
+      Vous avez 2–3 planches chez vous ? Pourquoi ne pas les louer et gagner de l'argent passif ?
+    </p>
+    <p>
+      Devenir loueur sur Swell, c'est simple :
+    </p>
+    <ol>
+      <li><strong>Créez un profil</strong> — Inscrivez-vous et vérifiez votre identité</li>
+      <li><strong>Ajoutez une planche</strong> — Décrivez sa taille, type, état, prix de location par jour</li>
+      <li><strong>Uploadez des photos</strong> — Montrez votre board sous tous les angles (dégâts inclus)</li>
+      <li><strong>Fixez vos règles</strong> — Disponibilité, assurance dégâts, conditions d'annulation</li>
+      <li><strong>Attendez les réservations</strong> — Les renter vous contactent, et vous recevez le paiement automatiquement</li>
+      <li><strong>Rencontrez les renter</strong> — Vous organisez le lieu de remise</li>
+      <li><strong>Gagnez de l'argent</strong> — Versement chaque semaine sur votre compte bancaire</li>
+    </ol>
+
+    <div class="highlight-box">
+      <strong>💰 Chiffres réels :</strong> Une planche louée 40€/jour peut gagner 400€/mois si elle est réservée 10 jours par mois. C'est du revenu passif décent pour une planche qui prendrait la poussière.
+    </div>
+
+    <h2>Conclusion</h2>
+    <p>
+      La location de surfboards entre particuliers, c'est transparent, sécurisé, et meilleur marché que les magasins. <a href="/app.html" class="internal-link">Explorez Swell</a> et trouvez votre prochaine planche — ou devenez loueur et gagnez en partageant.
+    </p>
+
+    <div class="related-articles">
+      <h3>Explorez les spots en location</h3>
+      <a href="/spot/hossegor">→ Location surf Hossegor 2026</a>
+      <a href="/spot/biarritz">→ Location surf Biarritz 2026</a>
+      <a href="/spot/sables-d-olonne">→ Location surf Sables-d\u2019Olonne 2026</a>
+      <a href="/spot/la-tranche-sur-mer">→ Location surf La Tranche-sur-Mer 2026</a>
+    </div>
+
+    <div class="related-articles" style="margin-top: 1.5rem;">
+      <h3>En savoir plus</h3>
+      <a href="/blog/emprunter-planche-vendee.html">→ Emprunter une Planche de Surf en Vendée</a>
+      <a href="/blog/10-vagues-hossegor.html">→ Les 10 meilleures vagues accessibles depuis Hossegor</a>
+    </div>
+  </article>
+
+  <footer>
+    <p>&copy; 2026 Swell — Location de planches de surf entre particuliers</p>
+    <p style="margin-top: 1rem; opacity: 0.8;">
+      <a href="/" style="color: inherit; text-decoration: none;">Accueil</a> •
+      <a href="/app.html" style="color: inherit; text-decoration: none;">Marketplace</a> •
+      <a href="/partner" style="color: inherit; text-decoration: none;">Devenir loueur</a> •
+      <a href="https://instagram.com/swell_surf" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">Instagram</a>
+    </p>
+  </footer>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

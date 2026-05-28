@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recherche de planches — Swell</title>
+  <meta name="description" content="Trouve ta planche de surf idéale à Hossegor et sur la côte atlantique. Filtre par date, type, prix, niveau et spot.">
+  <link rel="canonical" href="https://swell.polsia.app/search">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Swell">
+  <meta property="og:url" content="https://swell.polsia.app/search">
+  <meta property="og:title" content="Recherche de planches — Swell">
+  <meta property="og:description" content="Filtre par date, type, prix et spot — trouve la board qui te correspond.">
+  <meta property="og:image" content="https://swell.polsia.app/og-image.png">
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0e1e36">
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <style>
+    :root {
+      --night: #0d1b2e;
+      --dusk: #142540;
+      --ocean: #1a3a5c;
+      --coral: #f05a28;
+      --coral-light: #ff7a4a;
+      --mint: #2ac4a3;
+      --white: #f5f5f0;
+      --white-70: rgba(245,245,240,0.70);
+      --white-40: rgba(245,245,240,0.40);
+      --white-10: rgba(245,245,240,0.10);
+      --border: rgba(245,245,240,0.12);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--night);
+      color: var(--white);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 500;
+      background: var(--dusk);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem;
+      height: 56px;
+    }
+    .nav-logo {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--white);
+      text-decoration: none;
+      letter-spacing: -0.03em;
+    }
+    .nav-logo span { color: var(--coral); }
+    .nav-links {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .nav-link {
+      color: var(--white-70);
+      text-decoration: none;
+      font-size: 0.875rem;
+      padding: 0.375rem 0.75rem;
+      border-radius: 20px;
+      transition: all 0.15s;
+    }
+    .nav-link:hover { background: var(--white-10); color: var(--white); }
+    .nav-link.active { background: var(--coral); color: #fff; }
+    .nav-cta {
+      background: var(--coral);
+      color: #fff;
+      border-radius: 20px;
+      padding: 0.375rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .nav-cta:hover { background: var(--coral-light); }
+
+    /* ── LAYOUT ── */
+    .page-wrapper {
+      display: flex;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+
+    /* ── SIDEBAR FILTERS (desktop) ── */
+    .sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 72px;
+      padding: 1.25rem 0;
+    }
+    @media (max-width: 768px) { .sidebar { display: none; } }
+
+    .filter-panel {
+      background: var(--dusk);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+    .filter-panel h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .filter-group label.group-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--white-40);
+      margin-bottom: 0.625rem;
+    }
+    .filter-input {
+      width: 100%;
+      background: var(--ocean);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--white);
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .filter-input:focus { border-color: var(--coral); }
+    .filter-input::placeholder { color: var(--white-40); }
+
+    /* Date row */
+    .date-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    /* Board type checkboxes */
+    .type-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.375rem;
+    }
+    .type-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      background: var(--ocean);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 0.4rem 0.5rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+      color: var(--white-70);
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .type-chip input[type="checkbox"] { display: none; }
+    .type-chip:hover { border-color: var(--coral); color: var(--white); }
+    .type-chip.selected { background: rgba(240,90,40,0.18); border-color: var(--coral); color: var(--white); }
+
+    /* Price slider */
+    .price-display {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--white-70);
+      margin-bottom: 0.375rem;
+    }
+    .price-display strong { color: var(--white); }
+    .range-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      background: var(--ocean);
+      border-radius: 2px;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--coral);
+      cursor: pointer;
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--coral);
+      cursor: pointer;
+      border: none;
+    }
+
+    /* Skill level select */
+    select.filter-input {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23f5f5f0' d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.5rem center;
+      background-size: 16px;
+      -webkit-appearance: none;
+      appearance: none;
+      padding-right: 2rem;
+    }
+    select.filter-input option { background: var(--dusk); }
+
+    /* Spot autocomplete */
+    .spot-autocomplete-wrap { position: relative; }
+    .spot-dropdown {
+      display: none;
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0; right: 0;
+      background: var(--dusk);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      z-index: 100;
+      overflow: hidden;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .spot-dropdown.open { display: block; }
+    .spot-option {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      color: var(--white-70);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.1s;
+    }
+    .spot-option:last-child { border-bottom: none; }
+    .spot-option:hover { background: var(--ocean); color: var(--white); }
+
+    /* Verified toggle */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .toggle-label { font-size: 0.875rem; color: var(--white-70); }
+    .toggle-switch {
+      width: 40px;
+      height: 22px;
+      background: var(--ocean);
+      border-radius: 11px;
+      position: relative;
+      cursor: pointer;
+      border: 1.5px solid var(--border);
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+    .toggle-switch.on { background: var(--coral); border-color: var(--coral); }
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 14px; height: 14px;
+      background: var(--white);
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+    .toggle-switch.on::after { transform: translateX(18px); }
+
+    .btn-apply {
+      width: 100%;
+      background: var(--coral);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 0.75rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-apply:hover { background: var(--coral-light); }
+    .btn-reset {
+      width: 100%;
+      background: transparent;
+      color: var(--white-40);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.5rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      margin-top: -0.5rem;
+      transition: all 0.15s;
+    }
+    .btn-reset:hover { color: var(--white-70); border-color: var(--white-40); }
+
+    /* ── MAIN CONTENT ── */
+    .main-content {
+      flex: 1;
+      min-width: 0;
+      padding: 1.25rem 0;
+    }
+
+    /* Results header */
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .results-count {
+      font-size: 0.9rem;
+      color: var(--white-70);
+    }
+    .results-count strong { color: var(--white); font-size: 1rem; }
+    .active-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+    .filter-tag {
+      background: rgba(240,90,40,0.18);
+      border: 1px solid rgba(240,90,40,0.4);
+      color: var(--coral-light);
+      border-radius: 20px;
+      padding: 0.2rem 0.625rem;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .filter-tag button {
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      font-size: 0.85rem;
+      line-height: 1;
+      padding: 0;
+    }
+
+    /* Board grid */
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    @media (max-width: 480px) {
+      .board-grid { grid-template-columns: 1fr; }
+    }
+
+    .board-card {
+      background: var(--dusk);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+    .board-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+    }
+    .board-photo {
+      aspect-ratio: 4/3;
+      width: 100%;
+      object-fit: cover;
+      background: var(--ocean);
+      flex-shrink: 0;
+    }
+    .board-photo-placeholder {
+      aspect-ratio: 4/3;
+      width: 100%;
+      background: var(--ocean);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white-40);
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+    .board-info {
+      padding: 0.875rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.375rem;
+      flex: 1;
+    }
+    .board-type-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--mint);
+    }
+    .board-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.3;
+    }
+    .board-spot {
+      font-size: 0.8rem;
+      color: var(--white-70);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .board-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .board-price {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--coral);
+    }
+    .board-price span {
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--white-40);
+    }
+    .board-host {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+    .host-avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: var(--ocean);
+    }
+    .host-avatar-placeholder {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--ocean);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: var(--white-70);
+    }
+    .verified-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--mint);
+      display: inline-block;
+      margin-left: 2px;
+    }
+    .board-rating {
+      font-size: 0.78rem;
+      color: var(--white-70);
+    }
+    .star-icon { color: #f5c842; }
+
+    /* Skeleton loader */
+    .skeleton {
+      background: linear-gradient(90deg, var(--dusk) 25%, var(--ocean) 50%, var(--dusk) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 8px;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .skel-card {
+      background: var(--dusk);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .skel-img { aspect-ratio: 4/3; width: 100%; }
+    .skel-body { padding: 0.875rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .skel-line { height: 12px; border-radius: 6px; }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      display: none;
+    }
+    .empty-state.visible { display: block; }
+    .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .empty-state h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+    .empty-state p { color: var(--white-70); font-size: 0.9rem; max-width: 360px; margin: 0 auto 1.5rem; }
+    .suggestions { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem; }
+    .suggestion-chip {
+      background: var(--dusk);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.4rem 0.875rem;
+      font-size: 0.85rem;
+      color: var(--white-70);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .suggestion-chip:hover { border-color: var(--coral); color: var(--white); }
+    .wishlist-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+    .wishlist-form p { color: var(--white-40); font-size: 0.8rem; }
+    .wishlist-row {
+      display: flex;
+      gap: 0.5rem;
+      width: 100%;
+    }
+    .wishlist-input {
+      flex: 1;
+      background: var(--dusk);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--white);
+      padding: 0.625rem 0.875rem;
+      font-size: 0.875rem;
+      outline: none;
+    }
+    .wishlist-input:focus { border-color: var(--coral); }
+    .wishlist-input::placeholder { color: var(--white-40); }
+    .btn-wishlist {
+      background: var(--coral);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 0.625rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .wishlist-success { color: var(--mint); font-size: 0.875rem; display: none; }
+
+    /* Load more */
+    .load-more-wrap {
+      text-align: center;
+      margin-top: 2rem;
+    }
+    .btn-load-more {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      color: var(--white-70);
+      padding: 0.75rem 2rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-load-more:hover { border-color: var(--coral); color: var(--white); }
+
+    /* ── MOBILE FILTER BOTTOM SHEET ── */
+    .mobile-filter-btn {
+      display: none;
+      position: fixed;
+      bottom: 1.25rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 400;
+      background: var(--coral);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 0.875rem 1.75rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(240,90,40,0.5);
+      white-space: nowrap;
+    }
+    @media (max-width: 768px) { .mobile-filter-btn { display: flex; align-items: center; gap: 0.5rem; } }
+
+    .sheet-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 600;
+    }
+    .sheet-overlay.open { display: block; }
+    .sheet {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--dusk);
+      border-radius: 24px 24px 0 0;
+      z-index: 700;
+      padding: 1rem 1.25rem 2rem;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+    .sheet.open { transform: translateY(0); }
+    .sheet-handle {
+      width: 40px; height: 4px;
+      background: var(--white-40);
+      border-radius: 2px;
+      margin: 0 auto 1.25rem;
+    }
+    .sheet-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 1.25rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Nav -->
+  <nav class="nav">
+    <a href="/" class="nav-logo">Qi<span>ver</span></a>
+    <div class="nav-links">
+      <a href="/map" class="nav-link">🗺 Carte</a>
+      <a href="/search" class="nav-link active">🔍 Recherche</a>
+      <a href="/app.html" class="nav-cta">Louer</a>
+    </div>
+  </nav>
+
+  <div class="page-wrapper">
+    <!-- ── DESKTOP SIDEBAR ── -->
+    <aside class="sidebar">
+      <div class="filter-panel" id="filterPanel">
+        <h2>Filtres</h2>
+
+        <!-- Dates -->
+        <div class="filter-group">
+          <label class="group-label">Dates</label>
+          <div class="date-row">
+            <input type="date" id="fromDate" class="filter-input" placeholder="Début">
+            <input type="date" id="toDate" class="filter-input" placeholder="Fin">
+          </div>
+        </div>
+
+        <!-- Board type -->
+        <div class="filter-group">
+          <label class="group-label">Type de planche</label>
+          <div class="type-grid" id="typeGrid">
+            <label class="type-chip" data-type="shortboard">
+              <input type="checkbox" value="shortboard"> 🏄 Shortboard
+            </label>
+            <label class="type-chip" data-type="longboard">
+              <input type="checkbox" value="longboard"> 🏄 Longboard
+            </label>
+            <label class="type-chip" data-type="fish">
+              <input type="checkbox" value="fish"> 🐟 Fish
+            </label>
+            <label class="type-chip" data-type="funboard">
+              <input type="checkbox" value="funboard"> 🌊 Funboard
+            </label>
+            <label class="type-chip" data-type="mini-malibu">
+              <input type="checkbox" value="mini-malibu"> 🤙 Mini-malibu
+            </label>
+            <label class="type-chip" data-type="gun">
+              <input type="checkbox" value="gun"> 🎯 Gun
+            </label>
+          </div>
+        </div>
+
+        <!-- Niveau -->
+        <div class="filter-group">
+          <label class="group-label" for="skillSelect">Niveau cible</label>
+          <select id="skillSelect" class="filter-input">
+            <option value="">Tous niveaux</option>
+            <option value="beginner">Débutant</option>
+            <option value="intermediate">Intermédiaire</option>
+            <option value="advanced">Confirmé</option>
+          </select>
+        </div>
+
+        <!-- Prix horaire -->
+        <div class="filter-group">
+          <label class="group-label">Prix horaire</label>
+          <div class="price-display">
+            <span>Min : <strong id="minPriceDisplay">3</strong>€</span>
+            <span>Max : <strong id="maxPriceDisplay">50</strong>€</span>
+          </div>
+          <div class="range-row">
+            <input type="range" id="minPriceSlider" min="3" max="50" step="1" value="3">
+            <input type="range" id="maxPriceSlider" min="3" max="50" step="1" value="50">
+          </div>
+        </div>
+
+        <!-- Spot autocomplete -->
+        <div class="filter-group">
+          <label class="group-label" for="spotInput">Spot / ville</label>
+          <div class="spot-autocomplete-wrap">
+            <input type="text" id="spotInput" class="filter-input" placeholder="Hossegor, Biarritz…" autocomplete="off">
+            <div class="spot-dropdown" id="spotDropdown"></div>
+          </div>
+          <input type="hidden" id="spotIdInput">
+        </div>
+
+        <!-- Verified host toggle -->
+        <div class="filter-group">
+          <div class="toggle-row">
+            <span class="toggle-label">Hôtes vérifiés uniquement</span>
+            <div class="toggle-switch" id="verifiedToggle" role="switch" aria-checked="false"></div>
+          </div>
+        </div>
+
+        <button class="btn-apply" id="applyFiltersBtn">Rechercher</button>
+        <button class="btn-reset" id="resetFiltersBtn">Réinitialiser</button>
+      </div>
+    </aside>
+
+    <!-- ── MAIN CONTENT ── -->
+    <main class="main-content">
+      <!-- Results header -->
+      <div class="results-header">
+        <div class="results-count" id="resultsCount">Chargement…</div>
+        <div class="active-filters" id="activeTags"></div>
+      </div>
+
+      <!-- Board grid -->
+      <div class="board-grid" id="boardGrid"></div>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">🏄</div>
+        <h3>Aucune planche ne matche</h3>
+        <p>Élargis tes filtres ou inscris-toi pour être notifié dès qu'une board correspond à ta recherche.</p>
+        <div class="suggestions" id="emptySuggestions">
+          <a href="/search" class="suggestion-chip">Toutes les planches</a>
+          <a href="/search?type=fish" class="suggestion-chip">Fish</a>
+          <a href="/search?type=longboard" class="suggestion-chip">Longboard</a>
+        </div>
+        <div class="wishlist-form">
+          <div class="wishlist-row">
+            <input type="email" class="wishlist-input" id="wishlistEmail" placeholder="ton@email.com">
+            <button class="btn-wishlist" id="wishlistBtn">M'alerter</button>
+          </div>
+          <p>On te prévient quand une board correspond à ta recherche. Zéro spam.</p>
+          <div class="wishlist-success" id="wishlistSuccess">✅ Inscrit — on te prévient dès qu'une board dispo !</div>
+        </div>
+      </div>
+
+      <!-- Load more -->
+      <div class="load-more-wrap" id="loadMoreWrap" style="display:none">
+        <button class="btn-load-more" id="loadMoreBtn">Voir plus de planches</button>
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile sticky filter button -->
+  <button class="mobile-filter-btn" id="mobileFilterBtn">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+    Filtrer
+  </button>
+
+  <!-- Mobile sheet overlay -->
+  <div class="sheet-overlay" id="sheetOverlay"></div>
+  <div class="sheet" id="filterSheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-title">Filtrer les planches</div>
+    <!-- Sheet filter panel is a clone populated by JS -->
+    <div id="sheetContent"></div>
+    <button class="btn-apply" id="sheetApplyBtn" style="margin-top:1rem">Voir les résultats</button>
+    <button class="btn-reset" id="sheetResetBtn" style="margin-top:0.5rem">Réinitialiser</button>
+  </div>
+
+  <script>
+  (() => {
+    'use strict';
+
+    // ── STATE ──────────────────────────────────────────────────────────────
+    const state = {
+      from: '', to: '', types: [], skill: '',
+      minPrice: 3, maxPrice: 50,
+      spotId: null, spotName: '',
+      verified: false,
+      offset: 0, limit: 24, total: 0,
+      loading: false
+    };
+
+    // ── DOM REFS ───────────────────────────────────────────────────────────
+    const boardGrid    = document.getElementById('boardGrid');
+    const resultsCount = document.getElementById('resultsCount');
+    const activeTags   = document.getElementById('activeTags');
+    const emptyState   = document.getElementById('emptyState');
+    const loadMoreWrap = document.getElementById('loadMoreWrap');
+    const loadMoreBtn  = document.getElementById('loadMoreBtn');
+
+    const fromDate      = document.getElementById('fromDate');
+    const toDate        = document.getElementById('toDate');
+    const typeGrid      = document.getElementById('typeGrid');
+    const skillSelect   = document.getElementById('skillSelect');
+    const minSlider     = document.getElementById('minPriceSlider');
+    const maxSlider     = document.getElementById('maxPriceSlider');
+    const minDisplay    = document.getElementById('minPriceDisplay');
+    const maxDisplay    = document.getElementById('maxPriceDisplay');
+    const spotInput     = document.getElementById('spotInput');
+    const spotIdInput   = document.getElementById('spotIdInput');
+    const spotDropdown  = document.getElementById('spotDropdown');
+    const verifiedToggle= document.getElementById('verifiedToggle');
+    const applyBtn      = document.getElementById('applyFiltersBtn');
+    const resetBtn      = document.getElementById('resetFiltersBtn');
+
+    const mobileFilterBtn = document.getElementById('mobileFilterBtn');
+    const sheetOverlay    = document.getElementById('sheetOverlay');
+    const filterSheet     = document.getElementById('filterSheet');
+    const sheetApplyBtn   = document.getElementById('sheetApplyBtn');
+    const sheetResetBtn   = document.getElementById('sheetResetBtn');
+    const wishlistBtn     = document.getElementById('wishlistBtn');
+
+    // ── URL PARAM SYNC ─────────────────────────────────────────────────────
+    function parseFromURL() {
+      const p = new URLSearchParams(location.search);
+      state.from      = p.get('from') || '';
+      state.to        = p.get('to') || '';
+      state.types     = p.get('type') ? p.get('type').split(',').filter(Boolean) : [];
+      state.skill     = p.get('skill') || '';
+      state.minPrice  = p.has('minPrice') ? parseFloat(p.get('minPrice')) : 3;
+      state.maxPrice  = p.has('maxPrice') ? parseFloat(p.get('maxPrice')) : 50;
+      state.spotId    = p.get('spotId') || null;
+      state.spotName  = p.get('spotName') || '';
+      state.verified  = p.get('verified') === '1';
+      state.offset    = 0;
+    }
+
+    function buildURL(extraOffset) {
+      const p = new URLSearchParams();
+      if (state.from)     p.set('from', state.from);
+      if (state.to)       p.set('to', state.to);
+      if (state.types.length) p.set('type', state.types.join(','));
+      if (state.skill)    p.set('skill', state.skill);
+      if (state.minPrice > 3)   p.set('minPrice', state.minPrice);
+      if (state.maxPrice < 50)  p.set('maxPrice', state.maxPrice);
+      if (state.spotId)   { p.set('spotId', state.spotId); p.set('spotName', state.spotName); }
+      if (state.verified) p.set('verified', '1');
+      const off = extraOffset != null ? extraOffset : state.offset;
+      if (off > 0) p.set('offset', off);
+      return '/search?' + p.toString();
+    }
+
+    function pushURL() {
+      history.pushState(null, '', buildURL(0));
+    }
+
+    // ── SYNC UI → STATE ────────────────────────────────────────────────────
+    function readFromUI() {
+      state.from = fromDate.value;
+      state.to   = toDate.value;
+      state.skill = skillSelect.value;
+      state.minPrice = parseInt(minSlider.value);
+      state.maxPrice = parseInt(maxSlider.value);
+      // types driven by state already via chip clicks
+      state.spotId   = spotIdInput.value || null;
+      state.spotName = spotInput.value;
+      state.verified = verifiedToggle.classList.contains('on');
+    }
+
+    function applyStateToUI() {
+      fromDate.value = state.from;
+      toDate.value   = state.to;
+      skillSelect.value = state.skill;
+      minSlider.value = state.minPrice;
+      maxSlider.value = state.maxPrice;
+      minDisplay.textContent = state.minPrice;
+      maxDisplay.textContent = state.maxPrice;
+      spotInput.value = state.spotName;
+      spotIdInput.value = state.spotId || '';
+      verifiedToggle.classList.toggle('on', state.verified);
+      verifiedToggle.setAttribute('aria-checked', state.verified);
+
+      // Type chips
+      document.querySelectorAll('.type-chip').forEach(chip => {
+        const t = chip.dataset.type;
+        chip.classList.toggle('selected', state.types.includes(t));
+      });
+    }
+
+    // ── ACTIVE FILTER TAGS ─────────────────────────────────────────────────
+    const TYPE_LABELS = {
+      shortboard: 'Shortboard', longboard: 'Longboard', fish: 'Fish',
+      funboard: 'Funboard', 'mini-malibu': 'Mini-malibu', gun: 'Gun'
+    };
+    const SKILL_LABELS = { beginner: 'Débutant', intermediate: 'Intermédiaire', advanced: 'Confirmé' };
+
+    function renderActiveTags() {
+      activeTags.innerHTML = '';
+      const add = (label, reset) => {
+        const tag = document.createElement('span');
+        tag.className = 'filter-tag';
+        tag.innerHTML = label + ' <button title="Retirer">×</button>';
+        tag.querySelector('button').addEventListener('click', reset);
+        activeTags.appendChild(tag);
+      };
+
+      if (state.from && state.to) {
+        add(`${state.from} → ${state.to}`, () => { state.from=''; state.to=''; applyStateToUI(); search(true); });
+      } else if (state.from) {
+        add(`Dès le ${state.from}`, () => { state.from=''; applyStateToUI(); search(true); });
+      }
+      state.types.forEach(t => {
+        add(TYPE_LABELS[t] || t, () => { state.types = state.types.filter(x=>x!==t); applyStateToUI(); search(true); });
+      });
+      if (state.skill) {
+        add(SKILL_LABELS[state.skill] || state.skill, () => { state.skill=''; applyStateToUI(); search(true); });
+      }
+      if (state.minPrice > 3 || state.maxPrice < 50) {
+        add(`${state.minPrice}–${state.maxPrice}€/h`, () => { state.minPrice=3; state.maxPrice=50; applyStateToUI(); search(true); });
+      }
+      if (state.spotId && state.spotName) {
+        add(state.spotName, () => { state.spotId=null; state.spotName=''; spotInput.value=''; spotIdInput.value=''; search(true); });
+      }
+      if (state.verified) {
+        add('Hôtes vérifiés', () => { state.verified=false; applyStateToUI(); search(true); });
+      }
+    }
+
+    // ── API FETCH ──────────────────────────────────────────────────────────
+    function buildAPIParams(offset) {
+      const p = new URLSearchParams();
+      if (state.from)    p.set('from', state.from);
+      if (state.to)      p.set('to', state.to);
+      if (state.types.length) p.set('type', state.types.join(','));
+      if (state.skill)   p.set('skill', state.skill);
+      if (state.minPrice > 3)  p.set('minPrice', state.minPrice);
+      if (state.maxPrice < 50) p.set('maxPrice', state.maxPrice);
+      if (state.spotId)  p.set('spotId', state.spotId);
+      if (state.verified) p.set('verified', '1');
+      p.set('limit', state.limit);
+      p.set('offset', offset);
+      return p;
+    }
+
+    function renderSkeletons(n) {
+      boardGrid.innerHTML = Array(n).fill('').map(() => `
+        <div class="skel-card">
+          <div class="skel-img skeleton"></div>
+          <div class="skel-body">
+            <div class="skel-line skeleton" style="width:40%"></div>
+            <div class="skel-line skeleton" style="width:70%"></div>
+            <div class="skel-line skeleton" style="width:55%"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function photoURL(board) {
+      if (!board.photos) return null;
+      let photos = board.photos;
+      if (typeof photos === 'string') { try { photos = JSON.parse(photos); } catch { return null; } }
+      return Array.isArray(photos) && photos.length > 0 ? photos[0] : null;
+    }
+
+    function formatPrice(board) {
+      if (board.hourly_rate_cents) return `${(board.hourly_rate_cents/100).toFixed(0)}€<span>/h</span>`;
+      if (board.daily_price_cents) return `${(board.daily_price_cents/100).toFixed(0)}€<span>/jour</span>`;
+      return '—';
+    }
+
+    function renderCard(board) {
+      const url = `/app.html?board=${board.id}`;
+      const photo = photoURL(board);
+      const stars = parseFloat(board.avg_rating) > 0
+        ? `<span class="star-icon">★</span> ${parseFloat(board.avg_rating).toFixed(1)} (${board.review_count})`
+        : '';
+      const initials = (board.host_name||'?')[0].toUpperCase();
+      return `
+        <a href="${url}" class="board-card">
+          ${photo
+            ? `<img class="board-photo" src="${photo}" alt="${board.title}" loading="lazy">`
+            : `<div class="board-photo-placeholder">🏄</div>`}
+          <div class="board-info">
+            <div class="board-type-badge">${board.board_type||''}${board.length_ft ? ' · '+board.length_ft+'ft' : ''}</div>
+            <div class="board-title">${board.title}</div>
+            ${board.spot_name ? `<div class="board-spot">📍 ${board.spot_name}</div>` : ''}
+            ${stars ? `<div class="board-rating">${stars}</div>` : ''}
+            <div class="board-meta">
+              <div class="board-price">${formatPrice(board)}</div>
+              <div class="board-host">
+                ${board.host_avatar
+                  ? `<img class="host-avatar" src="${board.host_avatar}" alt="${board.host_name}">`
+                  : `<div class="host-avatar-placeholder">${initials}</div>`}
+                ${board.is_verified_host ? '<span class="verified-dot" title="Hôte vérifié"></span>' : ''}
+              </div>
+            </div>
+          </div>
+        </a>
+      `;
+    }
+
+    async function search(fresh = true) {
+      if (state.loading) return;
+      state.loading = true;
+      const offset = fresh ? 0 : state.offset;
+
+      if (fresh) {
+        renderSkeletons(6);
+        emptyState.classList.remove('visible');
+        loadMoreWrap.style.display = 'none';
+        resultsCount.textContent = 'Chargement…';
+      }
+
+      try {
+        const resp = await fetch('/api/search?' + buildAPIParams(offset));
+        if (!resp.ok) throw new Error('API error');
+        const data = await resp.json();
+
+        if (fresh) {
+          boardGrid.innerHTML = '';
+          state.offset = 0;
+          state.total = data.total;
+        }
+
+        if (data.boards.length === 0 && fresh) {
+          emptyState.classList.add('visible');
+          resultsCount.textContent = '0 planche trouvée';
+        } else {
+          data.boards.forEach(b => {
+            boardGrid.insertAdjacentHTML('beforeend', renderCard(b));
+          });
+          state.offset = offset + data.boards.length;
+          const remaining = state.total - state.offset;
+          resultsCount.innerHTML = `<strong>${state.total}</strong> planche${state.total > 1 ? 's' : ''} trouvée${state.total > 1 ? 's' : ''}`;
+          loadMoreWrap.style.display = remaining > 0 ? 'block' : 'none';
+        }
+
+        renderActiveTags();
+        pushURL();
+      } catch (err) {
+        resultsCount.textContent = 'Erreur de chargement';
+        console.error(err);
+      }
+      state.loading = false;
+    }
+
+    // ── TYPE CHIPS ─────────────────────────────────────────────────────────
+    typeGrid.addEventListener('click', e => {
+      const chip = e.target.closest('.type-chip');
+      if (!chip) return;
+      const t = chip.dataset.type;
+      if (state.types.includes(t)) {
+        state.types = state.types.filter(x => x !== t);
+      } else {
+        state.types.push(t);
+      }
+      chip.classList.toggle('selected', state.types.includes(t));
+    });
+
+    // ── PRICE SLIDERS ──────────────────────────────────────────────────────
+    function updatePriceDisplay() {
+      const lo = parseInt(minSlider.value), hi = parseInt(maxSlider.value);
+      if (lo > hi - 1) { maxSlider.value = lo + 1; }
+      if (hi < lo + 1) { minSlider.value = hi - 1; }
+      state.minPrice = parseInt(minSlider.value);
+      state.maxPrice = parseInt(maxSlider.value);
+      minDisplay.textContent = state.minPrice;
+      maxDisplay.textContent = state.maxPrice;
+    }
+    minSlider.addEventListener('input', updatePriceDisplay);
+    maxSlider.addEventListener('input', updatePriceDisplay);
+
+    // ── VERIFIED TOGGLE ────────────────────────────────────────────────────
+    verifiedToggle.addEventListener('click', () => {
+      state.verified = !state.verified;
+      verifiedToggle.classList.toggle('on', state.verified);
+      verifiedToggle.setAttribute('aria-checked', state.verified);
+    });
+
+    // ── SPOT AUTOCOMPLETE ──────────────────────────────────────────────────
+    let spotDebounce;
+    spotInput.addEventListener('input', () => {
+      clearTimeout(spotDebounce);
+      spotIdInput.value = '';
+      state.spotId = null;
+      const q = spotInput.value.trim();
+      if (q.length < 1) { spotDropdown.classList.remove('open'); return; }
+      spotDebounce = setTimeout(async () => {
+        try {
+          const r = await fetch('/api/search/spots?q=' + encodeURIComponent(q));
+          const data = await r.json();
+          if (!data.spots || data.spots.length === 0) { spotDropdown.classList.remove('open'); return; }
+          spotDropdown.innerHTML = data.spots.map(s =>
+            `<div class="spot-option" data-id="${s.id}" data-name="${s.name}">${s.name}${s.region ? ' · '+s.region : ''} <span style="color:var(--white-40);font-size:0.75em">${s.board_count||0} planche${s.board_count>1?'s':''}</span></div>`
+          ).join('');
+          spotDropdown.classList.add('open');
+        } catch {}
+      }, 220);
+    });
+
+    spotDropdown.addEventListener('click', e => {
+      const opt = e.target.closest('.spot-option');
+      if (!opt) return;
+      state.spotId = opt.dataset.id;
+      state.spotName = opt.dataset.name;
+      spotInput.value = opt.dataset.name;
+      spotIdInput.value = opt.dataset.id;
+      spotDropdown.classList.remove('open');
+    });
+
+    document.addEventListener('click', e => {
+      if (!spotInput.contains(e.target) && !spotDropdown.contains(e.target)) {
+        spotDropdown.classList.remove('open');
+      }
+    });
+
+    // ── APPLY / RESET ──────────────────────────────────────────────────────
+    applyBtn.addEventListener('click', () => { readFromUI(); search(true); closeSheet(); });
+    resetBtn.addEventListener('click', () => {
+      state.from=''; state.to=''; state.types=[]; state.skill='';
+      state.minPrice=3; state.maxPrice=50; state.spotId=null; state.spotName=''; state.verified=false;
+      applyStateToUI();
+      search(true);
+    });
+
+    loadMoreBtn.addEventListener('click', () => search(false));
+
+    // ── MOBILE SHEET ───────────────────────────────────────────────────────
+    function openSheet() {
+      applyStateToUI();
+      sheetOverlay.classList.add('open');
+      filterSheet.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeSheet() {
+      sheetOverlay.classList.remove('open');
+      filterSheet.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // Clone desktop filter panel into sheet
+    const desktopPanel = document.getElementById('filterPanel');
+    const sheetContent = document.getElementById('sheetContent');
+    const cloned = desktopPanel.cloneNode(true);
+    // Remove the h2 and buttons from clone (sheet has its own)
+    cloned.querySelector('h2')?.remove();
+    cloned.querySelector('#applyFiltersBtn')?.remove();
+    cloned.querySelector('#resetFiltersBtn')?.remove();
+    // Remove .filter-panel wrapper — just keep children
+    Array.from(cloned.children).forEach(c => sheetContent.appendChild(c));
+
+    mobileFilterBtn.addEventListener('click', openSheet);
+    sheetOverlay.addEventListener('click', closeSheet);
+    sheetApplyBtn.addEventListener('click', () => {
+      // Read from sheet cloned inputs
+      const sf = sheetContent.querySelector('#fromDate');
+      const st = sheetContent.querySelector('#toDate');
+      if (sf) state.from = sf.value;
+      if (st) state.to = st.value;
+      const sk = sheetContent.querySelector('#skillSelect');
+      if (sk) state.skill = sk.value;
+      const mn = sheetContent.querySelector('#minPriceSlider');
+      const mx = sheetContent.querySelector('#maxPriceSlider');
+      if (mn) state.minPrice = parseInt(mn.value);
+      if (mx) state.maxPrice = parseInt(mx.value);
+      const si = sheetContent.querySelector('#spotIdInput');
+      const sn = sheetContent.querySelector('#spotInput');
+      if (si) state.spotId = si.value || null;
+      if (sn) state.spotName = sn.value;
+      // types from sheet chips
+      state.types = [];
+      sheetContent.querySelectorAll('.type-chip.selected').forEach(chip => state.types.push(chip.dataset.type));
+      const vt = sheetContent.querySelector('#verifiedToggle');
+      if (vt) state.verified = vt.classList.contains('on');
+      applyStateToUI();
+      search(true);
+      closeSheet();
+    });
+    sheetResetBtn.addEventListener('click', () => {
+      state.from=''; state.to=''; state.types=[]; state.skill='';
+      state.minPrice=3; state.maxPrice=50; state.spotId=null; state.spotName=''; state.verified=false;
+      applyStateToUI();
+      search(true);
+      closeSheet();
+    });
+
+    // Sheet type chips interact with state directly
+    sheetContent.addEventListener('click', e => {
+      const chip = e.target.closest('.type-chip');
+      if (!chip) return;
+      const t = chip.dataset.type;
+      if (state.types.includes(t)) state.types = state.types.filter(x=>x!==t);
+      else state.types.push(t);
+      chip.classList.toggle('selected', state.types.includes(t));
+      // keep desktop in sync
+      document.querySelectorAll(`#typeGrid .type-chip[data-type="${t}"]`).forEach(c => {
+        c.classList.toggle('selected', state.types.includes(t));
+      });
+    });
+
+    // Sheet toggle
+    sheetContent.addEventListener('click', e => {
+      const toggle = e.target.closest('#verifiedToggle');
+      if (!toggle) return;
+      state.verified = !state.verified;
+      toggle.classList.toggle('on', state.verified);
+    });
+
+    // Sheet price sliders
+    sheetContent.addEventListener('input', e => {
+      if (e.target.id === 'minPriceSlider' || e.target.id === 'maxPriceSlider') {
+        const mn = sheetContent.querySelector('#minPriceSlider');
+        const mx = sheetContent.querySelector('#maxPriceSlider');
+        const diMin = sheetContent.querySelector('#minPriceDisplay');
+        const diMax = sheetContent.querySelector('#maxPriceDisplay');
+        if (mn && mx) {
+          let lo = parseInt(mn.value), hi = parseInt(mx.value);
+          if (lo > hi - 1) { mx.value = lo + 1; hi = lo + 1; }
+          if (diMin) diMin.textContent = lo;
+          if (diMax) diMax.textContent = hi;
+        }
+      }
+    });
+
+    // Sheet spot autocomplete
+    let sheetSpotDebounce;
+    sheetContent.addEventListener('input', e => {
+      if (e.target.id !== 'spotInput') return;
+      clearTimeout(sheetSpotDebounce);
+      const q = e.target.value.trim();
+      const dd = sheetContent.querySelector('#spotDropdown');
+      const hidden = sheetContent.querySelector('#spotIdInput');
+      if (hidden) hidden.value = '';
+      if (!q || q.length < 1) { if(dd) dd.classList.remove('open'); return; }
+      sheetSpotDebounce = setTimeout(async () => {
+        try {
+          const r = await fetch('/api/search/spots?q=' + encodeURIComponent(q));
+          const data = await r.json();
+          if (!dd || !data.spots || data.spots.length === 0) { if(dd) dd.classList.remove('open'); return; }
+          dd.innerHTML = data.spots.map(s =>
+            `<div class="spot-option" data-id="${s.id}" data-name="${s.name}">${s.name}${s.region ? ' · '+s.region : ''}</div>`
+          ).join('');
+          dd.classList.add('open');
+        } catch {}
+      }, 220);
+    });
+    sheetContent.addEventListener('click', e => {
+      const opt = e.target.closest('.spot-option');
+      if (!opt) return;
+      const sn = sheetContent.querySelector('#spotInput');
+      const si = sheetContent.querySelector('#spotIdInput');
+      const dd = sheetContent.querySelector('#spotDropdown');
+      if (sn) sn.value = opt.dataset.name;
+      if (si) si.value = opt.dataset.id;
+      if (dd) dd.classList.remove('open');
+    });
+
+    // ── WISHLIST CTA ───────────────────────────────────────────────────────
+    wishlistBtn.addEventListener('click', async () => {
+      const email = document.getElementById('wishlistEmail').value.trim();
+      if (!email || !email.includes('@')) return;
+      // No dedicated wishlist endpoint yet — silently succeed + capture intent.
+      document.getElementById('wishlistSuccess').style.display = 'block';
+      wishlistBtn.disabled = true;
+    });
+
+    // ── INIT ───────────────────────────────────────────────────────────────
+    parseFromURL();
+    applyStateToUI();
+    search(true);
+
+    window.addEventListener('popstate', () => {
+      parseFromURL();
+      applyStateToUI();
+      search(true);
+    });
+  })();
+  </script>
+</body>
+</html>

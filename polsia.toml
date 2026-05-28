@@ -1,0 +1,27 @@
+[app]
+name = "swell"
+
+[[crons]]
+name = "expire-stale-bookings"
+schedule = "*/15 * * * *"
+command = "node jobs/expire-stale-bookings.js"
+
+[[crons]]
+name = "post-session-email"
+schedule = "0 * * * *"
+command = "node jobs/post-session-email.js"
+
+[[crons]]
+name = "pre-session-reminder"
+schedule = "0 * * * *"
+command = "node jobs/pre-session-reminder.js"
+
+[[crons]]
+name = "weekend-digest"
+schedule = "0 17 * * 4"
+command = "node jobs/weekend-digest.js"
+
+[[crons]]
+name = "release-expired-deposits"
+schedule = "*/15 * * * *"
+command = "node jobs/release-expired-deposits.js"

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#060d1a">
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Blog Swell - Guides de Surf, Tips de Location, Conseils Locaux</title>
+  <meta name="description" content="Découvrez le blog Swell : guides de surf, conseils de location de planches, spots secrets, et astuces de surfeurs locaux en France.">
+  <meta name="keywords" content="blog surf, guides location planche, spots secrets, conseils surfers">
+  <link rel="canonical" href="https://swell.polsia.app/blog/index.html">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Blog Swell - Guides de Surf et Tips de Location">
+  <meta property="og:description" content="Découvrez guides de surf, conseils de location et spots secrets sur le blog Swell.">
+  <meta property="og:url" content="https://swell.polsia.app/blog/index.html">
+  <meta property="og:image" content="https://swell.polsia.app/og-image.png">
+
+  <!-- JSON-LD: Schema.org CollectionPage for blog index -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Blog Swell — Guides de Surf et Tips de Location",
+    "description": "Découvrez le blog Swell : guides de surf, conseils de location de planches, spots secrets, et astuces de surfeurs locaux en France.",
+    "url": "https://swell.polsia.app/blog",
+    "image": "https://swell.polsia.app/og-image.png",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Swell",
+      "url": "https://swell.polsia.app"
+    },
+    "mainEntity": {
+      "@type": "ItemList",
+      "name": "Articles du blog Swell",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "Les 10 Meilleures Vagues Accessibles depuis Hossegor", "url": "https://swell.polsia.app/blog/10-vagues-hossegor.html" },
+        { "@type": "ListItem", "position": 2, "name": "Emprunter une planche de surf en Vendée", "url": "https://swell.polsia.app/blog/emprunter-planche-vendee.html" },
+        { "@type": "ListItem", "position": 3, "name": "Location de surfboard entre particuliers", "url": "https://swell.polsia.app/blog/location-surfboard-particuliers.html" }
+      ]
+    }
+  }
+  </script>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #1a1410;
+      background: #fafaf8;
+    }
+    header {
+      background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+      color: white;
+      padding: 3rem 1rem;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+    header p {
+      font-size: 1.1rem;
+      opacity: 0.95;
+    }
+    .breadcrumb {
+      background: white;
+      padding: 1rem;
+      border-bottom: 1px solid #e0e0e0;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .breadcrumb a { color: #ff6b35; text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .container {
+      max-width: 900px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
+    }
+    .intro {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 3rem;
+    }
+    .intro p {
+      margin-bottom: 1rem;
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+    .articles-grid {
+      display: grid;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    .article-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+    .article-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+    }
+    .article-card-header {
+      background: linear-gradient(135deg, #fff5f0, #ffe0cc);
+      padding: 2rem 1.5rem;
+      border-bottom: 3px solid #ff6b35;
+    }
+    .article-card-header h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: #1a1410;
+    }
+    .article-card-header .date {
+      font-size: 0.9rem;
+      color: #666;
+    }
+    .article-card-content {
+      padding: 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .article-card-content p {
+      margin-bottom: 1rem;
+      color: #666;
+      flex: 1;
+    }
+    .article-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+    }
+    .read-more {
+      color: #ff6b35;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .read-more:hover {
+      text-decoration: underline;
+    }
+    .read-time {
+      font-size: 0.9rem;
+      color: #999;
+    }
+    .cta-section {
+      background: #fff5f0;
+      border: 2px solid #ff6b35;
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      margin: 3rem 0;
+    }
+    .cta-section h2 {
+      margin-bottom: 1rem;
+      color: #1a1410;
+    }
+    .cta-button {
+      display: inline-block;
+      background: #ff6b35;
+      color: white;
+      padding: 0.8rem 1.8rem;
+      border-radius: 8px;
+      text-decoration: none;
+      margin-top: 1rem;
+      transition: background 0.3s ease;
+      font-weight: 600;
+    }
+    .cta-button:hover {
+      background: #ff5522;
+    }
+    footer {
+      background: #1a1410;
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+      margin-top: 3rem;
+    }
+    footer a {
+      color: inherit;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2rem;
+      }
+      .article-card {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📚 Blog Swell</h1>
+    <p>Guides de surf, conseils de location, et secrets locaux</p>
+  </header>
+
+  <div class="breadcrumb">
+    <a href="/">Accueil</a> > Blog
+  </div>
+
+  <div class="container">
+    <div class="intro">
+      <p>
+        Bienvenue sur le blog Swell ! Ici, on partage des guides de surf, des conseils pour louer une planche, et des astuces de la communauté Swell.
+      </p>
+      <p>
+        Que vous soyez débutant cherchant votre premier spot ou expert explorant les Landes, vous trouverez des guides complets, des avis locaux, et des tips pour améliorer votre expérience.
+      </p>
+    </div>
+
+    <div class="articles-grid">
+      <!-- Article 1 -->
+      <a href="/blog/10-vagues-hossegor.html" class="article-card">
+        <div class="article-card-header">
+          <h2>🌊 Les 10 Meilleures Vagues depuis Hossegor</h2>
+          <div class="date">14 mai 2026</div>
+        </div>
+        <div class="article-card-content">
+          <p>
+            Découvrez les 10 meilleurs spots de surf accessibles depuis Hossegor. Guide complet avec niveaux, conditions, et conseils locaux pour explorer la capitale du surf français.
+          </p>
+          <div class="article-card-footer">
+            <span class="read-more">Lire l'article →</span>
+            <span class="read-time">8 min</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Article 2 -->
+      <a href="/blog/emprunter-planche-vendee.html" class="article-card">
+        <div class="article-card-header">
+          <h2>🏄 Emprunter une Planche de Surf en Vendée</h2>
+          <div class="date">14 mai 2026</div>
+        </div>
+        <div class="article-card-content">
+          <p>
+            Guide complet pour emprunter une planche en Vendée. Meilleurs spots, accessibilité, prix, assurance dégâts, et comment louer sur Swell — le tout en une ressource.
+          </p>
+          <div class="article-card-footer">
+            <span class="read-more">Lire l'article →</span>
+            <span class="read-time">7 min</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Article 3 -->
+      <a href="/blog/location-surfboard-particuliers.html" class="article-card">
+        <div class="article-card-header">
+          <h2>🤝 Comment Fonctionne la Location Entre Particuliers</h2>
+          <div class="date">14 mai 2026</div>
+        </div>
+        <div class="article-card-content">
+          <p>
+            Découvrez comment fonctionne la location de planches entre particuliers. Paiements sécurisés, assurance dégâts, avis communautaires, et comment devenir loueur.
+          </p>
+          <div class="article-card-footer">
+            <span class="read-more">Lire l'article →</span>
+            <span class="read-time">6 min</span>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <div class="cta-section">
+      <h2>Prêt à louer une planche ?</h2>
+      <p>Explorez notre marketplace et trouvez la board parfaite pour votre session.</p>
+      <a href="/app.html" class="cta-button">Accéder au marketplace →</a>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Swell — Location de planches de surf entre particuliers</p>
+    <p style="margin-top: 1rem; opacity: 0.8;">
+      <a href="/">Accueil</a> •
+      <a href="/app.html">Marketplace</a> •
+      <a href="/partner">Devenir loueur</a> •
+      <a href="https://instagram.com/swell_surf" target="_blank" rel="noopener noreferrer">Instagram</a>
+    </p>
+  </footer>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

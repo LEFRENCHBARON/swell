@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>Badge Verified Host — Swell</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0a1628">
+  <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a1628;
+      --surface: #0f1e35;
+      --surface2: #1a2d4a;
+      --border: #1e3a5f;
+      --primary: #00c2e0;
+      --primary-dark: #0099b8;
+      --text: #f0f4f8;
+      --text-muted: #64748b;
+      --text-secondary: #94a3b8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --gold: #f59e0b;
+    }
+
+    html { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; }
+
+    body {
+      background: var(--bg);
+      min-height: 100vh;
+      padding-bottom: env(safe-area-inset-bottom, 24px);
+    }
+
+    /* ─── Header ─────────────────────────────────────────── */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .header-back {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ─── Page layout ─────────────────────────────────────── */
+    .page {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    /* ─── Hero section ────────────────────────────────────── */
+    .hero {
+      text-align: center;
+      padding: 32px 20px 24px;
+    }
+
+    .badge-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 32px;
+      box-shadow: 0 0 32px rgba(0, 194, 224, 0.3);
+    }
+
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-subtitle {
+      color: var(--text-secondary);
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+
+    /* ─── Progress bar ────────────────────────────────────── */
+    .progress-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .progress-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .progress-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .progress-pct {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .progress-bar-track {
+      background: var(--border);
+      border-radius: 999px;
+      height: 10px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      height: 10px;
+      border-radius: 999px;
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .progress-steps-count {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    /* ─── Sections ────────────────────────────────────────── */
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      padding-left: 4px;
+    }
+
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    /* ─── Checklist items ─────────────────────────────────── */
+    .check-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .check-item.done {
+      border-color: rgba(16, 185, 129, 0.3);
+      background: rgba(16, 185, 129, 0.04);
+    }
+
+    .check-item.pending-review {
+      border-color: rgba(245, 158, 11, 0.3);
+      background: rgba(245, 158, 11, 0.04);
+    }
+
+    .check-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      margin-top: 1px;
+    }
+
+    .check-icon.done {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+    }
+
+    .check-icon.todo {
+      background: var(--surface2);
+      color: var(--text-muted);
+      border: 2px solid var(--border);
+      font-size: 12px;
+    }
+
+    .check-icon.pending-review {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--warning);
+    }
+
+    .check-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .check-label {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .check-item.done .check-label {
+      color: var(--text-secondary);
+    }
+
+    .check-hint {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .check-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 8px;
+      transition: opacity 0.15s;
+    }
+
+    .check-cta:active { opacity: 0.8; }
+
+    .check-cta.disabled {
+      background: var(--surface2);
+      color: var(--text-muted);
+      cursor: default;
+    }
+
+    .photo-count-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .photo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .photo-dot.filled { background: var(--primary); }
+    .photo-dot.empty { background: var(--border); border: 1.5px solid var(--border); }
+
+    /* ─── Verified badge unlocked ─────────────────────────── */
+    .badge-unlocked {
+      display: none;
+      background: linear-gradient(135deg, rgba(0,194,224,0.1), rgba(0,153,184,0.1));
+      border: 1px solid rgba(0,194,224,0.4);
+      border-radius: 16px;
+      padding: 28px 24px;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .badge-unlocked.visible { display: block; }
+
+    .badge-unlocked-icon { font-size: 48px; margin-bottom: 12px; }
+
+    .badge-unlocked-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .badge-unlocked-text {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .share-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .share-btn:active { opacity: 0.8; }
+
+    .share-btn.instagram {
+      background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+      color: #fff;
+    }
+
+    .share-btn.copy {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    /* ─── Skeleton loader ─────────────────────────────────── */
+    .skeleton {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 10px;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .skeleton-line {
+      height: 14px;
+      background: var(--surface2);
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+
+    .skeleton-line.short { width: 50%; }
+    .skeleton-line.medium { width: 75%; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* ─── Not logged in state ─────────────────────────────── */
+    .auth-wall {
+      text-align: center;
+      padding: 48px 24px;
+    }
+
+    .auth-wall-icon { font-size: 48px; margin-bottom: 16px; }
+
+    .auth-wall-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .auth-wall-text {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 12px 28px;
+      border-radius: 10px;
+    }
+
+    /* ─── Empty state (no boards) ─────────────────────────── */
+    .no-boards {
+      background: var(--surface);
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+      padding: 28px 20px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .no-boards-icon { font-size: 32px; margin-bottom: 10px; }
+    .no-boards-text { color: var(--text-secondary); font-size: 14px; margin-bottom: 14px; }
+
+    /* ─── Error state ─────────────────────────────────────── */
+    .error-banner {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 10px;
+      padding: 14px 16px;
+      color: #fca5a5;
+      font-size: 14px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .error-banner.visible { display: block; }
+
+    /* ─── Responsive fine-tuning ──────────────────────────── */
+    @media (max-width: 380px) {
+      .hero-title { font-size: 22px; }
+      .progress-pct { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <a href="/host" class="header-back">← Tableau de bord</a>
+    <a href="/" class="header-logo">SWELL</a>
+    <div style="width:100px;"></div>
+  </header>
+
+  <div class="page">
+    <!-- Hero -->
+    <div class="hero">
+      <div class="badge-icon">🏄</div>
+      <h1 class="hero-title">Badge Verified Host</h1>
+      <p class="hero-subtitle">
+        Complète ces étapes pour débloquer le badge qui booste tes réservations.
+      </p>
+    </div>
+
+    <!-- Auth wall (shown if not logged in) -->
+    <div class="auth-wall" id="authWall" style="display:none;">
+      <div class="auth-wall-icon">🔒</div>
+      <div class="auth-wall-title">Connexion requise</div>
+      <p class="auth-wall-text">Connecte-toi à ton compte host pour voir ton tableau d'activation.</p>
+      <a href="/app.html#login" class="btn-primary">Se connecter</a>
+    </div>
+
+    <!-- Main content (hidden until loaded) -->
+    <div id="mainContent" style="display:none;">
+
+      <!-- Error banner -->
+      <div class="error-banner" id="errorBanner"></div>
+
+      <!-- Badge unlocked (shown at 100%) -->
+      <div class="badge-unlocked" id="badgeUnlocked">
+        <div class="badge-unlocked-icon">🏆</div>
+        <div class="badge-unlocked-title">Verified Host débloqué !</div>
+        <p class="badge-unlocked-text">
+          Ton badge est actif. Tes annonces apparaissent en tête de liste avec le badge ✅.
+        </p>
+        <div class="share-row">
+          <button class="share-btn copy" id="copyShareBtn" onclick="copyShareLink()">
+            📋 Copier le lien
+          </button>
+          <a href="#" class="share-btn instagram" id="instagramShareBtn" target="_blank" rel="noopener">
+            📸 Partager sur Instagram
+          </a>
+        </div>
+      </div>
+
+      <!-- Skeleton (while loading) -->
+      <div id="skeleton">
+        <div class="skeleton">
+          <div class="skeleton-line medium"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+        <div class="skeleton">
+          <div class="skeleton-line medium"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+        <div class="skeleton">
+          <div class="skeleton-line medium"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+      </div>
+
+      <!-- Progress card -->
+      <div class="progress-card" id="progressCard" style="display:none;">
+        <div class="progress-header">
+          <span class="progress-label">Progression vers Verified Host</span>
+          <span class="progress-pct" id="progressPct">0%</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+        </div>
+        <div class="progress-steps-count" id="progressStepsCount">0/0 étapes</div>
+      </div>
+
+      <!-- Checklist container -->
+      <div id="checklistContainer"></div>
+
+    </div>
+  </div>
+
+  <script>
+    // Escape HTML to prevent XSS when injecting user-supplied data into innerHTML
+    function esc(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function renderPhotoDots(count) {
+      const dots = [];
+      for (let i = 0; i < 3; i++) {
+        dots.push(`<div class="photo-dot ${i < count ? 'filled' : 'empty'}"></div>`);
+      }
+      return dots.join('');
+    }
+
+    function renderCheckItem(step) {
+      const isDone = step.done;
+      const isPending = step.pending;
+
+      let iconClass = 'todo';
+      let iconContent = '○';
+      if (isDone) { iconClass = 'done'; iconContent = '✓'; }
+      else if (isPending) { iconClass = 'pending-review'; iconContent = '⏳'; }
+
+      let itemClass = 'check-item';
+      if (isDone) itemClass += ' done';
+      else if (isPending) itemClass += ' pending-review';
+
+      const isPhotosStep = step.id && step.id.startsWith('board_photos_');
+      const photoCount = isPhotosStep
+        ? parseInt((step.label.match(/\((\d+)\/3\)/) || [])[1] || 0)
+        : 0;
+
+      const ctaDisabled = !step.ctaUrl || isPending;
+
+      return `
+        <div class="${itemClass}">
+          <div class="check-icon ${iconClass}">${iconContent}</div>
+          <div class="check-body">
+            <div class="check-label">${esc(step.label)}</div>
+            ${step.hint ? `<div class="check-hint">${esc(step.hint)}</div>` : ''}
+            ${isPhotosStep ? `<div class="photo-count-bar">${renderPhotoDots(photoCount)}</div>` : ''}
+            ${!isDone && step.cta ? `
+              <a href="${ctaDisabled ? '#' : esc(step.ctaUrl)}"
+                 class="check-cta${ctaDisabled ? ' disabled' : ''}">
+                ${esc(step.cta)} ${ctaDisabled ? '' : '→'}
+              </a>
+            ` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderChecklist(data) {
+      const { checklist, boards } = data;
+      const { steps, completedCount, totalCount, percent } = checklist;
+
+      // Show progress card
+      document.getElementById('progressCard').style.display = '';
+      document.getElementById('progressPct').textContent = percent + '%';
+      document.getElementById('progressBar').style.width = percent + '%';
+      document.getElementById('progressStepsCount').textContent = `${completedCount}/${totalCount} étapes`;
+
+      // Show badge unlocked if 100%
+      if (percent === 100) {
+        document.getElementById('badgeUnlocked').classList.add('visible');
+        // Set Instagram share link
+        const shareText = encodeURIComponent('Je suis maintenant Verified Host sur @swell_surf 🏄‍♂️✅ Location de planches à Hossegor. Lien en bio !');
+        document.getElementById('instagramShareBtn').href = `https://www.instagram.com/?hl=fr`;
+      }
+
+      const container = document.getElementById('checklistContainer');
+      const html = [];
+
+      // Global steps (non-board)
+      const globalSteps = steps.filter(s => !s.isBoardStep);
+      html.push(`<div class="section-title">Compte & profil</div>`);
+      html.push(`<div class="checklist">`);
+      for (const step of globalSteps) {
+        html.push(renderCheckItem(step));
+      }
+      html.push(`</div>`);
+
+      // Board steps
+      const boardSteps = steps.filter(s => s.isBoardStep);
+      if (boards.length > 0) {
+        html.push(`<div class="section-title">Tes planches (${boards.length})</div>`);
+        html.push(`<div class="checklist">`);
+        if (boardSteps.length === 0) {
+          html.push(`<div class="no-boards"><div class="no-boards-text">Aucune planche listée.</div></div>`);
+        } else {
+          for (const step of boardSteps) {
+            html.push(renderCheckItem(step));
+          }
+        }
+        html.push(`</div>`);
+      } else {
+        html.push(`<div class="section-title">Planches</div>`);
+        html.push(`
+          <div class="no-boards">
+            <div class="no-boards-icon">🏄‍♂️</div>
+            <p class="no-boards-text">Tu n'as pas encore ajouté de planche.</p>
+            <a href="/host#add-board" class="btn-primary" style="font-size:14px;padding:10px 22px;">Ajouter ma première planche</a>
+          </div>
+        `);
+      }
+
+      container.innerHTML = html.join('');
+    }
+
+    async function loadActivationStatus() {
+      try {
+        // Check CSRF token first
+        const csrfRes = await fetch('/api/auth/me');
+        if (csrfRes.status === 401) {
+          document.getElementById('authWall').style.display = '';
+          document.getElementById('skeleton').style.display = 'none';
+          return;
+        }
+
+        const csrfToken = document.cookie
+          .split('; ')
+          .find(c => c.startsWith('XSRF-TOKEN='))
+          ?.split('=')[1];
+
+        const res = await fetch('/api/activation/status', {
+          headers: csrfToken ? { 'X-CSRF-Token': csrfToken } : {}
+        });
+
+        if (res.status === 401) {
+          document.getElementById('authWall').style.display = '';
+          document.getElementById('skeleton').style.display = 'none';
+          return;
+        }
+
+        if (!res.ok) throw new Error(`Erreur ${res.status}`);
+
+        const data = await res.json();
+        document.getElementById('skeleton').style.display = 'none';
+        document.getElementById('progressCard').style.display = '';
+        renderChecklist(data);
+
+      } catch (err) {
+        document.getElementById('skeleton').style.display = 'none';
+        const banner = document.getElementById('errorBanner');
+        banner.textContent = 'Impossible de charger ton statut. Réessaie dans quelques secondes.';
+        banner.classList.add('visible');
+        console.error('[Activation]', err.message);
+      }
+    }
+
+    function copyShareLink() {
+      const url = window.location.origin + '/host/activation';
+      navigator.clipboard.writeText(url).then(() => {
+        const btn = document.getElementById('copyShareBtn');
+        const orig = btn.textContent;
+        btn.textContent = '✅ Copié !';
+        setTimeout(() => { btn.textContent = orig; }, 2000);
+      });
+    }
+
+    // Boot
+    document.getElementById('mainContent').style.display = '';
+    loadActivationStatus();
+  </script>
+</body>
+</html>

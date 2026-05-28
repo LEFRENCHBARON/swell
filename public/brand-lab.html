@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brand Lab — Swell</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Playfair+Display:wght@700;800&family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --brand-primary: #ff6b35;
+      --brand-accent: #1a90d8;
+      --brand-neutral: #0e1e36;
+      --brand-bg: #09152a;
+      --brand-surface: #1c3058;
+      --brand-text: #ffffff;
+      --brand-text-muted: rgba(255,255,255,0.6);
+      --brand-font-display: 'Syne', sans-serif;
+      --brand-font-body: 'DM Sans', sans-serif;
+    }
+
+    /* LAB CHROME — never changes, regardless of brand */
+    body { background: #0a0a0f; font-family: 'Space Grotesk', sans-serif; color: #fff; }
+
+    .lab-toolbar {
+      position: sticky; top: 0; z-index: 1000;
+      background: rgba(10,10,15,0.97);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 0.75rem 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+      backdrop-filter: blur(12px);
+      flex-wrap: wrap;
+    }
+    .lab-label {
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.18em; color: rgba(255,255,255,0.35);
+      white-space: nowrap;
+    }
+    .brand-btn {
+      padding: 0.45rem 1.1rem; border-radius: 100px;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      background: transparent; color: rgba(255,255,255,0.55);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.82rem; font-weight: 600; cursor: pointer;
+      transition: all 0.18s; white-space: nowrap;
+    }
+    .brand-btn:hover { border-color: rgba(255,255,255,0.4); color: #fff; }
+    .brand-btn.active {
+      background: var(--brand-primary);
+      border-color: var(--brand-primary);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(255,255,255,0.12);
+    }
+    .lab-divider { width: 1px; height: 24px; background: rgba(255,255,255,0.1); flex-shrink: 0; }
+
+    .lab-section-label {
+      display: block; padding: 0.5rem 1.5rem;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: rgba(255,255,255,0.2);
+      background: #0a0a0f;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    /* BRAND CANVAS — all sections rendered here */
+    .brand-canvas { width: 100%; }
+
+    /* ── 1. HEADER ── */
+    .preview-nav {
+      padding: 1.1rem 5%;
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--brand-neutral);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .preview-logo {
+      font-family: var(--brand-font-display);
+      font-size: 1.6rem; font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--brand-text); text-decoration: none;
+    }
+    .preview-logo em { font-style: normal; color: var(--brand-primary); }
+    .preview-logo svg { height: 32px; width: auto; display: block; }
+    .preview-nav-right { display: flex; align-items: center; gap: 0.5rem; }
+    .preview-nav-link {
+      color: var(--brand-text-muted); font-size: 0.9rem; text-decoration: none;
+      padding: 0.5rem 0.9rem; border-radius: 8px;
+      font-family: var(--brand-font-body);
+    }
+    .preview-btn-ghost {
+      padding: 0.55rem 1.1rem; border-radius: 100px;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.8); font-size: 0.85rem; font-weight: 600;
+      background: transparent; cursor: pointer; font-family: var(--brand-font-body);
+      text-decoration: none;
+    }
+    .preview-btn-primary {
+      padding: 0.6rem 1.3rem; border-radius: 100px;
+      background: var(--brand-primary); color: #fff;
+      font-size: 0.85rem; font-weight: 700; border: none; cursor: pointer;
+      font-family: var(--brand-font-body);
+      box-shadow: 0 4px 16px color-mix(in srgb, var(--brand-primary) 40%, transparent);
+      text-decoration: none;
+    }
+
+    /* ── 2. HERO ── */
+    .preview-hero {
+      min-height: 70vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 5rem 5%;
+      text-align: center;
+      position: relative; overflow: hidden;
+      background: linear-gradient(180deg, var(--brand-neutral) 0%, var(--brand-bg) 100%);
+    }
+    .preview-hero::before {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, color-mix(in srgb, var(--brand-accent) 20%, transparent) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 100% 30%, color-mix(in srgb, var(--brand-primary) 12%, transparent) 0%, transparent 55%);
+    }
+    .preview-hero-content { position: relative; z-index: 2; max-width: 780px; }
+    .preview-kicker {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.18em; color: var(--brand-primary);
+      padding: 0.4rem 1rem; border-radius: 100px;
+      background: color-mix(in srgb, var(--brand-primary) 12%, transparent);
+      border: 1px solid color-mix(in srgb, var(--brand-primary) 30%, transparent);
+      margin-bottom: 1.5rem;
+    }
+    .preview-hero-title {
+      font-family: var(--brand-font-display);
+      font-size: clamp(2.2rem, 6vw, 4rem);
+      font-weight: 800; line-height: 1.12;
+      color: var(--brand-text);
+      margin-bottom: 1.25rem;
+    }
+    .preview-hero-title em { font-style: normal; color: var(--brand-primary); }
+    .preview-hero-sub {
+      font-family: var(--brand-font-body);
+      font-size: 1.1rem; color: var(--brand-text-muted);
+      max-width: 540px; margin: 0 auto 2.5rem; line-height: 1.6;
+    }
+    .preview-hero-ctas { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+    .preview-cta-primary {
+      padding: 0.85rem 2rem; border-radius: 100px;
+      background: var(--brand-primary); color: #fff;
+      font-family: var(--brand-font-body);
+      font-size: 1rem; font-weight: 700; border: none; cursor: pointer;
+      box-shadow: 0 6px 24px color-mix(in srgb, var(--brand-primary) 45%, transparent);
+    }
+    .preview-cta-ghost {
+      padding: 0.85rem 2rem; border-radius: 100px;
+      border: 1.5px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.8);
+      font-family: var(--brand-font-body);
+      font-size: 1rem; font-weight: 600; background: transparent; cursor: pointer;
+    }
+    .preview-tagline-badge {
+      display: inline-block; margin-top: 2rem;
+      font-family: var(--brand-font-display);
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em;
+      color: var(--brand-text-muted);
+      text-transform: uppercase;
+    }
+
+    /* ── 3. BOARD CARD ── */
+    .preview-cards-section {
+      padding: 3rem 5%;
+      background: var(--brand-bg);
+    }
+    .preview-section-title {
+      font-family: var(--brand-font-display);
+      font-size: 1.4rem; font-weight: 800;
+      color: var(--brand-text); margin-bottom: 1.5rem;
+    }
+    .preview-cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; max-width: 900px; }
+    .preview-board-card {
+      background: var(--brand-surface);
+      border-radius: 16px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .preview-card-img {
+      width: 100%; height: 180px; object-fit: cover;
+      background: linear-gradient(135deg, var(--brand-neutral), var(--brand-surface));
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.2); font-size: 3rem;
+    }
+    .preview-card-body { padding: 1rem 1.1rem 1.2rem; }
+    .preview-card-title {
+      font-family: var(--brand-font-display);
+      font-size: 1rem; font-weight: 700; color: var(--brand-text); margin-bottom: 0.35rem;
+    }
+    .preview-card-meta {
+      font-family: var(--brand-font-body);
+      font-size: 0.82rem; color: var(--brand-text-muted); margin-bottom: 0.75rem;
+    }
+    .preview-card-host {
+      display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem;
+    }
+    .preview-host-avatar {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: color-mix(in srgb, var(--brand-primary) 20%, var(--brand-surface));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; color: var(--brand-primary);
+      font-family: var(--brand-font-body);
+    }
+    .preview-host-name {
+      font-family: var(--brand-font-body);
+      font-size: 0.82rem; color: var(--brand-text-muted);
+    }
+    .preview-card-footer {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .preview-card-price {
+      font-family: var(--brand-font-display);
+      font-size: 1.1rem; font-weight: 800; color: var(--brand-primary);
+    }
+    .preview-card-price span {
+      font-family: var(--brand-font-body);
+      font-size: 0.8rem; font-weight: 400; color: var(--brand-text-muted);
+    }
+    .preview-card-btn {
+      padding: 0.45rem 1rem; border-radius: 100px;
+      background: var(--brand-primary); color: #fff;
+      font-size: 0.8rem; font-weight: 700; border: none; cursor: pointer;
+      font-family: var(--brand-font-body);
+    }
+
+    /* ── SPOT CARD ── */
+    .preview-spot-card {
+      background: var(--brand-surface);
+      border-radius: 16px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .preview-spot-banner {
+      width: 100%; height: 120px;
+      background: linear-gradient(135deg,
+        color-mix(in srgb, var(--brand-accent) 40%, var(--brand-neutral)),
+        var(--brand-neutral));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem;
+    }
+    .preview-spot-body { padding: 1rem 1.1rem 1.2rem; }
+    .preview-spot-name {
+      font-family: var(--brand-font-display);
+      font-size: 1rem; font-weight: 700; color: var(--brand-text); margin-bottom: 0.3rem;
+    }
+    .preview-spot-meta {
+      font-size: 0.8rem; color: var(--brand-text-muted); font-family: var(--brand-font-body);
+      margin-bottom: 0.75rem;
+    }
+    .preview-spot-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .preview-chip {
+      font-size: 0.72rem; font-weight: 600; font-family: var(--brand-font-body);
+      padding: 0.25rem 0.7rem; border-radius: 100px;
+      background: color-mix(in srgb, var(--brand-accent) 15%, transparent);
+      color: color-mix(in srgb, var(--brand-accent) 90%, white);
+      border: 1px solid color-mix(in srgb, var(--brand-accent) 25%, transparent);
+    }
+    .preview-chip.available {
+      background: color-mix(in srgb, var(--brand-primary) 15%, transparent);
+      color: var(--brand-primary);
+      border-color: color-mix(in srgb, var(--brand-primary) 25%, transparent);
+    }
+
+    /* ── 5. FOOTER ── */
+    .preview-footer {
+      padding: 2.5rem 5%;
+      background: var(--brand-bg);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .preview-footer-wordmark {
+      font-family: var(--brand-font-display);
+      font-size: 1.4rem; font-weight: 800;
+      color: var(--brand-text); letter-spacing: -0.03em;
+    }
+    .preview-footer-wordmark em { font-style: normal; color: var(--brand-primary); }
+    .preview-footer-links { display: flex; gap: 1.5rem; }
+    .preview-footer-link {
+      font-size: 0.82rem; color: var(--brand-text-muted); text-decoration: none;
+      font-family: var(--brand-font-body);
+    }
+    .preview-footer-tagline {
+      font-family: var(--brand-font-body);
+      font-size: 0.8rem; color: var(--brand-text-muted);
+      width: 100%;
+    }
+
+    /* ── 6. FAVICON PREVIEW ── */
+    .preview-favicon-section {
+      padding: 2rem 5%;
+      background: var(--brand-neutral);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .preview-favicon-row { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; margin-top: 1rem; }
+    .favicon-tab-mock {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: rgba(255,255,255,0.07); border-radius: 8px 8px 0 0;
+      padding: 0.4rem 0.8rem; font-size: 0.78rem; color: rgba(255,255,255,0.7);
+      font-family: var(--brand-font-body); max-width: 180px;
+    }
+    .favicon-icon {
+      width: 16px; height: 16px; border-radius: 3px;
+      background: var(--brand-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 800; color: #fff; flex-shrink: 0;
+      font-family: var(--brand-font-display);
+    }
+
+    /* ── 7. OG IMAGE ── */
+    .preview-og-section {
+      padding: 2rem 5%;
+      background: var(--brand-neutral);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .og-preview-frame {
+      width: 100%; max-width: 600px;
+      aspect-ratio: 1200/630;
+      border-radius: 12px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      background: linear-gradient(135deg, var(--brand-bg), var(--brand-neutral));
+      display: flex; align-items: center; justify-content: center;
+    }
+    .og-inner {
+      text-align: center; padding: 2rem;
+      position: relative; z-index: 2;
+    }
+    .og-logo {
+      font-family: var(--brand-font-display);
+      font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 800;
+      color: var(--brand-text); margin-bottom: 0.5rem;
+    }
+    .og-logo em { font-style: normal; color: var(--brand-primary); }
+    .og-tagline {
+      font-family: var(--brand-font-body);
+      font-size: clamp(0.75rem, 2vw, 1rem); color: var(--brand-text-muted);
+    }
+    .og-preview-frame::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 60% at 50% 50%, color-mix(in srgb, var(--brand-primary) 8%, transparent), transparent),
+        radial-gradient(ellipse 80% 50% at 50% 0%, color-mix(in srgb, var(--brand-accent) 15%, transparent), transparent 60%);
+    }
+
+    /* ── 8. EMAIL TEMPLATE ── */
+    .preview-email-section {
+      padding: 2rem 5%;
+      background: var(--brand-bg);
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .email-frame {
+      max-width: 560px;
+      background: #ffffff;
+      border-radius: 12px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+      font-family: var(--brand-font-body), Arial, sans-serif;
+    }
+    .email-header {
+      padding: 1.5rem 2rem;
+      background: var(--brand-neutral);
+      text-align: center;
+    }
+    .email-logo {
+      font-family: var(--brand-font-display);
+      font-size: 1.5rem; font-weight: 800;
+      color: var(--brand-text);
+    }
+    .email-logo em { font-style: normal; color: var(--brand-primary); }
+    .email-body {
+      padding: 2rem;
+      color: #1a1a2e;
+    }
+    .email-greeting { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.75rem; }
+    .email-text { font-size: 0.9rem; line-height: 1.65; color: #444; margin-bottom: 1.25rem; }
+    .email-cta-wrap { text-align: center; margin: 1.5rem 0; }
+    .email-cta {
+      display: inline-block;
+      padding: 0.75rem 2rem; border-radius: 100px;
+      background: var(--brand-primary); color: #fff;
+      font-weight: 700; font-size: 0.9rem; text-decoration: none;
+    }
+    .email-footer {
+      padding: 1rem 2rem;
+      background: #f8f8f8; border-top: 1px solid #eee;
+      font-size: 0.75rem; color: #888; text-align: center;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+<!-- LAB TOOLBAR -->
+<div class="lab-toolbar">
+  <span class="lab-label">🧪 Brand Lab</span>
+  <div class="lab-divider"></div>
+  <button class="brand-btn active" onclick="switchBrand(0)" id="btn-0">Swell actuel</button>
+  <button class="brand-btn" onclick="switchBrand(1)" id="btn-1">Wavehold</button>
+  <button class="brand-btn" onclick="switchBrand(2)" id="btn-2">Tidalé</button>
+  <button class="brand-btn" onclick="switchBrand(3)" id="btn-3">Surfpal</button>
+  <button class="brand-btn" onclick="switchBrand(4)" id="btn-4">Localboard</button>
+  <button class="brand-btn" onclick="switchBrand(5)" id="btn-5">Shackwave</button>
+</div>
+
+<!-- BRAND CANVAS -->
+<div class="brand-canvas">
+
+  <!-- SECTION 1: HEADER -->
+  <span class="lab-section-label">① Header</span>
+  <nav class="preview-nav">
+    <a href="#" class="preview-logo" id="logo-text"><em>Q</em>iver</a>
+    <div class="preview-nav-right">
+      <a href="#" class="preview-nav-link">Planches</a>
+      <a href="#" class="preview-nav-link">Spots</a>
+      <a href="#" class="preview-nav-link" style="display:none" id="nav-host-link">Louer ma planche</a>
+      <a href="#" class="preview-btn-ghost">Connexion</a>
+      <a href="#" class="preview-btn-primary" id="nav-cta">Explorer</a>
+    </div>
+  </nav>
+
+  <!-- SECTION 2: HERO -->
+  <span class="lab-section-label">② Hero homepage</span>
+  <section class="preview-hero">
+    <div class="preview-hero-content">
+      <div class="preview-kicker">🏄 Hossegor · Seignosse · Capbreton</div>
+      <h1 class="preview-hero-title" id="hero-title">Tes planches dorment.<br><em>Le surf, c'est le partage.</em></h1>
+      <p class="preview-hero-sub" id="hero-sub">Loue la board parfaite, directement à un surfeur local. Pas de shop, pas de queue.</p>
+      <div class="preview-hero-ctas">
+        <button class="preview-cta-primary" id="hero-cta-primary">Trouver une planche →</button>
+        <button class="preview-cta-ghost">Lister ma planche</button>
+      </div>
+      <div class="preview-tagline-badge" id="hero-tagline-badge">Swell — Surfe local.</div>
+    </div>
+  </section>
+
+  <!-- SECTION 3: BOARD CARD -->
+  <span class="lab-section-label">③ Board card</span>
+  <div class="preview-cards-section">
+    <div class="preview-section-title" id="boards-section-title">Planches disponibles maintenant</div>
+    <div class="preview-cards-grid">
+      <div class="preview-board-card">
+        <div class="preview-card-img">🏄</div>
+        <div class="preview-card-body">
+          <div class="preview-card-title">Shortboard 6'2" — Channel Islands</div>
+          <div class="preview-card-meta">La Gravière · Très bon état</div>
+          <div class="preview-card-host">
+            <div class="preview-host-avatar">M</div>
+            <span class="preview-host-name">Mathieu · ⭐ 4.9</span>
+          </div>
+          <div class="preview-card-footer">
+            <div class="preview-card-price">14€ <span>/ heure</span></div>
+            <button class="preview-card-btn">Réserver</button>
+          </div>
+        </div>
+      </div>
+      <div class="preview-board-card">
+        <div class="preview-card-img">🌊</div>
+        <div class="preview-card-body">
+          <div class="preview-card-title">Longboard 9'0" — Torq</div>
+          <div class="preview-card-meta">Côte des Basques · Neuf</div>
+          <div class="preview-card-host">
+            <div class="preview-host-avatar">S</div>
+            <span class="preview-host-name">Sonia · ⭐ 5.0</span>
+          </div>
+          <div class="preview-card-footer">
+            <div class="preview-card-price">18€ <span>/ heure</span></div>
+            <button class="preview-card-btn">Réserver</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: SPOT CARD -->
+  <span class="lab-section-label">④ Spot card</span>
+  <div class="preview-cards-section" style="padding-top:0;">
+    <div class="preview-section-title">Spots à proximité</div>
+    <div class="preview-cards-grid">
+      <div class="preview-spot-card">
+        <div class="preview-spot-banner">🌊</div>
+        <div class="preview-spot-body">
+          <div class="preview-spot-name">La Gravière</div>
+          <div class="preview-spot-meta">Hossegor · Beach break · Vagues creuses</div>
+          <div class="preview-spot-chips">
+            <span class="preview-chip">Expert</span>
+            <span class="preview-chip available">7 planches dispo</span>
+          </div>
+        </div>
+      </div>
+      <div class="preview-spot-card">
+        <div class="preview-spot-banner">🏄</div>
+        <div class="preview-spot-body">
+          <div class="preview-spot-name">Côte des Basques</div>
+          <div class="preview-spot-meta">Biarritz · Beach break · Familiale</div>
+          <div class="preview-spot-chips">
+            <span class="preview-chip">Débutant</span>
+            <span class="preview-chip available">12 planches dispo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: FOOTER -->
+  <span class="lab-section-label">⑤ Footer</span>
+  <footer class="preview-footer">
+    <div>
+      <div class="preview-footer-wordmark" id="footer-wordmark"><em>Q</em>iver</div>
+      <div class="preview-footer-tagline" id="footer-tagline" style="margin-top:0.4rem;">Surf, partage, et vagues — sur la côte atlantique.</div>
+    </div>
+    <div class="preview-footer-links">
+      <a href="#" class="preview-footer-link">CGV</a>
+      <a href="#" class="preview-footer-link">Contact</a>
+      <a href="#" class="preview-footer-link">Spots</a>
+    </div>
+  </footer>
+
+  <!-- SECTION 6: FAVICON -->
+  <span class="lab-section-label">⑥ Favicon (onglet simulé)</span>
+  <div class="preview-favicon-section">
+    <div class="preview-favicon-row">
+      <div class="favicon-tab-mock">
+        <div class="favicon-icon" id="favicon-icon">Q</div>
+        <span id="favicon-tab-text" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Swell — Trouve ta planche</span>
+      </div>
+      <div style="font-size:0.8rem;color:rgba(255,255,255,0.3);font-family:'Space Grotesk';">
+        La couleur du favicon et la première lettre changent avec la marque.
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: OG IMAGE -->
+  <span class="lab-section-label">⑦ OG image preview (1200×630)</span>
+  <div class="preview-og-section">
+    <div class="og-preview-frame">
+      <div class="og-inner">
+        <div class="og-logo" id="og-logo"><em>Q</em>iver</div>
+        <div class="og-tagline" id="og-tagline">Trouve ta planche. Surfe local.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 8: EMAIL -->
+  <span class="lab-section-label">⑧ Email template</span>
+  <div class="preview-email-section">
+    <div class="email-frame">
+      <div class="email-header">
+        <div class="email-logo" id="email-logo"><em>Q</em>iver</div>
+      </div>
+      <div class="email-body">
+        <div class="email-greeting">Salut Lucas 🤙</div>
+        <p class="email-text">
+          Ta réservation est confirmée ! <strong>Mathieu</strong> t'attend le <strong>samedi 31 mai à 10h</strong> avec son shortboard 6'2" à La Gravière. Tu recevras son contact 24h avant le rendez-vous.
+        </p>
+        <p class="email-text">Prépare-toi — les vagues seront au top ce jour-là.</p>
+        <div class="email-cta-wrap">
+          <a href="#" class="email-cta" id="email-cta">Voir ma réservation →</a>
+        </div>
+      </div>
+      <div class="email-footer">
+        Tu reçois cet email parce que tu as une réservation active sur <strong id="email-brand-name">Swell</strong>.<br>
+        <a href="#" style="color:#888;">Se désinscrire</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Brand definitions ────────────────────────────────────────────────────────
+// Each brand: { name, wordmark, lettermark, tagline, heroTitle, heroSub,
+//   heroCta, colors: { primary, accent, neutral, bg, surface },
+//   fonts: { display, body }, emailCta }
+const BRANDS = [
+  {
+    // 0 — Current Swell
+    id: 'swell',
+    name: 'Swell',
+    wordmark: '<em>Q</em>iver',
+    lettermark: 'Q',
+    tagline: 'Arrive léger. Surfe local.',
+    heroTitle: 'Tes planches dorment.<br><em>Le surf, c\'est le partage.</em>',
+    heroSub: 'Loue la board parfaite, directement à un surfeur local. Pas de shop, pas de queue.',
+    heroCta: 'Trouver une planche →',
+    navCta: 'Explorer',
+    faviconTab: 'Swell — Trouve ta planche',
+    ogTagline: 'Trouve ta planche. Surfe local.',
+    colors: {
+      primary: '#ff6b35',
+      accent: '#1a90d8',
+      neutral: '#0e1e36',
+      bg: '#09152a',
+      surface: '#1c3058',
+      textMuted: 'rgba(255,255,255,0.6)'
+    },
+    fonts: {
+      display: "'Syne', sans-serif",
+      body: "'DM Sans', sans-serif"
+    }
+  },
+  {
+    // 1 — Wavehold: premium, minimalist, Anglo
+    id: 'wavehold',
+    name: 'Wavehold',
+    wordmark: 'Wave<em>hold</em>',
+    lettermark: 'W',
+    tagline: 'Hold the local knowledge.',
+    heroTitle: 'The board is already<br><em>waiting for you.</em>',
+    heroSub: 'Rent directly from local surfers. No shop queues, no plastic wrap.',
+    heroCta: 'Find a board →',
+    navCta: 'Get started',
+    faviconTab: 'Wavehold — Boards by locals',
+    ogTagline: 'Hold the local knowledge.',
+    colors: {
+      primary: '#0ec6a2',
+      accent: '#005f6b',
+      neutral: '#0a1612',
+      bg: '#060e0b',
+      surface: '#0f2820',
+      textMuted: 'rgba(255,255,255,0.55)'
+    },
+    fonts: {
+      display: "'Plus Jakarta Sans', sans-serif",
+      body: "'Space Grotesk', sans-serif"
+    }
+  },
+  {
+    // 2 — Tidalé: French elegance, soft luxury
+    id: 'tidale',
+    name: 'Tidalé',
+    wordmark: 'Tid<em>alé</em>',
+    lettermark: 'T',
+    tagline: 'La planche qui t\'attendait.',
+    heroTitle: 'La mer te connaît déjà.<br><em>Trouve la planche qui va avec.</em>',
+    heroSub: 'Surfeurs locaux. Boards authentiques. Vagues vraies.',
+    heroCta: 'Chercher une planche →',
+    navCta: 'Commencer',
+    faviconTab: 'Tidalé — Location de boards',
+    ogTagline: 'La planche qui t\'attendait.',
+    colors: {
+      primary: '#d4a574',
+      accent: '#4a90a4',
+      neutral: '#12100e',
+      bg: '#0c0b09',
+      surface: '#211e1a',
+      textMuted: 'rgba(255,255,255,0.58)'
+    },
+    fonts: {
+      display: "'Playfair Display', serif",
+      body: "'DM Sans', sans-serif"
+    }
+  },
+  {
+    // 3 — Surfpal: friendly, approachable, communauté
+    id: 'surfpal',
+    name: 'Surfpal',
+    wordmark: 'Surf<em>pal</em>',
+    lettermark: 'S',
+    tagline: 'Le copain qui a des planches.',
+    heroTitle: 'Ton copain local a<br><em>la planche qu\'il te faut.</em>',
+    heroSub: 'Des surfeurs locaux partagent leurs boards. Simple, direct, entre passionnés.',
+    heroCta: 'Voir les planches 🤙',
+    navCta: 'Rejoindre',
+    faviconTab: 'Surfpal — Ta board locale',
+    ogTagline: 'Le copain qui a des planches.',
+    colors: {
+      primary: '#f7b731',
+      accent: '#2ecc71',
+      neutral: '#161a10',
+      bg: '#0e1109',
+      surface: '#1e2414',
+      textMuted: 'rgba(255,255,255,0.58)'
+    },
+    fonts: {
+      display: "'Outfit', sans-serif",
+      body: "'DM Sans', sans-serif"
+    }
+  },
+  {
+    // 4 — Localboard: direct, utilitarian, tech-native
+    id: 'localboard',
+    name: 'Localboard',
+    wordmark: 'Local<em>board</em>',
+    lettermark: 'L',
+    tagline: 'Every board is already there.',
+    heroTitle: 'Stop renting from shops.<br><em>Go local.</em>',
+    heroSub: 'Every board on Localboard belongs to a surfer who rides these exact waves.',
+    heroCta: 'Browse local boards →',
+    navCta: 'Start now',
+    faviconTab: 'Localboard — Local surf rentals',
+    ogTagline: 'Every board is already there.',
+    colors: {
+      primary: '#3d7eff',
+      accent: '#ff4757',
+      neutral: '#0f0f14',
+      bg: '#08080f',
+      surface: '#16162a',
+      textMuted: 'rgba(255,255,255,0.55)'
+    },
+    fonts: {
+      display: "'Space Grotesk', sans-serif",
+      body: "'DM Sans', sans-serif"
+    }
+  },
+  {
+    // 5 — Shackwave: raw energy, surf culture, bold
+    id: 'shackwave',
+    name: 'Shackwave',
+    wordmark: 'SHACK<em>WAVE</em>',
+    lettermark: 'S',
+    tagline: 'Real boards. Real surfers.',
+    heroTitle: 'REAL BOARDS.<br><em>REAL SURFERS.</em>',
+    heroSub: 'No shop markup. No strangers. Just local surfers sharing what they love.',
+    heroCta: 'FIND A BOARD →',
+    navCta: 'GET IN',
+    faviconTab: 'Shackwave — Real local boards',
+    ogTagline: 'Real boards. Real surfers.',
+    colors: {
+      primary: '#ff2d55',
+      accent: '#ff9f0a',
+      neutral: '#0a0a0a',
+      bg: '#060606',
+      surface: '#141414',
+      textMuted: 'rgba(255,255,255,0.5)'
+    },
+    fonts: {
+      display: "'Syne', sans-serif",
+      body: "'Space Grotesk', sans-serif"
+    }
+  }
+];
+
+let currentBrand = 0;
+
+function switchBrand(idx) {
+  currentBrand = idx;
+  const b = BRANDS[idx];
+
+  // Update CSS variables
+  const root = document.documentElement;
+  root.style.setProperty('--brand-primary', b.colors.primary);
+  root.style.setProperty('--brand-accent', b.colors.accent);
+  root.style.setProperty('--brand-neutral', b.colors.neutral);
+  root.style.setProperty('--brand-bg', b.colors.bg);
+  root.style.setProperty('--brand-surface', b.colors.surface);
+  root.style.setProperty('--brand-text-muted', b.colors.textMuted);
+  root.style.setProperty('--brand-font-display', b.fonts.display);
+  root.style.setProperty('--brand-font-body', b.fonts.body);
+
+  // Update text content
+  document.getElementById('logo-text').innerHTML = b.wordmark;
+  document.getElementById('hero-title').innerHTML = b.heroTitle;
+  document.getElementById('hero-sub').textContent = b.heroSub;
+  document.getElementById('hero-cta-primary').textContent = b.heroCta;
+  document.getElementById('hero-tagline-badge').textContent = b.name + ' — ' + b.tagline;
+  document.getElementById('nav-cta').textContent = b.navCta;
+  document.getElementById('footer-wordmark').innerHTML = b.wordmark;
+  document.getElementById('footer-tagline').textContent = b.tagline;
+  document.getElementById('favicon-icon').textContent = b.lettermark;
+  document.getElementById('favicon-tab-text').textContent = b.faviconTab;
+  document.getElementById('og-logo').innerHTML = b.wordmark;
+  document.getElementById('og-tagline').textContent = b.ogTagline;
+  document.getElementById('email-logo').innerHTML = b.wordmark;
+  document.getElementById('email-cta').textContent = b.heroCta;
+  document.getElementById('email-brand-name').textContent = b.name;
+
+  // Update section title casing based on language
+  const isEn = ['Wavehold','Localboard','Shackwave'].includes(b.name);
+  document.getElementById('boards-section-title').textContent = isEn ? 'Available boards' : 'Planches disponibles maintenant';
+
+  // Update active button
+  document.querySelectorAll('.brand-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i === idx);
+  });
+
+  // Show/hide host nav link
+  document.getElementById('nav-host-link').style.display = idx === 0 ? 'none' : 'flex';
+
+  // Scroll to top of canvas for full experience
+  document.querySelector('.brand-canvas').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Init
+switchBrand(0);
+</script>
+</body>
+</html>

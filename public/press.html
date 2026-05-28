@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Press Kit — Swell</title>
+  <meta name="description" content="Swell — La marketplace de planches de surf pour Hossegor & Biarritz. Location entre surfeurs, à l'heure.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta property="og:title" content="Press Kit — Swell">
+  <meta property="og:description" content="La première marketplace française de location horaire de planches de surf.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://swell.polsia.app/press">
+  <link rel="canonical" href="https://swell.polsia.app/press">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --night: #0e1e36;
+      --night-deep: #09152a;
+      --surface: #142540;
+      --card: #1a3356;
+      --border: rgba(0,194,224,0.15);
+      --primary: #00c2e0;
+      --sunset: #ff6b35;
+      --sand: #f5e6d0;
+      --text: #f0f4f8;
+      --text-secondary: rgba(240,244,248,0.72);
+      --text-muted: rgba(240,244,248,0.45);
+      --radius: 20px;
+      --radius-sm: 12px;
+    }
+    body {
+      background: var(--night);
+      color: var(--text);
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Nav */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 5%;
+      background: rgba(14,30,54,0.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .nav-logo em { color: var(--primary); font-style: normal; }
+    .nav-cta {
+      background: var(--primary);
+      color: var(--night-deep);
+      padding: 0.5rem 1.2rem;
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .nav-cta:hover { background: #00d4f5; text-decoration: none; }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 5rem 1.5rem 3rem;
+      background: linear-gradient(180deg, var(--night-deep) 0%, var(--night) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,194,224,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(0,194,224,0.1);
+      border: 1px solid rgba(0,194,224,0.25);
+      color: var(--primary);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+      margin-bottom: 1.25rem;
+    }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+    .hero h1 em {
+      color: var(--primary);
+      font-style: normal;
+    }
+    .hero p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .press-label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Wave decoration */
+    .wave-divider {
+      height: 60px;
+      background: var(--night);
+      position: relative;
+    }
+    .wave-divider svg {
+      position: absolute;
+      top: -1px;
+      left: 0;
+      width: 100%;
+      height: 60px;
+    }
+
+    /* Metrics */
+    .metrics-section {
+      padding: 3rem 1.5rem;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .metrics-grid {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.25rem;
+    }
+    .metric-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      text-align: center;
+    }
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 0.4rem;
+    }
+    .metric-value.accent { color: var(--primary); }
+    .metric-value.sunset { color: var(--sunset); }
+    .metric-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    /* Content */
+    .content {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem;
+    }
+    .content h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+    .content p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Quote */
+    .quote-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 1.5rem 1.75rem;
+      margin: 2.5rem 0;
+    }
+    .quote-block p {
+      font-size: 1.1rem;
+      font-style: italic;
+      color: var(--text);
+      margin-bottom: 0;
+    }
+    .quote-attr {
+      margin-top: 0.75rem;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Screenshots */
+    .screenshots {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    .screenshot-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .screenshot-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+    .app-url-display {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary);
+      font-family: 'Space Grotesk', monospace;
+    }
+
+    /* CTA */
+    .cta-section {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      background: linear-gradient(135deg, var(--sunset) 0%, #ff8c42 100%);
+      border-radius: var(--radius);
+      margin: 2rem 0;
+    }
+    .cta-section h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 0.5rem;
+    }
+    .cta-section p {
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 1.5rem;
+    }
+    .cta-btn {
+      display: inline-block;
+      background: white;
+      color: var(--sunset);
+      padding: 0.9rem 2.5rem;
+      border-radius: 100px;
+      font-weight: 800;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      text-decoration: none;
+    }
+
+    /* Contact */
+    .contact-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 2rem;
+      margin: 3rem 0;
+      text-align: center;
+    }
+    .contact-section h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .contact-email {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 5%;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      margin-top: 2rem;
+    }
+    footer a { color: var(--text-secondary); }
+
+    @media (max-width: 600px) {
+      .hero { padding: 3.5rem 1.5rem 2.5rem; }
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+      .metric-value { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="/" class="nav-logo">Qiv<em>er</em></a>
+    <a href="/app.html" class="nav-cta">🏄 Louer une planche</a>
+  </nav>
+
+  <section class="hero">
+    <span class="press-label">Press Kit</span>
+    <h1>Swell — La marketplace de planches de surf pour <em>Hossegor & Biarritz</em></h1>
+    <p>Location entre surfeurs, à l'heure.Accès direct au matos local, sécurisé et sans commission cachée.</p>
+  </section>
+
+  <!-- Metrics -->
+  <section class="metrics-section">
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-value">18+</div>
+        <div class="metric-label">Planches listées à Hossegor & Biarritz</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value accent">4.9★</div>
+        <div class="metric-label">47 avis vérifiés</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value">€/h</div>
+        <div class="metric-label">Première marketplace FR en location horaire</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value sunset">✓</div>
+        <div class="metric-label">Protection dommages incluse — Swell Shield</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="content">
+    <!-- About -->
+    <h2>Qu'est-ce que Swell ?</h2>
+    <p>Des locaux proposent leurs planches en location à la journée ou à l'heure. Des riders de passage accèdent à du vrai matos local sans payer la soute. Tout est sécurisé : identité vérifiée, photos check-in/out, caution bloquée.</p>
+
+    <!-- Quote -->
+    <div class="quote-block">
+      <p>"Le problème du surf distribué en France, c'est que les meilleures planches sont au garage. On reconstruit l'accès."</p>
+      <div class="quote-attr">— Fondateur, Swell</div>
+    </div>
+
+    <!-- Screenshots -->
+    <h2>L'application</h2>
+    <div class="screenshots">
+      <div class="screenshot-card">
+        <div class="screenshot-label">Application en ligne</div>
+        <a href="https://swell.polsia.app" class="app-url-display" target="_blank" rel="noopener">https://swell.polsia.app</a>
+        <p style="color: var(--text-muted); font-size: 0.82rem; margin-top: 0.5rem;">Ouvert aux surfeurs — liste ta planche ou trouve la tienne</p>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <h2>Découvre Swell</h2>
+      <p>Première marketplace de location horaire de surf en France.</p>
+      <a href="https://swell.polsia.app" class="cta-btn" target="_blank" rel="noopener">Visiter Swell →</a>
+    </div>
+
+    <!-- Contact -->
+    <div class="contact-section">
+      <h3>Contact presse</h3>
+      <p style="margin-bottom: 0.5rem;">Pour toute question ou demande media :</p>
+      <a href="mailto:swell@polsia.app" class="contact-email">swell@polsia.app</a>
+    </div>
+  </div>
+
+  <footer>
+    © 2026 Swell — Location de planches entre surfeurs. Hossegor, Seignosse, Capbreton, Biarritz.
+    <br><br>
+    <a href="/app.html">Planches</a> · <a href="/blog">Blog</a> · <a href="/cgv">CGV</a>
+  </footer>
+</body>
+</html>

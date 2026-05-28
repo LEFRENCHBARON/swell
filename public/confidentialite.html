@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#060d1a">
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Politique de Confidentialité — Swell</title>
+    <meta name="description" content="Politique de confidentialité et traitement des données personnelles de Swell, conformément au RGPD.">
+    <meta name="robots" content="noindex, follow">
+    <link rel="canonical" href="https://swell.polsia.app/confidentialite">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Cabinet+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Cabinet+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #fafaf8;
+            --surface: #f5f3f0;
+            --card: #ffffff;
+            --border: rgba(0,0,0,0.08);
+            --text: #1a1a1a;
+            --text-secondary: rgba(0,0,0,0.62);
+            --text-muted: rgba(0,0,0,0.45);
+            --primary: #0066aa;
+            --ocean: #0077c2;
+            --sunset: #e05a1b;
+        }
+
+        body {
+            font-family: 'Cabinet Grotesk', 'DM Sans', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .nav {
+            background: linear-gradient(135deg, #0a1628 0%, #0e2040 50%, #0a2850 100%);
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-logo {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: #fff;
+            text-decoration: none;
+            letter-spacing: -0.03em;
+        }
+        .nav-logo em { font-style: normal; color: #e05a1b; }
+        .nav-back {
+            margin-left: auto;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: color 0.2s;
+        }
+        .nav-back:hover { color: #fff; }
+
+        .legal-container {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 3rem 2rem 6rem;
+        }
+
+        .legal-header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+        }
+        .legal-header h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: var(--text);
+            letter-spacing: -0.03em;
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+        }
+        .legal-meta {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .legal-meta span::before { content: '• '; color: var(--primary); }
+        .legal-meta span:first-child::before { content: ''; }
+
+        .toc {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 3rem;
+        }
+        .toc h3 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+        .toc ol {
+            list-style: none;
+            counter-reset: toc-counter;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 0.3rem;
+        }
+        .toc li { counter-increment: toc-counter; }
+        .toc a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0;
+            transition: color 0.15s;
+        }
+        .toc a::before {
+            content: counter(toc-counter, decimal-leading-zero);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            min-width: 22px;
+        }
+        .toc a:hover { color: var(--ocean); }
+
+        .legal-section {
+            margin-bottom: 3rem;
+            scroll-margin-top: 80px;
+        }
+        .legal-section h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .legal-section h2 .sec-num {
+            background: var(--primary);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-family: 'Cabinet Grotesk', sans-serif;
+            letter-spacing: 0;
+            min-width: 28px;
+            text-align: center;
+        }
+        .legal-section h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin: 1.5rem 0 0.6rem;
+        }
+        .legal-section p {
+            color: var(--text-secondary);
+            margin-bottom: 0.8rem;
+        }
+        .legal-section ul, .legal-section ol {
+            margin: 0.6rem 0 0.8rem 1.4rem;
+            color: var(--text-secondary);
+        }
+        .legal-section li { margin-bottom: 0.4rem; }
+
+        .callout {
+            background: #fff8e1;
+            border-left: 3px solid #f59e0b;
+            border-radius: 0 8px 8px 0;
+            padding: 0.9rem 1.1rem;
+            margin: 1rem 0;
+            font-size: 0.925rem;
+            color: #7c5000;
+        }
+        .callout-info {
+            background: #e8f4fd;
+            border-left-color: var(--primary);
+            color: #004a7a;
+        }
+
+        .legal-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        .legal-table th {
+            background: var(--surface);
+            text-align: left;
+            padding: 0.7rem 1rem;
+            font-weight: 700;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .legal-table td {
+            padding: 0.6rem 1rem;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            vertical-align: top;
+        }
+        .legal-table tr:nth-child(even) td { background: #fafaf8; }
+
+        .rights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .rights-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem 1.1rem;
+        }
+        .rights-card h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.4rem;
+        }
+        .rights-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .legal-footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .legal-footer-nav {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .legal-footer-nav a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .legal-footer-nav a:hover { text-decoration: underline; }
+        .legal-footer-copy {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 640px) {
+            .legal-container { padding: 2rem 1.25rem 4rem; }
+            .legal-header h1 { font-size: 1.8rem; }
+            .toc ol { grid-template-columns: 1fr; }
+            .rights-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="nav">
+    <a href="/" class="nav-logo">qi<em>v</em>er</a>
+    <a href="/" class="nav-back">← Retour à l'accueil</a>
+</nav>
+
+<div class="legal-container">
+
+    <div class="legal-header">
+        <h1>Politique de Confidentialité</h1>
+        <div class="legal-meta">
+            <span>Version 1.0</span>
+            <span>En vigueur depuis le 17 mai 2026</span>
+            <span>Conforme au RGPD</span>
+        </div>
+    </div>
+
+    <nav class="toc">
+        <h3>Sommaire</h3>
+        <ol>
+            <li><a href="#responsable">Responsable de traitement</a></li>
+            <li><a href="#donnees-collectees">Données collectées</a></li>
+            <li><a href="#bases-legales">Bases légales</a></li>
+            <li><a href="#finalites">Finalités du traitement</a></li>
+            <li><a href="#conservation">Durée de conservation</a></li>
+            <li><a href="#sous-traitants">Sous-traitants et destinataires</a></li>
+            <li><a href="#transferts">Transferts hors UE</a></li>
+            <li><a href="#droits">Droits des personnes</a></li>
+            <li><a href="#cookies">Cookies et traceurs</a></li>
+            <li><a href="#contact-dpo">Contact</a></li>
+            <li><a href="#modifier-cookies">Modifier mes préférences cookies</a></li>
+        </ol>
+    </nav>
+
+    <div class="callout callout-info">
+        <strong>En bref :</strong> Swell collecte uniquement les données nécessaires au fonctionnement du service. Nous ne vendons pas vos données. Nous ne faisons pas de publicité ciblée. Vos données restent en Europe, sauf pour le traitement des paiements (Stripe, États-Unis, sous garanties adéquates).
+    </div>
+
+    <!-- Article 1 -->
+    <section class="legal-section" id="responsable">
+        <h2><span class="sec-num">01</span> Responsable de traitement</h2>
+        <p>Le responsable du traitement de vos données personnelles est :</p>
+        <table class="legal-table">
+            <tbody>
+                <tr>
+                    <td><strong>Dénomination</strong></td>
+                    <td>Swell</td>
+                </tr>
+                <tr>
+                    <td><strong>Forme juridique</strong></td>
+                    <td>En cours de constitution (SAS)</td>
+                </tr>
+                <tr>
+                    <td><strong>Adresse</strong></td>
+                    <td>France</td>
+                </tr>
+                <tr>
+                    <td><strong>Email de contact</strong></td>
+                    <td><a href="mailto:swell@polsia.app">swell@polsia.app</a></td>
+                </tr>
+                <tr>
+                    <td><strong>Plateforme</strong></td>
+                    <td>swell.polsia.app</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Article 2 -->
+    <section class="legal-section" id="donnees-collectees">
+        <h2><span class="sec-num">02</span> Données collectées</h2>
+
+        <h3>2.1 Données d'inscription</h3>
+        <ul>
+            <li>Prénom et nom</li>
+            <li>Adresse email</li>
+            <li>Mot de passe (haché, jamais stocké en clair)</li>
+            <li>Niveau de surf (débutant, intermédiaire, avancé)</li>
+            <li>Photo de profil (avatar) — facultative</li>
+            <li>Biographie — facultative</li>
+            <li>Récit de meilleur voyage de surf — facultatif</li>
+        </ul>
+
+        <h3>2.2 Données de vérification d'identité (KYC)</h3>
+        <ul>
+            <li>Photo d'une pièce d'identité officielle (CNI, passeport)</li>
+            <li>Statut de vérification (en attente, vérifié, refusé)</li>
+        </ul>
+        <p>Les documents d'identité sont stockés de manière sécurisée et ne sont accessibles qu'à Swell pour les besoins de vérification.</p>
+
+        <h3>2.3 Données relatives aux annonces (Hôtes)</h3>
+        <ul>
+            <li>Photos de la planche</li>
+            <li>Caractéristiques de la planche (type, longueur, condition, prix)</li>
+            <li>Localisation (ville, spot de surf)</li>
+            <li>Calendrier de disponibilité</li>
+            <li>Valeur déclarée de la planche</li>
+        </ul>
+
+        <h3>2.4 Données de paiement et bancaires</h3>
+        <ul>
+            <li>Données bancaires (IBAN) collectées via <strong>Stripe Connect</strong> pour les Hôtes — non stockées sur les serveurs Swell</li>
+            <li>Identifiant Stripe et statut d'activation du compte Stripe de l'Hôte</li>
+            <li>Historique des transactions (montants, dates, statuts)</li>
+        </ul>
+        <p>Les données de carte bancaire des Riders sont traitées exclusivement par Stripe et ne transitent pas par les serveurs Swell.</p>
+
+        <h3>2.5 Données de réservation</h3>
+        <ul>
+            <li>Identité de l'Hôte et du Rider</li>
+            <li>Dates de location, montants, statut</li>
+            <li>Caution (montant, statut de la pré-autorisation)</li>
+            <li>Choix du Damage Waiver</li>
+        </ul>
+
+        <h3>2.6 Données de messagerie</h3>
+        <ul>
+            <li>Contenu des messages échangés dans le cadre d'une réservation</li>
+            <li>Horodatage et statut de lecture</li>
+        </ul>
+        <p>La messagerie filtre automatiquement les coordonnées personnelles (numéros de téléphone, adresses email) pour protéger les utilisateurs.</p>
+
+        <h3>2.7 Données de check-in et check-out</h3>
+        <ul>
+            <li>Photos horodatées de l'état de la planche</li>
+            <li>Coordonnées géographiques (latitude/longitude) au moment des photos</li>
+            <li>Horodatage de validation</li>
+        </ul>
+
+        <h3>2.8 Données d'avis</h3>
+        <ul>
+            <li>Note (1 à 5 étoiles)</li>
+            <li>Commentaire écrit</li>
+            <li>Détails de la notation (JSONB)</li>
+            <li>Date de publication</li>
+        </ul>
+
+        <h3>2.9 Données de navigation</h3>
+        <ul>
+            <li>Adresse IP (anonymisée)</li>
+            <li>Données de session (cookies de session)</li>
+            <li>Données d'analyse anonymisées (via pixel Polsia Analytics)</li>
+        </ul>
+    </section>
+
+    <!-- Article 3 -->
+    <section class="legal-section" id="bases-legales">
+        <h2><span class="sec-num">03</span> Bases légales</h2>
+        <table class="legal-table">
+            <thead>
+                <tr>
+                    <th>Type de traitement</th>
+                    <th>Base légale (RGPD)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Création et gestion de compte</td>
+                    <td>Exécution d'un contrat (art. 6.1.b)</td>
+                </tr>
+                <tr>
+                    <td>Vérification d'identité (KYC)</td>
+                    <td>Obligation légale + exécution du contrat (art. 6.1.b et 6.1.c)</td>
+                </tr>
+                <tr>
+                    <td>Traitement des réservations et paiements</td>
+                    <td>Exécution d'un contrat (art. 6.1.b)</td>
+                </tr>
+                <tr>
+                    <td>Messagerie entre utilisateurs</td>
+                    <td>Exécution d'un contrat (art. 6.1.b)</td>
+                </tr>
+                <tr>
+                    <td>Check-in/check-out photographique</td>
+                    <td>Exécution d'un contrat + intérêt légitime (art. 6.1.b et 6.1.f)</td>
+                </tr>
+                <tr>
+                    <td>Gestion des litiges et caution</td>
+                    <td>Exécution d'un contrat + intérêt légitime (art. 6.1.b et 6.1.f)</td>
+                </tr>
+                <tr>
+                    <td>Communication fiscale aux autorités</td>
+                    <td>Obligation légale (art. 6.1.c)</td>
+                </tr>
+                <tr>
+                    <td>Newsletter (avec consentement explicite)</td>
+                    <td>Consentement (art. 6.1.a)</td>
+                </tr>
+                <tr>
+                    <td>Analyse d'audience anonymisée</td>
+                    <td>Intérêt légitime (art. 6.1.f)</td>
+                </tr>
+                <tr>
+                    <td>Conservation légale des factures</td>
+                    <td>Obligation légale (art. 6.1.c)</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Article 4 -->
+    <section class="legal-section" id="finalites">
+        <h2><span class="sec-num">04</span> Finalités du traitement</h2>
+        <p>Vos données sont utilisées exclusivement aux fins suivantes :</p>
+        <ul>
+            <li><strong>Fonctionnement du service :</strong> création de compte, recherche de planches, réservation, paiement, messagerie ;</li>
+            <li><strong>Sécurité et confiance :</strong> vérification d'identité, détection des fraudes, gestion des litiges ;</li>
+            <li><strong>Obligation légale :</strong> communication à l'administration fiscale, lutte contre le blanchiment ;</li>
+            <li><strong>Amélioration du service :</strong> analyse d'audience anonymisée ;</li>
+            <li><strong>Communication :</strong> emails transactionnels (confirmation de réservation, relances), newsletter (avec consentement).</li>
+        </ul>
+        <p>Swell ne pratique <strong>aucune publicité ciblée</strong> et ne vend ni ne loue vos données à des tiers à des fins commerciales.</p>
+    </section>
+
+    <!-- Article 5 -->
+    <section class="legal-section" id="conservation">
+        <h2><span class="sec-num">05</span> Durée de conservation</h2>
+        <table class="legal-table">
+            <thead>
+                <tr>
+                    <th>Type de données</th>
+                    <th>Durée de conservation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Données de compte actif</td>
+                    <td>Durée de vie du compte + 1 an après suppression</td>
+                </tr>
+                <tr>
+                    <td>Données de réservation et transactions</td>
+                    <td>10 ans (obligation comptable)</td>
+                </tr>
+                <tr>
+                    <td>Documents d'identité (KYC)</td>
+                    <td>5 ans après vérification (obligation LCB-FT)</td>
+                </tr>
+                <tr>
+                    <td>Photos de check-in/check-out</td>
+                    <td>3 ans après la réservation</td>
+                </tr>
+                <tr>
+                    <td>Messages</td>
+                    <td>2 ans après la réservation</td>
+                </tr>
+                <tr>
+                    <td>Données de navigation</td>
+                    <td>13 mois (CNIL)</td>
+                </tr>
+                <tr>
+                    <td>Cookies de session</td>
+                    <td>30 jours (durée de session)</td>
+                </tr>
+                <tr>
+                    <td>Avis publiés</td>
+                    <td>Durée de vie du compte de l'auteur</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Article 6 -->
+    <section class="legal-section" id="sous-traitants">
+        <h2><span class="sec-num">06</span> Sous-traitants et destinataires</h2>
+        <p>Swell fait appel aux sous-traitants techniques suivants, sélectionnés pour leur conformité au RGPD :</p>
+        <table class="legal-table">
+            <thead>
+                <tr>
+                    <th>Sous-traitant</th>
+                    <th>Rôle</th>
+                    <th>Localisation des données</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Stripe</strong></td>
+                    <td>Traitement des paiements, Stripe Connect (comptes Hôtes)</td>
+                    <td>États-Unis (CCE)</td>
+                </tr>
+                <tr>
+                    <td><strong>Render</strong></td>
+                    <td>Hébergement de l'application web</td>
+                    <td>Union Européenne (Oregon/Frankfurt)</td>
+                </tr>
+                <tr>
+                    <td><strong>Neon</strong></td>
+                    <td>Base de données PostgreSQL</td>
+                    <td>Union Européenne</td>
+                </tr>
+                <tr>
+                    <td><strong>Polsia / Cloudflare R2</strong></td>
+                    <td>Stockage des photos (boards, avatars, KYC, check-in/out)</td>
+                    <td>Union Européenne</td>
+                </tr>
+                <tr>
+                    <td><strong>Polsia Analytics</strong></td>
+                    <td>Analyse d'audience anonymisée (pixel)</td>
+                    <td>Union Européenne</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Des conventions de sous-traitance RGPD sont en place avec l'ensemble de ces prestataires.</p>
+        <p>Vos données peuvent également être communiquées aux <strong>autorités compétentes</strong> (administration fiscale, autorités judiciaires) sur demande légale.</p>
+    </section>
+
+    <!-- Article 7 -->
+    <section class="legal-section" id="transferts">
+        <h2><span class="sec-num">07</span> Transferts hors Union Européenne</h2>
+        <p>Certaines données sont traitées en dehors de l'Union Européenne, notamment dans le cadre des paiements via <strong>Stripe</strong> (États-Unis).</p>
+        <p>Ces transferts sont encadrés par :</p>
+        <ul>
+            <li>les <strong>Clauses Contractuelles Types (CCT)</strong> adoptées par la Commission Européenne ;</li>
+            <li>la certification de Stripe au <strong>Cadre de Protection des Données UE-États-Unis (EU-US DPF)</strong>.</li>
+        </ul>
+        <p>Vous pouvez consulter les engagements de Stripe en matière de protection des données sur <a href="https://stripe.com/fr/privacy" target="_blank" rel="noopener">stripe.com/fr/privacy</a>.</p>
+    </section>
+
+    <!-- Article 8 -->
+    <section class="legal-section" id="droits">
+        <h2><span class="sec-num">08</span> Droits des personnes</h2>
+        <p>Conformément au RGPD (articles 15 à 22), vous disposez des droits suivants sur vos données personnelles :</p>
+
+        <div class="rights-grid">
+            <div class="rights-card">
+                <h4>Droit d'accès</h4>
+                <p>Obtenir une copie de vos données personnelles que nous traitons.</p>
+            </div>
+            <div class="rights-card">
+                <h4>Droit de rectification</h4>
+                <p>Corriger des données inexactes ou incomplètes vous concernant.</p>
+            </div>
+            <div class="rights-card">
+                <h4>Droit à l'effacement</h4>
+                <p>Demander la suppression de vos données dans les conditions légales.</p>
+            </div>
+            <div class="rights-card">
+                <h4>Droit à la limitation</h4>
+                <p>Suspendre temporairement un traitement pendant un litige ou vérification.</p>
+            </div>
+            <div class="rights-card">
+                <h4>Droit à la portabilité</h4>
+                <p>Recevoir vos données dans un format structuré et lisible par machine.</p>
+            </div>
+            <div class="rights-card">
+                <h4>Droit d'opposition</h4>
+                <p>S'opposer à un traitement fondé sur l'intérêt légitime (ex : newsletter).</p>
+            </div>
+        </div>
+
+        <h3>Comment exercer vos droits</h3>
+        <p>Toute demande d'exercice de droits doit être adressée par email à <a href="mailto:swell@polsia.app">swell@polsia.app</a> avec la mention « Exercice de droits RGPD » en objet. Nous répondons dans un délai d'<strong>1 mois</strong> (renouvelable une fois en cas de demande complexe).</p>
+        <p>Une pièce d'identité pourra vous être demandée pour vérifier votre identité avant traitement de la demande.</p>
+
+        <h3>Modifier mes préférences cookies</h3>
+        <p>Si vous souhaitez modifier vos choix en matière de cookies (accepter ou refuser les traceurs analytiques et marketing), vous pouvez <a href="/">revenir sur la page d'accueil et recliquer sur le bandeau de cookies</a> pour modifier vos préférences à tout moment.</p>
+        <p>Vous pouvez également nous contacter à <a href="mailto:swell@polsia.app">swell@polsia.app</a> (objet : « Modification des préférences cookies »).</p>
+
+        <h3>Réclamation auprès de la CNIL</h3>
+        <p>Si vous estimez que vos droits ne sont pas respectés, vous pouvez introduire une réclamation auprès de la <strong>Commission Nationale de l'Informatique et des Libertés (CNIL)</strong> :</p>
+        <ul>
+            <li>En ligne : <a href="https://www.cnil.fr/fr/plaintes" target="_blank" rel="noopener">cnil.fr/fr/plaintes</a></li>
+            <li>Par courrier : CNIL — 3 Place de Fontenoy — TSA 80715 — 75334 PARIS CEDEX 07</li>
+        </ul>
+    </section>
+
+    <!-- Article 9 -->
+    <section class="legal-section" id="cookies">
+        <h2><span class="sec-num">09</span> Cookies et traceurs</h2>
+        <p>Swell utilise des cookies et traceurs strictement nécessaires au fonctionnement du service :</p>
+        <table class="legal-table">
+            <thead>
+                <tr>
+                    <th>Cookie</th>
+                    <th>Finalité</th>
+                    <th>Durée</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>swell_sid</code></td>
+                    <td>Cookie de session — maintient la connexion utilisateur</td>
+                    <td>30 jours</td>
+                    <td>Nécessaire</td>
+                </tr>
+                <tr>
+                    <td><code>polsia_vid</code></td>
+                    <td>Identifiant de visiteur anonyme pour l'analyse d'audience</td>
+                    <td>Persistant (localStorage)</td>
+                    <td>Analytique</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>Swell <strong>n'utilise pas</strong> de cookies publicitaires, de traceurs de retargeting, ou de cookies tiers à des fins de profilage.</p>
+        <p>Le cookie de session (<code>swell_sid</code>) est strictement nécessaire au fonctionnement du service et ne requiert pas votre consentement au titre de la directive ePrivacy.</p>
+        <p>Le pixel d'analyse (<code>polsia_vid</code>) est anonymisé. Vous pouvez l'effacer en vidant le localStorage de votre navigateur.</p>
+    </section>
+
+    <!-- Article 10 -->
+    <section class="legal-section" id="contact-dpo">
+        <h2><span class="sec-num">10</span> Contact</h2>
+        <p>Pour toute question relative à la protection de vos données personnelles ou pour exercer vos droits :</p>
+        <ul>
+            <li><strong>Email :</strong> <a href="mailto:swell@polsia.app">swell@polsia.app</a> (objet : « Protection des données »)</li>
+        </ul>
+        <p>Swell s'engage à traiter chaque demande sérieusement et dans les délais légaux. Si votre demande est complexe ou nombreuse, nous vous informerons d'une éventuelle prolongation du délai de réponse.</p>
+        <div class="callout callout-info">
+            <strong>Remarque :</strong> Cette politique de confidentialité est susceptible d'évoluer en fonction des mises à jour légales et réglementaires. La date de mise à jour est indiquée en haut de ce document.
+        </div>
+    </section>
+
+    <div class="legal-footer">
+        <div class="legal-footer-nav">
+            <a href="/cgv">CGU / CGV</a>
+            <a href="/mentions-legales">Mentions légales</a>
+            <a href="mailto:swell@polsia.app">Contact</a>
+        </div>
+        <div class="legal-footer-copy">&copy; 2026 Swell — Tous droits réservés</div>
+    </div>
+
+    <!-- Section 11: Cookie preferences -->
+    <section class="legal-section" id="modifier-cookies">
+        <h2><span class="sec-num">11</span> Modifier mes préférences cookies</h2>
+        <p>Vous pouvez modifier vos choix en matière de cookies à tout moment en visitant à nouveau la page d'accueil de Swell — le bandeau de cookies s'affichera pour vous permettre de modifier vos préférences.</p>
+        <p>Si vous souhaitez exercer votre droit d'opposition aux traceurs ou obtenir des informations complémentaires, contactez-nous à <a href="mailto:swell@polsia.app">swell@polsia.app</a> (objet : « Modification des préférences cookies »).</p>
+    </section>
+
+</div>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

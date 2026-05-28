@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta Pixel -->
+    <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','1367150358557387');fbq('track','PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1367150358557387&ev=PageView&noscript=1"/></noscript>
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#060d1a">
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Réservation confirmée — Swell</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"></noscript>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #fafaf8;
+      --card: #ffffff;
+      --border: rgba(0,0,0,0.08);
+      --text: #1a1a1a;
+      --text-secondary: rgba(0,0,0,0.62);
+      --text-muted: rgba(0,0,0,0.45);
+      --primary: #0066aa;
+      --primary-soft: rgba(0,102,170,0.06);
+      --sunset: #ff6b35;
+      --green: #22c55e;
+      --green-bg: rgba(34,197,94,0.08);
+      --green-border: rgba(34,197,94,0.25);
+      --gold: #d4a574;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 3rem 1.5rem 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page-spacer { flex: 1; min-height: 3rem; }
+
+    /* ── LOGO ── */
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem; font-weight: 800;
+      color: var(--primary); text-decoration: none;
+      display: block; margin-bottom: 1.75rem;
+      letter-spacing: -0.02em;
+    }
+    .logo em { font-style: normal; color: var(--text); }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.07);
+    }
+
+    /* ── LOADING STATE ── */
+    .loading-state { text-align: center; }
+    .wave-loader {
+      display: flex; align-items: flex-end; justify-content: center;
+      gap: 5px; height: 40px; margin-bottom: 1.5rem;
+    }
+    .wave-bar {
+      width: 6px; border-radius: 3px;
+      background: var(--primary);
+      animation: wave 1.2s ease-in-out infinite;
+    }
+    .wave-bar:nth-child(1) { animation-delay: 0s;    height: 20px; }
+    .wave-bar:nth-child(2) { animation-delay: 0.15s; height: 30px; }
+    .wave-bar:nth-child(3) { animation-delay: 0.3s;  height: 38px; }
+    .wave-bar:nth-child(4) { animation-delay: 0.45s; height: 28px; }
+    .wave-bar:nth-child(5) { animation-delay: 0.6s;  height: 16px; }
+    @keyframes wave {
+      0%, 100% { transform: scaleY(0.5); opacity: 0.5; }
+      50%       { transform: scaleY(1);   opacity: 1; }
+    }
+    .loading-state h1 {
+      font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .loading-state p { font-size: 0.875rem; color: var(--text-muted); }
+
+    /* ── SUCCESS STATE ── */
+    .success-state { display: none; }
+
+    .hero-section {
+      position: relative; border-radius: 12px; overflow: hidden;
+      background: linear-gradient(135deg, #004488 0%, #0066aa 50%, #0088cc 100%);
+      padding: 2rem 1.5rem 1.5rem;
+      text-align: center; margin-bottom: 1.5rem;
+      color: white;
+    }
+    .hero-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='60'%3E%3Cpath d='M0 30 Q25 10 50 30 Q75 50 100 30 Q125 10 150 30 Q175 50 200 30' fill='none' stroke='rgba(255,255,255,0.08)' stroke-width='2'/%3E%3Cpath d='M0 45 Q25 25 50 45 Q75 65 100 45 Q125 25 150 45 Q175 65 200 45' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='2'/%3E%3C/svg%3E") repeat-x bottom;
+      pointer-events: none;
+    }
+    .hero-emoji {
+      font-size: 3rem; margin-bottom: 0.75rem;
+      display: block;
+      animation: heroFloat 3s ease-in-out infinite;
+    }
+    @keyframes heroFloat {
+      0%, 100% { transform: translateY(0) rotate(-3deg); }
+      50%       { transform: translateY(-6px) rotate(3deg); }
+    }
+    .hero-title {
+      font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800;
+      margin-bottom: 0.3rem; position: relative;
+    }
+    .hero-sub {
+      font-size: 0.875rem; opacity: 0.85; position: relative;
+    }
+
+    /* ── BOOKING VISUAL CARD ── */
+    .booking-visual {
+      background: var(--primary-soft);
+      border: 1px solid rgba(0,102,170,0.12);
+      border-radius: var(--radius-sm);
+      padding: 1.1rem 1.1rem 0.9rem;
+      margin-bottom: 1.25rem;
+    }
+    .board-thumb-row {
+      display: flex; align-items: center; gap: 0.9rem;
+      margin-bottom: 0.9rem; padding-bottom: 0.9rem;
+      border-bottom: 1px solid rgba(0,102,170,0.1);
+    }
+    .board-thumb {
+      width: 56px; height: 56px; border-radius: 10px;
+      background: linear-gradient(135deg, #0044aa, #0066aa);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; flex-shrink: 0; overflow: hidden;
+    }
+    .board-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .board-thumb-info { flex: 1; min-width: 0; }
+    .board-thumb-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700; font-size: 0.95rem;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      margin-bottom: 0.2rem;
+    }
+    .board-thumb-host { font-size: 0.78rem; color: var(--text-muted); }
+    .booking-row {
+      display: flex; justify-content: space-between;
+      align-items: center; font-size: 0.82rem;
+      padding: 0.2rem 0;
+    }
+    .booking-row .label { color: var(--text-muted); }
+    .booking-row .value { font-weight: 600; color: var(--text); }
+    .booking-total-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.65rem 0 0; margin-top: 0.5rem;
+      border-top: 1px solid rgba(0,102,170,0.12);
+    }
+    .booking-total-row .label {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.9rem;
+    }
+    .booking-total-row .value {
+      font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 800;
+      color: var(--primary);
+    }
+
+    /* ── NEXT STEPS ── */
+    .next-steps {
+      background: rgba(255,107,53,0.05); border: 1px solid rgba(255,107,53,0.12);
+      border-radius: var(--radius-sm); padding: 0.9rem 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .next-steps-title {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--sunset);
+      margin-bottom: 0.5rem;
+    }
+    .next-step-item {
+      display: flex; align-items: flex-start; gap: 0.5rem;
+      font-size: 0.8rem; color: var(--text-secondary);
+      line-height: 1.4; padding: 0.2rem 0;
+    }
+    .next-step-icon { flex-shrink: 0; font-size: 0.9rem; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      padding: 0.7rem 1.25rem; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600;
+      text-decoration: none; cursor: pointer; border: none;
+      transition: all 0.2s; position: relative; overflow: hidden;
+    }
+    .btn-primary {
+      background: var(--primary); color: #fff; width: 100%; margin-bottom: 0.6rem;
+    }
+    .btn-primary:hover { background: #0055aa; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,102,170,0.25); }
+    .btn-outline {
+      background: transparent; color: var(--text);
+      border: 1.5px solid var(--border); width: 100%;
+    }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* ── ERROR STATE ── */
+    .error-state { display: none; text-align: center; }
+    .error-icon { font-size: 2.5rem; margin-bottom: 1rem; opacity: 0.7; }
+    .error-state h1 {
+      font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .error-state p { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.5; }
+
+    /* ── DEPOSIT NOTICE ── */
+    .deposit-notice { background: rgba(255,107,53,0.05); border: 1px solid rgba(255,107,53,0.15); border-radius: var(--radius-sm); padding: 0.9rem 1rem; margin-bottom: 1.25rem; }
+    .deposit-notice strong { color: var(--sunset); }
+
+    /* ── CONFETTI DOTS (pure CSS, no JS) ── */
+    .confetti-container {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .dot {
+      position: absolute; width: 8px; height: 8px; border-radius: 50%;
+      animation: confettiFall linear both;
+    }
+    @keyframes confettiFall {
+      from { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      to   { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      width: 100%; background: #1a1410; color: rgba(255,255,255,0.75);
+      padding: 3rem 6% 1.5rem; border-top: 3px solid #ff6b35;
+      margin-top: 3rem;
+    }
+    .site-footer-grid {
+      display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.3fr;
+      gap: 2.5rem; margin-bottom: 2.5rem;
+    }
+    .footer-brand-logo {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem;
+      color: #fff; margin-bottom: 0.65rem; display: block;
+      text-decoration: none; letter-spacing: -0.02em;
+    }
+    .footer-brand-logo em { font-style: normal; color: #ff6b35; }
+    .footer-brand p {
+      font-size: 0.85rem; line-height: 1.6; color: rgba(255,255,255,0.45);
+      margin-bottom: 1.25rem;
+    }
+    .footer-socials { display: flex; gap: 0.6rem; }
+    .footer-social-btn {
+      width: 38px; height: 38px; border-radius: 9px;
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,0.55); font-size: 0.95rem; text-decoration: none;
+      transition: all 0.2s;
+    }
+    .footer-social-btn:hover { background: #ff6b35; border-color: #ff6b35; color: #fff; }
+    .footer-col h4 {
+      font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 0.75rem;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.3); margin-bottom: 1.1rem;
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 0.55rem; }
+    .footer-col ul li a {
+      font-size: 0.87rem; color: rgba(255,255,255,0.6);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .footer-col ul li a:hover { color: #fff; }
+    .footer-spot-tag::before { content: "📍"; font-size: 0.72rem; margin-right: 0.3rem; }
+    .footer-newsletter p { font-size: 0.85rem; color: rgba(255,255,255,0.45); margin-bottom: 0.85rem; line-height: 1.5; }
+    .footer-newsletter-form { display: flex; gap: 0.4rem; flex-direction: column; }
+    .footer-newsletter-form input[type="email"] {
+      padding: 0.65rem 0.9rem; border-radius: 9px;
+      border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05);
+      color: #fff; font-size: 0.85rem; outline: none; transition: border 0.2s;
+    }
+    .footer-newsletter-form input[type="email"]::placeholder { color: rgba(255,255,255,0.25); }
+    .footer-newsletter-form input[type="email"]:focus { border-color: #0066aa; }
+    .footer-newsletter-form button {
+      padding: 0.65rem 0.9rem; border-radius: 9px; background: #0066aa;
+      color: #fff; border: none; cursor: pointer; font-size: 0.85rem; font-weight: 600;
+      transition: all 0.2s;
+    }
+    .footer-newsletter-form button:hover { background: #0077cc; }
+    .footer-trust-badges { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+    .footer-badge {
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      padding: 0.3rem 0.55rem; border-radius: 5px;
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.72rem; color: rgba(255,255,255,0.5);
+    }
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1.25rem;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 0.75rem;
+    }
+    .footer-bottom-copy { font-size: 0.78rem; color: rgba(255,255,255,0.28); }
+    .footer-bottom-links { display: flex; gap: 1.25rem; }
+    .footer-bottom-links a { font-size: 0.78rem; color: rgba(255,255,255,0.28); text-decoration: none; transition: color 0.2s; }
+    .footer-bottom-links a:hover { color: rgba(255,255,255,0.65); }
+    @media (max-width: 600px) {
+      .site-footer { padding: 2.5rem 5% 1.25rem; }
+      .site-footer-grid { grid-template-columns: 1fr; gap: 1.75rem; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; }
+    }
+    @media (min-width: 601px) and (max-width: 900px) {
+      .site-footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+      .footer-brand { grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- confetti dots shown on success (added by JS) -->
+  <div class="confetti-container" id="confetti"></div>
+
+  <a href="/app.html" class="logo">qi<em>v</em>er 🌊</a>
+
+  <!-- Loading state -->
+  <div class="card" id="loading-state">
+    <div class="loading-state">
+      <div class="wave-loader">
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+      </div>
+      <h1>Confirmation du paiement…</h1>
+      <p>On vérifie tout, deux secondes.</p>
+    </div>
+  </div>
+
+  <!-- Success state -->
+  <div class="card success-state" id="success-state">
+
+    <div class="hero-section">
+      <span class="hero-emoji">🏄</span>
+      <h1 class="hero-title">C'est l'heure du ride !</h1>
+      <p class="hero-sub">Réservation confirmée — ta session t'attend.</p>
+    </div>
+
+    <div class="booking-visual" id="booking-visual">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="next-steps">
+      <div class="next-steps-title">📋 Et maintenant ?</div>
+      <div class="next-step-item">
+        <span class="next-step-icon">📸</span>
+        <span><strong>Avant de partir :</strong> Prends 4 photos de la planche au check-in pour protéger ta caution. Tu les trouveras dans l'app.</span>
+      </div>
+      <div class="next-step-item">
+        <span class="next-step-icon">💬</span>
+        <span id="pickup-text">L'hôte te contacte pour la récup. Tu peux aussi lui écrire directement.</span>
+      </div>
+      <div class="next-step-item">
+        <span class="next-step-icon">🌊</span>
+        <span>Check le swell, pack léger — la planche t'attend.</span>
+      </div>
+    </div>
+
+    <div class="deposit-notice" id="deposit-notice" style="display:none;background:rgba(255,107,53,0.07);border:1px solid rgba(255,107,53,0.2);border-radius:10px;padding:0.85rem 1rem;margin-bottom:1.25rem;">
+      <div style="display:flex;align-items:flex-start;gap:0.5rem;">
+        <span style="font-size:1.1rem;">🔒</span>
+        <div>
+          <div style="font-size:0.82rem;font-weight:700;color:var(--sunset);margin-bottom:0.2rem;" id="deposit-title">Caution bloquée</div>
+          <div style="font-size:0.75rem;color:var(--text-secondary);line-height:1.5;" id="deposit-desc">Une caution de <strong id="deposit-amount-label"></strong> a été bloquée sur ta carte — <strong>non débitée</strong>. Elle sera libérée automatiquement 48h après le retour si tout va bien.</div>
+        </div>
+      </div>
+    </div>
+
+    <a href="/app.html" class="btn btn-primary">Voir ma réservation</a>
+    <a href="/app.html" class="btn btn-outline" id="message-host-btn">Envoyer un message à l'hôte</a>
+
+    <!-- Referral share nudge — shown after confirming payment -->
+    <div id="referral-nudge" style="display:none;margin-top:1.25rem;background:linear-gradient(135deg,rgba(0,102,170,0.06),rgba(255,107,53,0.04));border:1px solid rgba(0,102,170,0.15);border-radius:12px;padding:1.1rem 1.2rem;text-align:center;">
+      <div style="font-size:1.3rem;margin-bottom:0.4rem;">🤙</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.92rem;margin-bottom:0.3rem;">Partage ton code, gagne €10 par ami</div>
+      <div style="font-size:0.78rem;color:rgba(0,0,0,0.55);margin-bottom:0.85rem;line-height:1.5;">Un pote qui réserve avec ton lien → <strong>€10 pour toi, €10 pour lui</strong>. Jusqu'à 5 fois.</div>
+      <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
+        <button onclick="copyReferralNudge()" id="nudge-copy-btn" style="display:inline-flex;align-items:center;gap:0.35rem;padding:0.55rem 1rem;border-radius:100px;background:#0066aa;color:#fff;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;font-family:'DM Sans',sans-serif;transition:all 0.2s;">📋 Copier mon lien</button>
+        <button onclick="shareReferralNudge()" id="nudge-share-btn" style="display:none;align-items:center;gap:0.35rem;padding:0.55rem 1rem;border-radius:100px;background:rgba(0,0,0,0.07);color:#1a1a1a;border:none;cursor:pointer;font-size:0.82rem;font-weight:600;font-family:'DM Sans',sans-serif;transition:all 0.2s;">↗ Partager</button>
+      </div>
+      <div id="nudge-link-display" style="display:none;margin-top:0.7rem;font-size:0.72rem;color:rgba(0,0,0,0.4);word-break:break-all;" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <!-- Error state -->
+  <div class="card error-state" id="error-state">
+    <div class="error-icon">⚠️</div>
+    <h1>Paiement introuvable</h1>
+    <p id="error-message">Paiement non confirmé. Si tu as été débité, écris à swell@polsia.app — on règle ça.</p>
+    <a href="/app.html" class="btn btn-primary">Retour au marketplace</a>
+  </div>
+
+  <script>
+    // CSRF — inject X-CSRF-Token header on mutating requests
+    (function() {
+      const _origFetch = window.fetch;
+      function getCsrfToken() {
+        const m = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+        return m ? decodeURIComponent(m[1]) : '';
+      }
+      window.fetch = function(url, opts) {
+        opts = opts || {};
+        const method = (opts.method || 'GET').toUpperCase();
+        if (method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS') {
+          const token = getCsrfToken();
+          if (token) {
+            if (opts.headers instanceof Headers) {
+              if (!opts.headers.has('X-CSRF-Token')) opts.headers.set('X-CSRF-Token', token);
+            } else {
+              opts.headers = Object.assign({ 'X-CSRF-Token': token }, opts.headers || {});
+            }
+          }
+        }
+        return _origFetch.call(this, url, opts);
+      };
+    })();
+
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+    const bookingId = params.get('booking_id');
+
+    async function verifyPayment() {
+      if (!sessionId || !bookingId) {
+        showError('Paramètres de session manquants.');
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/bookings/payment-verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId, bookingId: parseInt(bookingId) })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          // Stripe webhook may be slightly delayed — retry once
+          if (res.status === 402) {
+            await sleep(2000);
+            const retry = await fetch('/api/bookings/payment-verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ sessionId, bookingId: parseInt(bookingId) })
+            });
+            const retryData = await retry.json();
+            if (!retry.ok || !retryData.success) {
+              showError(retryData.error || 'Le paiement n\'a pas pu être confirmé.');
+              return;
+            }
+            showSuccess(retryData.booking, retryData.payment);
+          } else {
+            showError(data.error || 'Erreur de vérification.');
+          }
+          return;
+        }
+
+        showSuccess(data.booking, data.payment);
+
+      } catch (err) {
+        showError('Impossible de vérifier le paiement. Réessaie ou contacte le support.');
+      }
+    }
+
+    function showSuccess(booking, payment) {
+      // After rental payment confirmed, check if there's a deposit to collect
+      const pendingDeposit = sessionStorage.getItem('swell_pending_deposit');
+      if (pendingDeposit) {
+        try {
+          const { bookingId, depositCents } = JSON.parse(pendingDeposit);
+          if (depositCents > 0 && bookingId) {
+            sessionStorage.removeItem('swell_pending_deposit');
+            // Trigger deposit checkout — show brief message first
+            document.getElementById('loading-state').querySelector('h1').textContent = 'Paiement confirmé — Caution en cours…';
+            document.getElementById('loading-state').querySelector('p').textContent = `Création de la caution de €${(depositCents/100).toFixed(0)} (remboursable après retour)…`;
+            // Small delay so user sees the transition
+            setTimeout(async () => {
+              try {
+                const dRes = await fetch(`/api/deposits/${bookingId}/create`, { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+                const dData = await dRes.json();
+                if (dData.checkoutUrl) {
+                  window.location.href = dData.checkoutUrl;
+                  return;
+                }
+              } catch(_) { /* fall through to normal success if deposit fails */ }
+              _showSuccessUI(booking, payment);
+            }, 1200);
+            return;
+          }
+        } catch(_) { sessionStorage.removeItem('swell_pending_deposit'); }
+      }
+
+      _showSuccessUI(booking, payment);
+    }
+
+    function _showSuccessUI(booking, payment) {
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('success-state').style.display = 'block';
+
+      // Referral nudge — load async, non-blocking
+      loadReferralNudge();
+
+      // Confetti burst
+      spawnConfetti();
+
+      // Fire Meta Pixel Purchase event
+      if (booking && booking.total_cents) {
+        fbq('track', 'Purchase', {
+          value: (booking.total_cents / 100).toFixed(2),
+          currency: 'EUR'
+        });
+      }
+
+      if (booking) {
+        const startDate = new Date(booking.start_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+        const endDate = new Date(booking.end_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+        const total = ((booking.total_cents || 0) / 100).toFixed(0);
+        const days = Math.ceil((new Date(booking.end_date) - new Date(booking.start_date)) / 86400000) || 1;
+
+        const photo = (booking.photos && Array.isArray(booking.photos) && booking.photos[0]) || null;
+        const thumbHtml = photo
+          ? `<div class="board-thumb"><img src="${photo}" alt="${booking.board_title || 'Board'}"></div>`
+          : `<div class="board-thumb">🏄</div>`;
+
+        document.getElementById('booking-visual').innerHTML = `
+          <div class="board-thumb-row">
+            ${thumbHtml}
+            <div class="board-thumb-info">
+              <div class="board-thumb-title">${booking.board_title || 'Planche réservée'}</div>
+              <div class="board-thumb-host">Hôte : ${booking.host_name || '—'}</div>
+            </div>
+          </div>
+          <div class="booking-row">
+            <span class="label">🗓 Arrivée</span>
+            <span class="value">${startDate}</span>
+          </div>
+          <div class="booking-row">
+            <span class="label">🗓 Départ</span>
+            <span class="value">${endDate}</span>
+          </div>
+          <div class="booking-row">
+            <span class="label">⏱ Durée</span>
+            <span class="value">${days} jour${days > 1 ? 's' : ''}</span>
+          </div>
+          <div class="booking-total-row">
+            <span class="label">Total payé</span>
+            <span class="value">€${total}</span>
+          </div>
+        `;
+
+        if (booking.host_name) {
+          document.getElementById('pickup-text').textContent =
+            `${booking.host_name} te contactera pour la récupération. Tu peux aussi lui écrire directement.`;
+        }
+      }
+
+      document.getElementById('message-host-btn').href = '/app.html?dashboard=messages';
+
+        // Show deposit notice if a deposit hold is active
+        if (booking && booking.deposit_amount_cents > 0 && booking.deposit_status !== 'none') {
+          const notice = document.getElementById('deposit-notice');
+          const amountLabel = document.getElementById('deposit-amount-label');
+          if (notice && amountLabel) {
+            amountLabel.textContent = `€${(booking.deposit_amount_cents / 100).toFixed(0)}`;
+            notice.style.display = 'block';
+          }
+        }
+      }
+
+    function showError(msg) {
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('error-message').textContent = msg;
+      document.getElementById('error-state').style.display = 'block';
+    }
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+    function spawnConfetti() {
+      const container = document.getElementById('confetti');
+      const colors = ['#0066aa', '#ff6b35', '#d4a574', '#22c55e', '#fbbf24', '#a855f7'];
+      for (let i = 0; i < 28; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        dot.style.cssText = `
+          left: ${Math.random() * 100}%;
+          top: ${-10 + Math.random() * -30}px;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          width: ${5 + Math.random() * 7}px;
+          height: ${5 + Math.random() * 7}px;
+          border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+          animation-duration: ${2.2 + Math.random() * 2.5}s;
+          animation-delay: ${Math.random() * 0.8}s;
+        `;
+        container.appendChild(dot);
+        dot.addEventListener('animationend', () => dot.remove());
+      }
+    }
+
+    // Referral nudge: fetch user's referral link and show share block after success
+    async function loadReferralNudge() {
+      try {
+        const res = await fetch('/api/referrals/me');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!data.referralUrl) return;
+        window._nudgeUrl = data.referralUrl;
+        window._nudgeCode = data.referralCode;
+        const nudge = document.getElementById('referral-nudge');
+        if (nudge) nudge.style.display = 'block';
+        // Show native share button on mobile if supported
+        if (typeof navigator.share === 'function') {
+          const shareBtn = document.getElementById('nudge-share-btn');
+          if (shareBtn) shareBtn.style.display = 'inline-flex';
+        }
+      } catch(_) { /* non-fatal */ }
+    }
+
+    function copyReferralNudge() {
+      const url = window._nudgeUrl;
+      if (!url) return;
+      navigator.clipboard.writeText(url).then(() => {
+        const btn = document.getElementById('nudge-copy-btn');
+        if (btn) { btn.textContent = '✓ Copié !'; btn.style.background = '#22c55e'; }
+        const display = document.getElementById('nudge-link-display');
+        if (display) { display.textContent = url; display.style.display = 'block'; }
+        setTimeout(() => {
+          if (btn) { btn.textContent = '📋 Copier mon lien'; btn.style.background = '#0066aa'; }
+        }, 2500);
+      }).catch(() => {
+        const display = document.getElementById('nudge-link-display');
+        if (display) { display.textContent = url; display.style.display = 'block'; }
+      });
+    }
+
+    function shareReferralNudge() {
+      const url = window._nudgeUrl;
+      const code = window._nudgeCode;
+      if (!url || typeof navigator.share !== 'function') return;
+      navigator.share({
+        title: 'Swell — loue une planche de surf',
+        text: `Essaie Swell pour louer des planches de surf à Hossegor. Utilise mon code ${code} pour €10 de remise sur ta première session.`,
+        url
+      }).catch(() => {});
+    }
+
+    verifyPayment();
+
+    function handleNewsletterSignup(e) {
+      e.preventDefault();
+      const form = e.target;
+      const btn = form.querySelector('button');
+      const input = form.querySelector('input');
+      btn.textContent = 'Dans le lineup ✓';
+      btn.style.background = '#1b7a4e';
+      input.value = '';
+      input.disabled = true;
+      btn.disabled = true;
+    }
+  </script>
+
+  <div class="page-spacer"></div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="site-footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="footer-brand-logo">qi<em>v</em>er</a>
+        <p>Arrive léger. Surfe local.<br>La marketplace peer-to-peer pour louer des planches entre surfeurs.</p>
+        <div class="footer-socials">
+          <a href="mailto:swell@polsia.app" class="footer-social-btn" aria-label="Email">&#9993;</a>
+          <a href="https://instagram.com/swell_surf" target="_blank" rel="noopener noreferrer" class="footer-social-btn" aria-label="Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="2"/>
+              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
+              <circle cx="17.5" cy="6.5" r="1.5" fill="currentColor"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="/">À propos</a></li>
+          <li><a href="/app.html">Marketplace</a></li>
+          <li><a href="/partner">Devenir partenaire</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Spots populaires</h4>
+        <ul>
+          <li><a href="/app.html?spot=hossegor" class="footer-spot-tag">Hossegor</a></li>
+          <li><a href="/app.html?spot=seignosse" class="footer-spot-tag">Seignosse</a></li>
+          <li><a href="/app.html?spot=capbreton" class="footer-spot-tag">Capbreton</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Reste dans le lineup</h4>
+        <div class="footer-newsletter">
+          <p>Spots, boards rares, nouveaux riders dans ta zone.</p>
+          <form class="footer-newsletter-form" onsubmit="handleNewsletterSignup(event)">
+            <input type="email" placeholder="ton@email.com" required autocomplete="email">
+            <button type="submit">Rejoindre le lineup →</button>
+          </form>
+        </div>
+        <div class="footer-trust-badges">
+          <span class="footer-badge"><span>🔒</span> Paiement sécurisé</span>
+          <span class="footer-badge"><span>✓</span> Identité vérifiée</span>
+          <span class="footer-badge"><span>🛡️</span> Protection dommages</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-bottom-copy">&copy; 2026 Swell — Hossegor d'abord. Puis partout.</span>
+      <div class="footer-bottom-links">
+        <a href="/cgu">CGU</a>
+        <a href="/confidentialite">Confidentialité</a>
+        <a href="mailto:swell@polsia.app">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

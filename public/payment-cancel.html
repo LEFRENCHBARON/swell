@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#060d1a">
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Paiement annulé — Swell</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@500;600&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"></noscript>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #fafaf8;
+      --card: #ffffff;
+      --border: rgba(0,0,0,0.08);
+      --text: #1a1a1a;
+      --text-secondary: rgba(0,0,0,0.62);
+      --text-muted: rgba(0,0,0,0.45);
+      --primary: #0066aa;
+      --primary-soft: rgba(0,102,170,0.06);
+      --sunset: #ff6b35;
+      --orange-bg: rgba(255,107,53,0.07);
+      --orange-border: rgba(255,107,53,0.18);
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 3rem 1.5rem 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page-spacer { flex: 1; min-height: 3rem; }
+    .logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem; font-weight: 800;
+      color: var(--primary); text-decoration: none;
+      display: block; margin-bottom: 1.75rem;
+      letter-spacing: -0.02em;
+    }
+    .logo em { font-style: normal; color: var(--text); }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.07);
+      text-align: center;
+    }
+    .cancel-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1.25rem;
+      display: block;
+    }
+    .cancel-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem; font-weight: 800;
+      margin-bottom: 0.5rem;
+    }
+    .cancel-sub {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 1.75rem;
+    }
+    .info-box {
+      background: var(--orange-bg);
+      border: 1px solid var(--orange-border);
+      border-radius: var(--radius-sm);
+      padding: 0.9rem 1rem;
+      margin-bottom: 1.75rem;
+      text-align: left;
+    }
+    .info-box-title {
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--sunset);
+      margin-bottom: 0.5rem;
+    }
+    .info-item {
+      display: flex; align-items: flex-start; gap: 0.5rem;
+      font-size: 0.82rem; color: var(--text-secondary);
+      line-height: 1.4; padding: 0.18rem 0;
+    }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      padding: 0.75rem 1.25rem; border-radius: 100px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600;
+      text-decoration: none; cursor: pointer; border: none;
+      transition: all 0.2s; width: 100%; margin-bottom: 0.6rem;
+    }
+    .btn-primary {
+      background: var(--primary); color: #fff;
+    }
+    .btn-primary:hover { background: #0055aa; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,102,170,0.25); }
+    .btn-outline {
+      background: transparent; color: var(--text);
+      border: 1.5px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* FOOTER */
+    .site-footer {
+      width: 100%; background: #1a1410; color: rgba(255,255,255,0.75);
+      padding: 2rem 6% 1.25rem; border-top: 3px solid #ff6b35;
+      margin-top: 3rem;
+    }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 0.75rem;
+    }
+    .footer-bottom-copy { font-size: 0.78rem; color: rgba(255,255,255,0.28); }
+    .footer-bottom-links { display: flex; gap: 1.25rem; }
+    .footer-bottom-links a { font-size: 0.78rem; color: rgba(255,255,255,0.28); text-decoration: none; transition: color 0.2s; }
+    .footer-bottom-links a:hover { color: rgba(255,255,255,0.65); }
+    @media (max-width: 600px) {
+      .site-footer { padding: 1.5rem 5% 1rem; }
+      .footer-bottom { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="/app.html" class="logo">qi<em>v</em>er 🌊</a>
+
+  <div class="card">
+    <span class="cancel-icon">↩️</span>
+    <h1 class="cancel-title">Paiement annulé</h1>
+    <p class="cancel-sub">
+      Tu as annulé le paiement. Aucune somme n'a été prélevée.<br>
+      La demande de réservation a été supprimée.
+    </p>
+
+    <div class="info-box">
+      <div class="info-box-title">💡 Tu veux réessayer ?</div>
+      <div class="info-item"><span>📅</span><span>Retourne sur la fiche de la planche et sélectionne à nouveau tes dates.</span></div>
+      <div class="info-item"><span>💳</span><span>Tu peux utiliser une autre carte ou moyen de paiement.</span></div>
+      <div class="info-item"><span>💬</span><span>Un problème ? Écris à <a href="mailto:swell@polsia.app" style="color:var(--sunset);">swell@polsia.app</a> — on t'aide.</span></div>
+    </div>
+
+    <a href="/app.html" class="btn btn-primary">Retour au marketplace</a>
+    <a href="mailto:swell@polsia.app" class="btn btn-outline">Contacter le support</a>
+  </div>
+
+  <div class="page-spacer"></div>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <span class="footer-bottom-copy">&copy; 2026 Swell — Hossegor d'abord. Puis partout.</span>
+      <div class="footer-bottom-links">
+        <a href="/cgu">CGU</a>
+        <a href="/confidentialite">Confidentialité</a>
+        <a href="mailto:swell@polsia.app">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

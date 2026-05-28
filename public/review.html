@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laisse ton avis — Swell</title>
+  <meta name="robots" content="noindex">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background: #f8fafc;
+      color: #1f2937;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.08);
+      max-width: 480px;
+      width: 100%;
+      padding: 36px 28px;
+      text-align: center;
+    }
+    .emoji { font-size: 44px; margin-bottom: 16px; }
+    h1 { font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+    .subtitle { font-size: 15px; color: #64748b; margin-bottom: 28px; line-height: 1.5; }
+    /* Star selector */
+    .stars { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; }
+    .stars button {
+      background: none;
+      border: none;
+      font-size: 38px;
+      cursor: pointer;
+      transition: transform .15s;
+      padding: 4px;
+      line-height: 1;
+    }
+    .stars button:hover, .stars button.active { transform: scale(1.2); }
+    .stars button.filled { filter: drop-shadow(0 0 4px rgba(251,191,36,.6)); }
+    /* Comment textarea */
+    textarea {
+      width: 100%;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #1f2937;
+      resize: vertical;
+      min-height: 90px;
+      margin-bottom: 20px;
+      transition: border-color .2s;
+    }
+    textarea:focus { outline: none; border-color: #0ea5e9; }
+    textarea::placeholder { color: #94a3b8; }
+    /* Submit button */
+    .btn-submit {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: #0ea5e9;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background .2s, opacity .2s;
+    }
+    .btn-submit:hover { background: #0284c7; }
+    .btn-submit:disabled { opacity: .5; cursor: not-allowed; }
+    /* Rating label */
+    .rating-label {
+      font-size: 15px;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 6px;
+      min-height: 22px;
+    }
+    /* Error / loading */
+    .msg { font-size: 14px; color: #ef4444; margin-top: 12px; min-height: 20px; }
+    /* Thank-you state */
+    .thankyou { display: none; }
+    .thankyou h1 { color: #16a34a; }
+    .btn-find {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 13px 28px;
+      background: #0f172a;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .login-note { font-size: 13px; color: #64748b; margin-top: 14px; }
+    .login-note a { color: #0ea5e9; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <!-- Review form -->
+    <div id="form-state">
+      <div class="emoji">🤙</div>
+      <h1>Comment était ta session ?</h1>
+      <p class="subtitle" id="session-desc">Loading…</p>
+
+      <div class="rating-label" id="rating-label">Sélectionne une note</div>
+      <div class="stars" id="star-row">
+        <button data-v="1" title="1 étoile">☆</button>
+        <button data-v="2" title="2 étoiles">☆</button>
+        <button data-v="3" title="3 étoiles">☆</button>
+        <button data-v="4" title="4 étoiles">☆</button>
+        <button data-v="5" title="5 étoiles">☆</button>
+      </div>
+
+      <textarea id="comment" placeholder="Partage ton expérience (optionnel) — type de vagues, qualité du board, accueil du host…" maxlength="600"></textarea>
+
+      <button class="btn-submit" id="btn-submit" disabled>Envoyer mon avis</button>
+      <div class="msg" id="msg"></div>
+      <p class="login-note">Tu dois être <a href="/app.html#login">connecté</a> pour laisser un avis.</p>
+    </div>
+
+    <!-- Thank-you state -->
+    <div class="thankyou" id="thankyou-state">
+      <div class="emoji">⭐</div>
+      <h1>Merci pour ton avis !</h1>
+      <p class="subtitle">Ton retour aide la communauté Swell à surfer sur les meilleures planches.</p>
+      <a href="/app.html" class="btn-find">Trouve ta prochaine planche →</a>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const params = new URLSearchParams(location.search);
+      const bookingId = parseInt(params.get('booking') || '0', 10);
+      const preRating  = parseInt(params.get('rating')  || '0', 10);
+
+      const stars     = document.querySelectorAll('#star-row button');
+      const btnSubmit = document.getElementById('btn-submit');
+      const msgEl     = document.getElementById('msg');
+      const labelEl   = document.getElementById('rating-label');
+      const descEl    = document.getElementById('session-desc');
+
+      const labels = ['', 'Mauvaise session', 'Pas terrible', 'Correcte', 'Bonne session', 'Parfaite ! 🤙'];
+      let selectedRating = 0;
+
+      if (!bookingId) {
+        descEl.textContent = 'Lien invalide — retourne sur l\'app pour laisser ton avis.';
+        btnSubmit.disabled = true;
+      } else {
+        descEl.textContent = `Réservation #${bookingId}`;
+      }
+
+      function setRating(n) {
+        selectedRating = n;
+        stars.forEach((btn, i) => {
+          btn.textContent = i < n ? '⭐' : '☆';
+          btn.classList.toggle('filled', i < n);
+          btn.classList.toggle('active', i === n - 1);
+        });
+        labelEl.textContent = labels[n] || 'Sélectionne une note';
+        btnSubmit.disabled = !n || !bookingId;
+      }
+
+      stars.forEach(btn => {
+        btn.addEventListener('click', () => setRating(parseInt(btn.dataset.v, 10)));
+      });
+
+      // Pre-fill from query string (star link in email)
+      if (preRating >= 1 && preRating <= 5) setRating(preRating);
+
+      btnSubmit.addEventListener('click', async () => {
+        if (!selectedRating || !bookingId) return;
+        btnSubmit.disabled = true;
+        btnSubmit.textContent = 'Envoi…';
+        msgEl.textContent = '';
+
+        try {
+          // Fetch CSRF token first
+          let csrfToken = '';
+          try {
+            const csrfRes = await fetch('/api/csrf-token', { credentials: 'include' });
+            if (csrfRes.ok) {
+              const data = await csrfRes.json();
+              csrfToken = data.csrfToken || data.token || '';
+            }
+          } catch (_) { /* non-fatal — some setups don't need it */ }
+
+          const res = await fetch('/api/reviews', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(csrfToken ? { 'X-CSRF-Token': csrfToken } : {}),
+            },
+            body: JSON.stringify({
+              bookingId,
+              rating: selectedRating,
+              comment: document.getElementById('comment').value.trim() || null,
+            }),
+          });
+
+          const data = await res.json();
+
+          if (res.status === 401) {
+            msgEl.textContent = 'Tu dois être connecté pour laisser un avis.';
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = 'Envoyer mon avis';
+            return;
+          }
+
+          if (!res.ok) {
+            msgEl.textContent = data.error || 'Erreur — réessaye.';
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = 'Envoyer mon avis';
+            return;
+          }
+
+          // Success → show thank-you
+          document.getElementById('form-state').style.display = 'none';
+          document.getElementById('thankyou-state').style.display = 'block';
+        } catch (err) {
+          msgEl.textContent = 'Erreur réseau — réessaye.';
+          btnSubmit.disabled = false;
+          btnSubmit.textContent = 'Envoyer mon avis';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

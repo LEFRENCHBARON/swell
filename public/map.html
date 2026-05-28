@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carte des planches de surf disponibles — Swell</title>
+  <meta name="description" content="Découvrez toutes les planches de surf disponibles à la location sur la côte aquitaine. Hossegor, Seignosse, Capbreton, Biarritz — trouvez la board parfaite près de chez vous.">
+  <link rel="canonical" href="https://swell.polsia.app/map">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Swell">
+  <meta property="og:url" content="https://swell.polsia.app/map">
+  <meta property="og:title" content="Carte des planches — Swell">
+  <meta property="og:description" content="Toutes les planches dispo à louer sur la côte atlantique française. Trouvez en 2 secondes.">
+  <meta property="og:image" content="https://swell.polsia.app/og-image.png">
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#0e1e36">
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <!-- MarkerCluster CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+
+  <style>
+    :root {
+      --night: #0d1b2e;
+      --dusk: #142540;
+      --ocean: #1a3a5c;
+      --coral: #f05a28;
+      --coral-light: #ff7a4a;
+      --mint: #2ac4a3;
+      --white: #f5f5f0;
+      --white-70: rgba(245,245,240,0.70);
+      --white-40: rgba(245,245,240,0.40);
+      --border: rgba(245,245,240,0.10);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--night);
+      color: var(--white);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── NAV ─────────────────────────────────────────────── */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(13,27,46,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.25rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--white);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo span { color: var(--coral); }
+
+    .nav-links { display: flex; gap: 1rem; align-items: center; }
+
+    .nav-links a {
+      color: var(--white-70);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover { color: var(--white); }
+
+    .btn-cta {
+      background: var(--coral);
+      color: #fff;
+      padding: 0.45rem 1rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .btn-cta:hover { background: var(--coral-light); color: #fff; }
+
+    /* ── PAGE HEADER ────────────────────────────────────── */
+    .page-header {
+      padding: 1rem 1.25rem 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .page-header h1 {
+      font-size: clamp(1.1rem, 3vw, 1.4rem);
+      font-weight: 800;
+      font-family: 'Syne', sans-serif;
+    }
+
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--dusk);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.4rem 0.9rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--white-70);
+      transition: all 0.15s;
+      user-select: none;
+    }
+
+    .filter-toggle:hover { border-color: var(--coral); color: var(--white); }
+
+    .filter-toggle.active {
+      background: var(--coral);
+      border-color: var(--coral);
+      color: #fff;
+    }
+
+    .toggle-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+
+    /* ── MAIN LAYOUT ───────────────────────────────────── */
+    .map-layout {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+      height: calc(100vh - 56px - 60px); /* minus nav + header */
+    }
+
+    /* ── SIDEBAR ───────────────────────────────────────── */
+    .sidebar {
+      width: 320px;
+      flex-shrink: 0;
+      background: var(--dusk);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 0.875rem 1rem 0.625rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--white-40);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .sidebar-list {
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .sidebar-list::-webkit-scrollbar { width: 4px; }
+    .sidebar-list::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .spot-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.12s;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .spot-item:hover { background: rgba(240, 90, 40, 0.07); }
+    .spot-item.highlighted { background: rgba(240, 90, 40, 0.12); }
+
+    .spot-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: var(--ocean);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .spot-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .spot-info { flex: 1; min-width: 0; }
+
+    .spot-name {
+      font-size: 0.875rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .spot-meta {
+      font-size: 0.75rem;
+      color: var(--white-40);
+      margin-top: 0.15rem;
+    }
+
+    .spot-count {
+      flex-shrink: 0;
+      background: var(--coral);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 0.2rem 0.45rem;
+      border-radius: 10px;
+      min-width: 26px;
+      text-align: center;
+    }
+
+    .spot-count.zero {
+      background: var(--border);
+      color: var(--white-40);
+    }
+
+    /* ── MAP ───────────────────────────────────────────── */
+    #map {
+      flex: 1;
+      background: var(--night);
+    }
+
+    /* Leaflet dark tile fix */
+    .leaflet-tile { filter: brightness(0.7) saturate(0.8); }
+
+    /* Popup styling */
+    .leaflet-popup-content-wrapper {
+      background: var(--dusk) !important;
+      color: var(--white) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: 12px !important;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+    }
+
+    .leaflet-popup-tip { background: var(--dusk) !important; }
+
+    .leaflet-popup-close-button {
+      color: var(--white-40) !important;
+      font-size: 18px !important;
+      top: 8px !important;
+      right: 8px !important;
+    }
+
+    .popup-inner { min-width: 200px; }
+
+    .popup-photo {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 0.6rem;
+      background: var(--ocean);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+    }
+
+    .popup-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .popup-name {
+      font-size: 0.95rem;
+      font-weight: 800;
+      font-family: 'Syne', sans-serif;
+      margin-bottom: 0.25rem;
+    }
+
+    .popup-boards {
+      font-size: 0.8rem;
+      color: var(--white-70);
+      margin-bottom: 0.1rem;
+    }
+
+    .popup-price {
+      font-size: 0.78rem;
+      color: var(--mint);
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .popup-cta {
+      display: block;
+      background: var(--coral);
+      color: #fff;
+      text-align: center;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+
+    .popup-cta:hover { background: var(--coral-light); }
+
+    /* Custom marker icon */
+    .map-marker-icon {
+      background: var(--coral);
+      color: #fff;
+      border-radius: 50% 50% 50% 0;
+      transform: rotate(-45deg);
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      border: 2px solid rgba(255,255,255,0.3);
+    }
+
+    .map-marker-icon span {
+      transform: rotate(45deg);
+      font-size: 0.65rem;
+      font-weight: 800;
+    }
+
+    /* ── MOBILE DRAWER ─────────────────────────────────── */
+    .mobile-drawer {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 900;
+      background: var(--dusk);
+      border-top: 1px solid var(--border);
+      border-radius: 16px 16px 0 0;
+      max-height: 55vh;
+      overflow: hidden;
+      transform: translateY(calc(100% - 60px));
+      transition: transform 0.3s ease;
+    }
+
+    .mobile-drawer.open { transform: translateY(0); }
+
+    .drawer-handle {
+      padding: 0.75rem 1rem 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .drawer-handle-bar {
+      width: 36px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin: 0 auto 0.5rem;
+    }
+
+    .drawer-title {
+      font-size: 0.8rem;
+      color: var(--white-40);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .drawer-list {
+      overflow-x: auto;
+      overflow-y: hidden;
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.5rem 1rem 1rem;
+    }
+
+    .drawer-list::-webkit-scrollbar { display: none; }
+
+    .drawer-card {
+      flex-shrink: 0;
+      width: 140px;
+      background: var(--ocean);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .drawer-card-img {
+      height: 70px;
+      background: var(--night);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .drawer-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .drawer-card-body { padding: 0.4rem 0.5rem; }
+
+    .drawer-card-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .drawer-card-meta {
+      font-size: 0.65rem;
+      color: var(--white-40);
+      margin-top: 0.1rem;
+    }
+
+    /* ── LOADING / EMPTY STATES ──────────────────────────── */
+    .state-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 500;
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid var(--border);
+      border-top-color: var(--coral);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .mobile-drawer { display: block; }
+      .map-layout { height: calc(100vh - 56px - 60px); }
+    }
+
+    /* Cluster icon customization */
+    .marker-cluster-small,
+    .marker-cluster-medium,
+    .marker-cluster-large {
+      background-color: rgba(240, 90, 40, 0.25) !important;
+    }
+
+    .marker-cluster-small div,
+    .marker-cluster-medium div,
+    .marker-cluster-large div {
+      background-color: rgba(240, 90, 40, 0.7) !important;
+      color: #fff !important;
+      font-weight: 800 !important;
+      font-size: 12px !important;
+    }
+  </style>
+
+  <!-- JSON-LD: ItemList of surf spots -->
+  <script type="application/ld+json" id="spots-jsonld">
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "Spots de surf — Swell",
+    "description": "Locations de planches de surf disponibles sur la côte atlantique française",
+    "url": "https://swell.polsia.app/map",
+    "itemListElement": []
+  }
+  </script>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <a href="/" class="nav-logo">Q<span>i</span>ver</a>
+    <div class="nav-links">
+      <a href="/search">🔍 Filtrer</a>
+      <a href="/app.html">Explorer</a>
+      <a href="/host.html">Proposer</a>
+      <a href="/app.html" class="btn-cta">Réserver</a>
+    </div>
+  </nav>
+
+  <!-- Page header + filter -->
+  <div class="page-header">
+    <h1>🗺️ Spots &amp; planches</h1>
+    <div class="filter-bar">
+      <button class="filter-toggle" id="availToggle" aria-pressed="false">
+        <span class="toggle-dot"></span>
+        Dispo cette semaine
+      </button>
+      <a href="/search" style="font-size:0.8rem;color:var(--white-70);text-decoration:none;padding:0.375rem 0.75rem;border:1px solid var(--border);border-radius:20px;white-space:nowrap;transition:all 0.15s" onmouseover="this.style.color='var(--white)';this.style.borderColor='var(--coral)'" onmouseout="this.style.color='var(--white-70)';this.style.borderColor='var(--border)'">🔍 Filtres avancés</a>
+    </div>
+  </div>
+
+  <!-- Main layout -->
+  <div class="map-layout">
+    <!-- Desktop sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header" id="sidebar-label">Tous les spots</div>
+      <div class="sidebar-list" id="sidebarList">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+    <!-- Map container -->
+    <div style="position:relative;flex:1;">
+      <div id="map"></div>
+      <div class="state-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile bottom drawer -->
+  <div class="mobile-drawer" id="mobileDrawer">
+    <div class="drawer-handle" id="drawerHandle">
+      <div>
+        <div class="drawer-handle-bar"></div>
+        <div class="drawer-title" id="drawerTitle">Spots visibles</div>
+      </div>
+    </div>
+    <div class="drawer-list" id="drawerList"></div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV/XN2GHYc=" crossorigin=""></script>
+  <!-- MarkerCluster JS -->
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+  <script>
+    // ─── State ──────────────────────────────────────────────────────────────
+    let allSpots = [];
+    let markers = {};        // spotId → L.Marker
+    let clusterGroup = null;
+    let filterAvailable = false;
+    let map;
+
+    // ─── Map init ───────────────────────────────────────────────────────────
+    function initMap() {
+      map = L.map('map', {
+        center: [43.85, -1.55],   // Centered on Hossegor / Landes coast
+        zoom: 10,
+        zoomControl: true,
+      });
+
+      // OpenStreetMap tiles — no token required
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        maxZoom: 18,
+      }).addTo(map);
+
+      // Zoom to viewport triggers sidebar update
+      map.on('moveend', updateSidebarFromViewport);
+
+      clusterGroup = L.markerClusterGroup({
+        maxClusterRadius: 50,
+        spiderfyOnMaxZoom: true,
+        showCoverageOnHover: false,
+        iconCreateFunction(cluster) {
+          const count = cluster.getChildCount();
+          const size = count < 5 ? 'small' : count < 15 ? 'medium' : 'large';
+          return L.divIcon({
+            html: `<div><span>${count}</span></div>`,
+            className: `marker-cluster marker-cluster-${size}`,
+            iconSize: L.point(40, 40),
+          });
+        },
+      });
+      map.addLayer(clusterGroup);
+    }
+
+    // ─── Fetch spots from API ────────────────────────────────────────────────
+    async function loadSpots() {
+      document.getElementById('loadingOverlay').style.display = 'flex';
+      try {
+        const url = `/api/map/spots${filterAvailable ? '?available=1' : ''}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('API error ' + res.status);
+        const data = await res.json();
+        allSpots = data.spots || [];
+        renderMarkers();
+        renderSidebar(allSpots);
+        renderDrawer(allSpots);
+        injectJsonLd(allSpots);
+      } catch (err) {
+        console.error('loadSpots:', err);
+      } finally {
+        document.getElementById('loadingOverlay').style.display = 'none';
+      }
+    }
+
+    // ─── Markers ─────────────────────────────────────────────────────────────
+    function makeMarkerHtml(count) {
+      return `<div class="map-marker-icon"><span>${count}</span></div>`;
+    }
+
+    function renderMarkers() {
+      clusterGroup.clearLayers();
+      markers = {};
+
+      allSpots.forEach(spot => {
+        if (!spot.lat || !spot.lng) return;
+
+        const icon = L.divIcon({
+          html: makeMarkerHtml(spot.board_count),
+          className: '',
+          iconSize: [32, 32],
+          iconAnchor: [16, 32],
+          popupAnchor: [0, -34],
+        });
+
+        const marker = L.marker([spot.lat, spot.lng], { icon });
+        marker.bindPopup(buildPopup(spot), { maxWidth: 240 });
+
+        marker.on('click', () => {
+          track('map_marker_click', { spot_slug: spot.slug, spot_name: spot.name });
+          highlightSidebarItem(spot.id);
+        });
+
+        marker.on('popupopen', () => {
+          track('map_spot_view', { spot_slug: spot.slug });
+        });
+
+        markers[spot.id] = marker;
+        clusterGroup.addLayer(marker);
+      });
+    }
+
+    function buildPopup(spot) {
+      const priceText = spot.min_hourly_cents
+        ? `À partir de ${(spot.min_hourly_cents / 100).toFixed(0)}€/h`
+        : '';
+
+      const photoHtml = spot.photo_url
+        ? `<div class="popup-photo"><img src="${escHtml(spot.photo_url)}" alt="${escHtml(spot.name)}" loading="lazy" onerror="this.parentElement.innerHTML='🏄'"></div>`
+        : `<div class="popup-photo">🏄</div>`;
+
+      const boardsText = spot.board_count === 1
+        ? '1 planche disponible'
+        : `${spot.board_count} planches disponibles`;
+
+      return `<div class="popup-inner">
+        ${photoHtml}
+        <div class="popup-name">${escHtml(spot.name)}</div>
+        <div class="popup-boards">${boardsText}</div>
+        ${priceText ? `<div class="popup-price">${priceText}</div>` : ''}
+        <a class="popup-cta" href="/spot/${encodeURIComponent(spot.slug)}" onclick="track('map_spot_view',{spot_slug:'${spot.slug}'})">Voir les planches →</a>
+      </div>`;
+    }
+
+    // ─── Sidebar (desktop) ───────────────────────────────────────────────────
+    function renderSidebar(spots) {
+      const list = document.getElementById('sidebarList');
+      const label = document.getElementById('sidebar-label');
+      label.textContent = spots.length + ' spot' + (spots.length !== 1 ? 's' : '');
+
+      if (!spots.length) {
+        list.innerHTML = `<div style="padding:2rem 1rem;text-align:center;color:var(--white-40);font-size:0.85rem;">
+          Aucun spot avec boards dispo ce moment 🤙
+        </div>`;
+        return;
+      }
+
+      list.innerHTML = spots.map(s => `
+        <div class="spot-item" data-id="${s.id}" onclick="flyToSpot(${s.id})">
+          <div class="spot-thumb">
+            ${s.photo_url
+              ? `<img src="${escHtml(s.photo_url)}" alt="${escHtml(s.name)}" loading="lazy" onerror="this.parentElement.innerHTML='🏄'">`
+              : '🏄'}
+          </div>
+          <div class="spot-info">
+            <div class="spot-name">${escHtml(s.name)}</div>
+            <div class="spot-meta">${escHtml(s.region || '')}${s.wave_type ? ' · ' + waveLabel(s.wave_type) : ''}</div>
+          </div>
+          <div class="spot-count${s.board_count === 0 ? ' zero' : ''}">${s.board_count}</div>
+        </div>
+      `).join('');
+    }
+
+    function updateSidebarFromViewport() {
+      if (!map || !allSpots.length) return;
+      const bounds = map.getBounds();
+      const visible = allSpots.filter(s => s.lat && s.lng && bounds.contains([s.lat, s.lng]));
+      renderSidebar(visible);
+      renderDrawer(visible);
+    }
+
+    function highlightSidebarItem(spotId) {
+      document.querySelectorAll('.spot-item').forEach(el => {
+        el.classList.toggle('highlighted', el.dataset.id == spotId);
+      });
+    }
+
+    function flyToSpot(spotId) {
+      const spot = allSpots.find(s => s.id === spotId);
+      if (!spot || !markers[spotId]) return;
+      map.flyTo([spot.lat, spot.lng], 13, { duration: 1 });
+      setTimeout(() => markers[spotId].openPopup(), 1000);
+      track('map_marker_click', { spot_slug: spot.slug });
+    }
+
+    // ─── Mobile drawer ────────────────────────────────────────────────────────
+    function renderDrawer(spots) {
+      const list = document.getElementById('drawerList');
+      const title = document.getElementById('drawerTitle');
+      title.textContent = spots.length + ' spot' + (spots.length !== 1 ? 's' : '');
+
+      list.innerHTML = spots.slice(0, 20).map(s => `
+        <a class="drawer-card" href="/spot/${encodeURIComponent(s.slug)}"
+           onclick="track('map_spot_view',{spot_slug:'${s.slug}'})">
+          <div class="drawer-card-img">
+            ${s.photo_url
+              ? `<img src="${escHtml(s.photo_url)}" alt="${escHtml(s.name)}" loading="lazy" onerror="this.parentElement.innerHTML='🏄'">`
+              : '🏄'}
+          </div>
+          <div class="drawer-card-body">
+            <div class="drawer-card-name">${escHtml(s.name)}</div>
+            <div class="drawer-card-meta">${s.board_count} planche${s.board_count !== 1 ? 's' : ''}</div>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    // Drawer toggle on mobile
+    document.getElementById('drawerHandle').addEventListener('click', () => {
+      document.getElementById('mobileDrawer').classList.toggle('open');
+    });
+
+    // ─── Availability filter ─────────────────────────────────────────────────
+    document.getElementById('availToggle').addEventListener('click', function () {
+      filterAvailable = !filterAvailable;
+      this.classList.toggle('active', filterAvailable);
+      this.setAttribute('aria-pressed', filterAvailable);
+      loadSpots();
+    });
+
+    // ─── Analytics tracking (fire-and-forget) ───────────────────────────────
+    function track(event, props) {
+      try {
+        fetch('/api/track', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event, ...props }),
+          keepalive: true,
+        }).catch(() => {});
+      } catch (_) {}
+    }
+
+    // ─── JSON-LD injection ───────────────────────────────────────────────────
+    function injectJsonLd(spots) {
+      const el = document.getElementById('spots-jsonld');
+      if (!el) return;
+      const ld = {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: 'Spots de surf — Swell',
+        description: 'Locations de planches de surf disponibles sur la côte atlantique française',
+        url: 'https://swell.polsia.app/map',
+        numberOfItems: spots.length,
+        itemListElement: spots.map((s, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          item: {
+            '@type': 'Place',
+            name: s.name,
+            url: `https://swell.polsia.app/spot/${s.slug}`,
+            geo: {
+              '@type': 'GeoCoordinates',
+              latitude: s.lat,
+              longitude: s.lng,
+            },
+          },
+        })),
+      };
+      el.textContent = JSON.stringify(ld);
+    }
+
+    // ─── Utils ───────────────────────────────────────────────────────────────
+    function waveLabel(type) {
+      const labels = { beachbreak: 'Beach Break', reefbreak: 'Reef', pointbreak: 'Point', riverbar: 'Rivière' };
+      return labels[type] || type;
+    }
+
+    function escHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // ─── Boot ────────────────────────────────────────────────────────────────
+    initMap();
+    loadSpots();
+  </script>
+</body>
+</html>

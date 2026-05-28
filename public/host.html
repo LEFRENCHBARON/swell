@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#060d1a">
+    <link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Swell — Mon espace host</title>
+  <meta name="robots" content="noindex">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a1628;
+      --surface: #0f1f3d;
+      --card: #142248;
+      --border: rgba(0,194,224,0.12);
+      --primary: #00c2e0;
+      --sunset: #ff6b35;
+      --text: #f0f4f8;
+      --text-secondary: rgba(240,244,248,0.72);
+      --text-muted: rgba(240,244,248,0.42);
+      --green: #4ade80;
+      --green-bg: rgba(74,222,128,0.08);
+      --green-border: rgba(74,222,128,0.25);
+      --red: #ff6b6b;
+      --red-bg: rgba(255,107,107,0.08);
+      --red-border: rgba(255,107,107,0.25);
+      --yellow: #fbbf24;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; min-height: 100vh; }
+
+    /* ── NAV ── */
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.9rem 5%; position: sticky; top: 0; z-index: 100;
+      background: rgba(10,22,40,0.9); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--text); text-decoration: none; }
+    .nav-logo em { color: var(--primary); font-style: normal; }
+    .nav-right { display: flex; align-items: center; gap: 0.75rem; }
+    .nav-link { color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+    .nav-link:hover { color: var(--text); }
+    .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.1rem; border-radius: 100px; font-weight: 600; font-size: 0.85rem; cursor: pointer; border: none; transition: all 0.2s; font-family: inherit; text-decoration: none; }
+    .btn-primary { background: var(--primary); color: #001a2e; }
+    .btn-primary:hover { background: #00d4f5; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,194,224,0.3); }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { border-color: rgba(0,194,224,0.4); color: var(--primary); }
+    .btn-sunset { background: var(--sunset); color: white; }
+    .btn-sunset:hover { background: #ff7a47; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(255,107,53,0.3); }
+
+    /* ── MAIN ── */
+    .page { max-width: 900px; margin: 0 auto; padding: 2rem 5% 4rem; }
+
+    /* ── HEADER ── */
+    .host-header { margin-bottom: 1.25rem; }
+    .host-header h1 { font-family: 'Syne', sans-serif; font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 800; margin-bottom: 0.35rem; }
+    .host-header p { color: var(--text-secondary); font-size: 0.95rem; }
+
+    /* ── PROFILE PROGRESS ── */
+    .profile-progress { margin-bottom: 1.5rem; }
+    .progress-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; }
+    .progress-label { font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); }
+    .progress-pct { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 800; color: var(--primary); }
+    .progress-bar-wrap { background: var(--surface); border-radius: 100px; height: 8px; overflow: hidden; border: 1px solid var(--border); }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary) 0%, #00e5ff 100%); border-radius: 100px; transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+    .progress-steps { display: flex; gap: 0.4rem; margin-top: 0.6rem; flex-wrap: wrap; }
+    .progress-step {
+      display: flex; align-items: center; gap: 0.3rem; font-size: 0.72rem;
+      padding: 0.2rem 0.6rem; border-radius: 100px; font-weight: 600;
+      transition: all 0.3s;
+    }
+    .progress-step.done { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+    .progress-step.pending { background: rgba(255,255,255,0.05); color: var(--text-muted); border: 1px solid var(--border); }
+    .progress-step.in-progress { background: rgba(251,191,36,0.1); color: var(--yellow); border: 1px solid rgba(251,191,36,0.3); }
+
+    /* ── STATS ROW ── */
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem 1.4rem; }
+    .stat-value { font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: var(--primary); margin-bottom: 0.2rem; }
+    .stat-label { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+    /* ── SECTION ── */
+    .section { margin-bottom: 2.5rem; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .section-title { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; }
+
+    /* ── BOARD CARDS ── */
+    .boards-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .board-item { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.9rem 1rem; display: flex; align-items: center; gap: 0.9rem; }
+    .board-thumb { width: 56px; height: 56px; border-radius: 8px; object-fit: cover; flex-shrink: 0; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; overflow: hidden; }
+    .board-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .board-info { flex: 1; min-width: 0; }
+    .board-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .board-meta-row { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+    .board-status-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+    .board-status-dot.listed { background: var(--green); }
+    .board-status-dot.unlisted { background: var(--yellow); }
+    .board-price { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: var(--primary); white-space: nowrap; flex-shrink: 0; }
+            .board-item { cursor: pointer; transition: border-color 0.15s, box-shadow 0.15s; }
+            .board-item:hover { border-color: rgba(0,194,224,0.35); box-shadow: 0 0 0 1px rgba(0,194,224,0.1); }
+            .board-item .board-price-rate { font-size: 0.65rem; font-weight: 400; color: var(--text-muted); display: block; margin-top: 1px; }
+
+            /* ── BOARD CALENDAR MODAL ── */
+            #board-cal-modal { display: none; position: fixed; inset: 0; z-index: 900; background: rgba(0,0,0,0.7); align-items: center; justify-content: center; padding: 1rem; }
+            #board-cal-modal.open { display: flex; }
+            .modal-sheet { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; }
+            .modal-sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 1.25rem; border-bottom: 1px solid var(--border); }
+            .modal-sheet-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; }
+            .modal-sheet-body { padding: 1rem 1.25rem; }
+            .modal-close { background: none; border: none; color: var(--text-muted); font-size: 1.3rem; cursor: pointer; line-height: 1; padding: 0 0.2rem; }
+            .modal-close:hover { color: var(--text); }
+
+            /* ── HOUR SLOTS GRID ── */
+            .cal-month-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.9rem; }
+            .cal-month-nav button { background: var(--card); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 0.35rem 0.7rem; cursor: pointer; font-size: 0.82rem; }
+            .cal-month-nav button:hover { border-color: var(--primary); color: var(--primary); }
+            .cal-month-label { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; }
+            .cal-hint { font-size: 0.72rem; color: var(--text-muted); text-align: center; margin-bottom: 0.75rem; }
+            .day-slots-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 3px; margin-bottom: 0.7rem; }
+            .slot-h { font-size: 0.6rem; color: var(--text-muted); text-align: center; padding: 1px 0; }
+            .slot-h:first-child { visibility: hidden; }
+            .hour-col-label { font-size: 0.6rem; color: var(--text-muted); text-align: center; padding: 1px 0; }
+            .slot-cell { border-radius: 4px; font-size: 0.62rem; font-weight: 600; text-align: center; padding: 2px 1px; cursor: pointer; transition: opacity 0.15s, transform 0.1s; }
+            .slot-cell:hover { opacity: 0.8; transform: scale(1.05); }
+            .slot-cell.available { background: var(--green-bg); border: 1px solid var(--green-border); color: var(--green); }
+            .slot-cell.booked { background: var(--red-bg); border: 1px solid var(--red-border); color: var(--red); opacity: 0.7; cursor: not-allowed; }
+            .slot-cell.blocked { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); color: var(--yellow); }
+            .slot-cell.partial { background: rgba(0,194,224,0.06); border: 1px solid rgba(0,194,224,0.15); color: var(--text-muted); }
+            .slot-day-row { display: grid; grid-template-columns: 36px repeat(4, 1fr); gap: 3px; margin-bottom: 2px; align-items: center; }
+            .slot-day-label { font-size: 0.68rem; color: var(--text-muted); text-align: right; padding-right: 6px; }
+            .slot-legend { display: flex; gap: 0.9rem; justify-content: center; margin-top: 0.8rem; flex-wrap: wrap; }
+            .slot-legend-item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.68rem; color: var(--text-muted); }
+            .slot-legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+            .slot-legend-dot.available { background: var(--green); }
+            .slot-legend-dot.booked { background: var(--red); opacity: 0.7; }
+            .slot-legend-dot.blocked { background: var(--yellow); }
+            .slot-loading { text-align: center; color: var(--text-muted); padding: 2rem; font-size: 0.85rem; }
+
+    /* ── BOOKING ITEMS ── */
+    .booking-item { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.9rem 1rem; display: flex; align-items: flex-start; gap: 0.9rem; }
+    .booking-info { flex: 1; min-width: 0; }
+    .booking-board { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.15rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .booking-details { font-size: 0.75rem; color: var(--text-muted); }
+    .booking-amount { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--green); white-space: nowrap; flex-shrink: 0; text-align: right; }
+    .booking-status { font-size: 0.65rem; padding: 0.12rem 0.4rem; border-radius: 100px; margin-top: 0.2rem; }
+
+    /* ── EMPTY STATE ── */
+    .empty { text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); }
+    .empty-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+    .empty h3 { font-size: 1rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.4rem; }
+    .empty p { font-size: 0.85rem; line-height: 1.6; }
+
+    /* ── KYC BANNER ── */
+    .kyc-banner { background: linear-gradient(135deg, rgba(255,107,53,0.1), rgba(255,107,53,0.05)); border: 1px solid rgba(255,107,53,0.3); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem; }
+    .kyc-banner-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .kyc-banner-text { flex: 1; }
+    .kyc-banner-text strong { font-size: 0.9rem; color: var(--sunset); display: block; margin-bottom: 0.2rem; }
+    .kyc-banner-text span { font-size: 0.8rem; color: var(--text-secondary); }
+
+    /* ── PAYMENT BANNER ── */
+    .payment-banner { background: linear-gradient(135deg, rgba(255,193,7,0.12), rgba(255,193,7,0.05)); border: 1px solid rgba(255,193,7,0.35); border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+    .payment-banner-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .payment-banner-text { flex: 1; }
+    .payment-banner-text strong { font-size: 0.9rem; color: var(--yellow); display: block; margin-bottom: 0.2rem; }
+    .payment-banner-text span { font-size: 0.8rem; color: var(--text-secondary); }
+
+    /* ── UNAUTHENTICATED ── */
+    #unauth-state { display: none; text-align: center; padding: 4rem 1rem; }
+    #unauth-state h2 { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 0.75rem; }
+    #unauth-state p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+
+    /* ── TABS ── */
+    .tab-nav { display: flex; gap: 0.25rem; margin-bottom: 1.75rem; border-bottom: 1px solid var(--border); }
+    .tab-btn {
+      padding: 0.6rem 1rem; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+      background: none; border: none; color: var(--text-muted); border-bottom: 2px solid transparent;
+      transition: color 0.2s, border-color 0.2s; font-family: inherit; white-space: nowrap;
+    }
+    .tab-btn:hover { color: var(--text-secondary); }
+    .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── GENOME CARDS ── */
+    .genome-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+    .genome-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1.1rem 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;
+      transition: border-color 0.2s;
+    }
+    .genome-card:hover { border-color: rgba(0,194,224,0.25); }
+    .genome-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
+    .genome-id { font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700; color: var(--primary); letter-spacing: 0.05em; }
+    .genome-board-name { font-weight: 600; font-size: 0.92rem; color: var(--text); margin-top: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .genome-badge {
+      font-size: 0.65rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 100px;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .genome-badge.gold { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+    .genome-badge.warn { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+    .genome-badge.ok { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+    .genome-score-row { display: flex; align-items: center; gap: 0.6rem; }
+    .genome-score-label { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
+    .genome-bar-wrap { flex: 1; background: var(--surface); border-radius: 100px; height: 8px; overflow: hidden; border: 1px solid var(--border); }
+    .genome-bar-fill { height: 100%; border-radius: 100px; transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+    .genome-score-val { font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 800; min-width: 32px; text-align: right; }
+    .genome-meta { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .genome-meta-item { font-size: 0.72rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.25rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .stats-row .stat-card:last-child { grid-column: 1 / -1; }
+      .genome-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── LOADING ── */
+    .loading { display: flex; align-items: center; justify-content: center; padding: 3rem; color: var(--text-muted); gap: 0.5rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner { width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.7s linear infinite; }
+
+    /* ── EDIT BOARD MODAL ── */
+    #edit-board-modal { display: none; position: fixed; inset: 0; z-index: 900; background: rgba(0,0,0,0.75); align-items: center; justify-content: center; padding: 1rem; }
+    #edit-board-modal.open { display: flex; }
+    .edit-modal-sheet { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; }
+    .edit-modal-head { display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 1.25rem; border-bottom: 1px solid var(--border); }
+    .edit-modal-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; }
+    .edit-modal-body { padding: 1rem 1.25rem 1.5rem; }
+    .edit-form-group { margin-bottom: 0.9rem; }
+    .edit-label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 0.35rem; }
+    .edit-input { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--card); color: var(--text); font-size: 0.9rem; font-family: inherit; }
+    .edit-input:focus { outline: none; border-color: var(--primary); }
+    .edit-textarea { resize: vertical; min-height: 80px; }
+    .edit-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .edit-select { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--card); color: var(--text); font-size: 0.9rem; font-family: inherit; cursor: pointer; }
+    .edit-select:focus { outline: none; border-color: var(--primary); }
+    .edit-slider-wrap { padding: 0 0.4rem; }
+    .edit-slider-row { display: flex; align-items: center; gap: 0.75rem; }
+    .edit-slider { flex: 1; accent-color: var(--primary); cursor: pointer; }
+    .edit-slider-val { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--primary); min-width: 40px; text-align: right; }
+    .edit-slider-presets { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.4rem; }
+    .edit-preset-btn { background: var(--card); border: 1px solid var(--border); color: var(--text-secondary); border-radius: 8px; padding: 0.3rem 0.65rem; font-size: 0.78rem; cursor: pointer; }
+    .edit-preset-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .edit-section-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin: 1rem 0 0.6rem; }
+    .edit-photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin-bottom: 0.5rem; }
+    .edit-photo-thumb { position: relative; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); background: var(--card); }
+    .edit-photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .edit-photo-remove { position: absolute; top: 3px; right: 3px; width: 20px; height: 20px; background: rgba(0,0,0,0.7); border: none; border-radius: 50%; color: white; font-size: 0.7rem; cursor: pointer; line-height: 1; display: flex; align-items: center; justify-content: center; }
+    .edit-photo-add { aspect-ratio: 4/3; border: 1.5px dashed var(--border); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); font-size: 0.7rem; gap: 0.3rem; transition: border-color 0.2s; }
+    .edit-photo-add:hover { border-color: var(--primary); color: var(--primary); }
+    .edit-photo-add input { display: none; }
+    .edit-accessories { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .edit-accessory-btn { display: flex; align-items: center; gap: 0.35rem; cursor: pointer; font-size: 0.82rem; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 0.4rem 0.7rem; color: var(--text-secondary); transition: all 0.15s; }
+    .edit-accessory-btn.active { border-color: var(--primary); color: var(--primary); background: rgba(0,194,224,0.06); }
+    .edit-accessory-btn input { display: none; }
+    .edit-waiver-row { display: flex; align-items: center; justify-content: space-between; background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem 0.9rem; margin-top: 0.5rem; }
+    .edit-waiver-label { font-size: 0.85rem; font-weight: 600; }
+    .edit-waiver-sub { font-size: 0.73rem; color: var(--text-muted); margin-top: 0.15rem; }
+    .edit-toggle { position: relative; width: 42px; height: 22px; cursor: pointer; flex-shrink: 0; }
+    .edit-toggle input { opacity: 0; width: 0; height: 0; }
+    .edit-toggle-track { position: absolute; inset: 0; background: var(--border); border-radius: 11px; transition: background 0.2s; display: flex; align-items: center; padding: 2px; }
+    .edit-toggle input:checked + .edit-toggle-track { background: var(--primary); }
+    .edit-toggle-thumb { width: 18px; height: 18px; background: white; border-radius: 50%; margin-right: auto; transition: margin 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+    .edit-toggle input:checked ~ .edit-toggle-track .edit-toggle-thumb { margin-left: auto; margin-right: 0; }
+    .edit-submit-btn { width: 100%; padding: 0.75rem; background: var(--primary); color: #001a2e; font-weight: 700; font-size: 0.92rem; border: none; border-radius: 12px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+    .edit-submit-btn:hover { background: #00d4f5; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,194,224,0.3); }
+    .edit-submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .edit-cancel-btn { display: block; width: 100%; padding: 0.6rem; background: none; border: none; color: var(--text-muted); font-size: 0.85rem; cursor: pointer; margin-top: 0.5rem; font-family: inherit; }
+    .edit-error { color: var(--red); font-size: 0.82rem; margin-top: 0.4rem; min-height: 1.2em; }
+    .edit-photo-hint { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+    #edit-submitting-overlay { display: none; position: absolute; inset: 0; background: rgba(255,255,255,0.9); backdrop-filter: blur(4px); border-radius: var(--radius); z-index: 10; flex-direction: column; align-items: center; justify-content: center; gap: 0.75rem; }
+    #edit-submitting-overlay.active { display: flex; }
+  </style>
+  <script src="/js/api.js" defer></script>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="/" class="nav-logo">qi<em>v</em>er</a>
+    <div class="nav-right">
+      <a href="/app.html" class="nav-link">Marketplace</a>
+      <span id="nav-user-area"><!-- populated by JS --></span>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="page">
+
+    <!-- Unauthenticated state -->
+    <div id="unauth-state">
+      <div style="font-size:3rem;margin-bottom:1rem;">🏄</div>
+      <h2>Connecte-toi pour voir ton espace host</h2>
+      <p>Gère tes planches, suis tes réservations, et booste tes revenus.</p>
+      <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+        <a href="/app.html?signup=1&source=host" class="btn btn-primary">Créer un compte host</a>
+        <a href="/app.html" class="btn btn-outline">Se connecter</a>
+      </div>
+    </div>
+
+    <!-- Authenticated host hub -->
+    <div id="host-hub" style="display:none;">
+
+      <!-- Header -->
+      <div class="host-header">
+        <h1 id="hub-greeting">Mon espace host 🏄</h1>
+        <p>Gère tes planches et suis tes revenus depuis un seul endroit.</p>
+      </div>
+
+      <!-- Verified Host activation shortcut -->
+      <a href="/host/activation" style="display:block;background:linear-gradient(135deg,rgba(0,194,224,0.12),rgba(0,153,184,0.06));border:1px solid rgba(0,194,224,0.3);border-radius:12px;padding:14px 18px;margin-bottom:1.25rem;text-decoration:none;color:inherit;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="font-size:22px;">🏅</div>
+            <div>
+              <div style="font-size:14px;font-weight:700;color:#f0f4f8;margin-bottom:2px;">Badge Verified Host</div>
+              <div style="font-size:12px;color:rgba(240,244,248,0.55);">Booste tes réservations — voir mon avancement</div>
+            </div>
+          </div>
+          <div style="color:#00c2e0;font-size:18px;">→</div>
+        </div>
+      </a>
+
+      <!-- Profile completion progress -->
+      <div class="profile-progress" id="profile-progress" style="display:none;">
+        <div class="progress-header">
+          <span class="progress-label">Complétion du profil</span>
+          <span class="progress-pct" id="progress-pct">0%</span>
+        </div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
+        <div class="progress-steps" id="progress-steps"></div>
+      </div>
+
+      <!-- KYC banner (shown if not verified) -->
+      <div class="kyc-banner" id="kyc-banner" style="display:none;">
+        <div class="kyc-banner-icon">🛡️</div>
+        <div class="kyc-banner-text">
+          <strong>Active ton compte pour rendre tes planches visibles</strong>
+          <span>Vérification d'identité requise. Tes planches sont sauvegardées et seront activées automatiquement à validation.</span>
+        </div>
+        <a href="/app.html" class="btn btn-sunset" style="flex-shrink:0;font-size:0.78rem;padding:0.45rem 0.9rem;">Vérifier →</a>
+      </div>
+
+      <!-- Payment banner (shown if Stripe not configured) -->
+      <div class="payment-banner" id="payment-banner" style="display:none;">
+        <div class="payment-banner-icon">💳</div>
+        <div class="payment-banner-text">
+          <strong>Configure tes paiements pour recevoir tes revenus</strong>
+          <span id="payment-banner-msg">Les riders ne peuvent pas réserver tes planches sans coordonnées bancaires.Configure ton Stripe en 2 minutes.</span>
+        </div>
+        <button class="btn btn-outline" onclick="openStripeSetup()" style="flex-shrink:0;font-size:0.78rem;padding:0.45rem 0.9rem;border-color:rgba(251,191,36,0.4);color:var(--yellow);">Configurer mes paiements →</button>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-value" id="stat-boards-count">—</div>
+          <div class="stat-label">Planches listées</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-bookings-count">—</div>
+          <div class="stat-label">Réservations reçues</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-revenue">—</div>
+          <div class="stat-label">Revenus cumulés</div>
+        </div>
+        <!-- Trust / tier card -->
+        <div class="stat-card" id="trust-stat-card" style="display:none;">
+          <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.2rem;">
+            <div class="stat-value" id="stat-trust-score">—</div>
+            <span style="font-size:0.7rem;color:var(--text-muted);font-weight:600;">/100</span>
+          </div>
+          <div class="stat-label" id="stat-tier-label">Confiance</div>
+          <div id="stat-trend" style="font-size:0.72rem;margin-top:0.2rem;color:var(--text-secondary);"></div>
+        </div>
+      </div>
+
+      <!-- Tab navigation -->
+      <div class="tab-nav">
+        <button class="tab-btn active" id="tab-boards-btn" onclick="switchTab('boards')">Mes annonces</button>
+        <button class="tab-btn" id="tab-genome-btn" onclick="switchTab('genome')">🧬 Génome</button>
+      </div>
+
+      <!-- Tab: Mes Annonces -->
+      <div class="tab-panel active" id="tab-panel-boards">
+        <!-- Boards section -->
+        <div class="section">
+          <div class="section-head">
+            <div class="section-title">Mes planches</div>
+            <a href="/app.html" class="btn btn-primary" id="add-board-btn" onclick="openWizardFromHub(event)">+ Ajouter une planche</a>
+          </div>
+          <div id="boards-list-container">
+            <div class="loading"><div class="spinner"></div> Chargement...</div>
+          </div>
+        </div>
+
+        <!-- Bookings section -->
+        <div class="section">
+          <div class="section-head">
+            <div class="section-title">Demandes de réservation</div>
+          </div>
+          <div id="bookings-list-container">
+            <div class="loading"><div class="spinner"></div> Chargement...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Génome -->
+      <div class="tab-panel" id="tab-panel-genome">
+        <div id="genome-container">
+          <div class="loading"><div class="spinner"></div> Chargement de l'intelligence Swell...</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- EDIT BOARD MODAL -->
+  <div id="edit-board-modal" role="dialog" aria-label="Modifier l'annonce">
+    <div class="edit-modal-sheet" style="position:relative;">
+      <div id="edit-submitting-overlay">
+        <div class="spinner" style="width:32px;height:32px;"></div>
+        <div style="color:var(--text);font-weight:600;font-size:0.9rem;">Sauvegarde en cours...</div>
+      </div>
+      <div class="edit-modal-head">
+        <div class="edit-modal-title">Modifier l'annonce ✏️</div>
+        <button class="modal-close" onclick="closeEditModal()" aria-label="Fermer">×</button>
+      </div>
+      <div class="edit-modal-body" id="edit-modal-body">
+        <!-- Filled dynamically by openEditBoard() -->
+        <div class="loading"><div class="spinner"></div> Chargement...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOARD CALENDAR MODAL -->
+  <div id="board-cal-modal" role="dialog" aria-label="Calendrier de la planche">
+    <div class="modal-sheet">
+      <div class="modal-sheet-head">
+        <div class="modal-sheet-title" id="cal-modal-title">Calendrier</div>
+        <button class="modal-close" onclick="closeCalModal()" aria-label="Fermer">×</button>
+      </div>
+      <div class="modal-sheet-body" id="cal-modal-body">
+        <div class="slot-loading"><div class="spinner"></div> Chargement…</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/host-main.js"></script>
+    // CSRF — inject X-CSRF-Token header on mutating requests
+    (function() {
+      const _origFetch = window.fetch;
+      function getCsrfToken() {
+        const m = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+        return m ? decodeURIComponent(m[1]) : '';
+      }
+      window.fetch = function(url, opts) {
+        opts = opts || {};
+        const method = (opts.method || 'GET').toUpperCase();
+        if (method !== 'GET' && method !== 'HEAD' && method !== 'OPTIONS') {
+          const token = getCsrfToken();
+          if (token) {
+            if (opts.headers instanceof Headers) {
+              if (!opts.headers.has('X-CSRF-Token')) opts.headers.set('X-CSRF-Token', token);
+            } else {
+              opts.headers = Object.assign({ 'X-CSRF-Token': token }, opts.headers || {});
+            }
+          }
+        }
+        return _origFetch.call(this, url, opts);
+      };
+    })();
+
+    let currentUser = null;
+
+    // ── CHECK AUTH ──
+    async function init() {
+      try {
+        const res = await fetch('/api/auth/me');
+        const data = await res.json();
+        currentUser = data.user;
+      } catch(_) {}
+
+      if (!currentUser) {
+        document.getElementById('unauth-state').style.display = 'block';
+        return;
+      }
+
+      // Update nav
+      const navArea = document.getElementById('nav-user-area');
+      navArea.innerHTML = `
+        <span style="font-size:0.85rem;color:var(--text-secondary);margin-right:0.5rem;">${currentUser.name.split(' ')[0]}</span>
+        <a href="/app.html" class="btn btn-outline" style="font-size:0.78rem;padding:0.4rem 0.8rem;">Dashboard complet</a>
+      `;
+
+      // Show hub
+      document.getElementById('host-hub').style.display = 'block';
+      document.getElementById('hub-greeting').textContent = `Salut, ${currentUser.name.split(' ')[0]} 🤙`;
+
+      // Check KYC
+      try {
+        const identityRes = await fetch('/api/identity/status');
+        if (identityRes.ok) {
+          const idData = await identityRes.json();
+          const status = idData.identity?.identity_status;
+          if (status !== 'verified') {
+            document.getElementById('kyc-banner').style.display = 'flex';
+          }
+        }
+      } catch(_) {}
+
+      // Check payment status — show urgent banner if Stripe not configured
+      try {
+        const stripeRes = await fetch('/api/stripe-connect/status');
+        if (stripeRes.ok) {
+          const stripeData = await stripeRes.json();
+          if (!stripeData.chargesEnabled) {
+            const banner = document.getElementById('payment-banner');
+            banner.style.display = 'flex';
+            // Profile progress uses this too — re-render to show step correctly
+            renderHostProgress(currentUser);
+          }
+        }
+      } catch(_) {}
+
+      // Load trust metrics (tier + trust score)
+      try {
+        const metricsRes = await fetch('/api/host-metrics/me');
+        if (metricsRes.ok) {
+          const { metrics } = await metricsRes.json();
+          if (metrics) {
+            const trustCard = document.getElementById('trust-stat-card');
+            trustCard.style.display = 'block';
+            document.getElementById('stat-trust-score').textContent = Math.round(metrics.trust_score || 0);
+            const tierLabel = document.getElementById('stat-tier-label');
+            const tierConfig = {
+              ALPHA_SHAPER: 'Alpha Shaper ✦',
+              LOCAL_ICON: 'Local Icon ◆',
+              PREMIUM_HOST: 'Premium Host ★',
+              GROWTH_HOST: 'Croissant ↗',
+              AT_RISK: 'Attention ⚠'
+            };
+            tierLabel.textContent = tierConfig[metrics.tier] || 'Hôte';
+            const trendEl = document.getElementById('stat-trend');
+            if (metrics.evolution_trend === 'rising') trendEl.textContent = '↗ En progression';
+            else if (metrics.evolution_trend === 'declining') trendEl.textContent = '↘ En déclin';
+            else trendEl.textContent = '→ Stable';
+          }
+        }
+      } catch(_) {}
+
+      // Profile completion progress — initial render (board step unresolved yet)
+      renderHostProgress(currentUser, null, null);
+
+      // Load boards + bookings
+      await Promise.all([loadBoards(), loadBookings()]);
+      // Refresh progress now that board count is known
+      renderHostProgress(currentUser);
+    }
+
+    // Renders host profile progress bar; called after board load to finalize board step
+    async function renderHostProgress(user, idStatus, stripeStatus) {
+      try {
+        const [idRes, stripeRes] = await Promise.all([
+          fetch('/api/identity/status').catch(() => null),
+          fetch(API.stripeStatus).catch(() => null)
+        ]);
+        const idData = idRes?.ok ? await idRes.json() : {};
+        const stripeData = stripeRes?.ok ? await stripeRes.json() : {};
+        const idDone = idData.identity?.identity_status === 'verified';
+        const stripeDone = !!(stripeData.stripe_onboarding_completed_at || stripeData.charges_enabled);
+        const hasPhoto = !!(user?.avatar_url);
+        const statEl = document.getElementById('stat-boards-count');
+        const hasBoards = statEl ? parseInt(statEl.textContent) > 0 : false;
+        const steps = [
+          { label: 'Photo de profil', done: hasPhoto },
+          { label: 'Vérification identité', done: idDone },
+          { label: 'Coordonnées bancaires', done: stripeDone },
+          { label: 'Première planche', done: hasBoards }
+        ];
+        const done = steps.filter(s => s.done).length;
+        const pct = Math.round((done / steps.length) * 100);
+        document.getElementById('profile-progress').style.display = 'block';
+        document.getElementById('progress-pct').textContent = pct + '%';
+        document.getElementById('progress-fill').style.width = pct + '%';
+        document.getElementById('progress-steps').innerHTML = steps.map(s =>
+          `<span class="progress-step ${s.done ? 'done' : 'pending'}">${s.done ? '✓' : '○'} ${s.label}</span>`
+        ).join('');
+      } catch(_) {}
+    }
+
+    async function loadBoards() {
+      const container = document.getElementById('boards-list-container');
+      try {
+        const res = await fetch('/api/boards/my');
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        const boards = data.boards || [];
+
+        // Update stat
+        const listed = boards.filter(b => b.is_listed).length;
+        document.getElementById('stat-boards-count').textContent = listed;
+
+        if (boards.length === 0) {
+          container.innerHTML = `
+            <div class="empty">
+              <div class="empty-icon">🏄</div>
+              <h3>Aucune planche listée</h3>
+              <p>Ajoute ta première planche et commence à gagner de l'argent.</p>
+              <a href="/app.html" class="btn btn-primary" style="margin-top:1rem;" onclick="openWizardFromHub(event)">Créer mon annonce →</a>
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = `<div class="boards-list">${boards.map(b => {
+          const photo = b.photos?.[0];
+          const dailyPrice = (b.daily_price_cents / 100).toFixed(0);
+          const hourlyPrice = b.hourly_rate_cents ? (b.hourly_rate_cents / 100).toFixed(0) : null;
+          const isListed = b.is_listed;
+          return `<div class="board-item">
+            <div class="board-thumb">${photo ? `<img src="${photo}" alt="${escHtml(b.title)}" loading="lazy">` : '🏄'}</div>
+            <div class="board-info" style="cursor:pointer;" onclick="openBoardCalendar(${b.id}, '${b.title.replace(/'/g, "\\'")}')">
+              <div class="board-name">${escHtml(b.title)}</div>
+              <div class="board-meta-row">
+                <span><span class="board-status-dot ${isListed ? 'listed' : 'unlisted'}"></span> ${isListed ? 'Visible' : 'Masquée'}</span>
+                ${b.board_type ? `<span>${escHtml(b.board_type)}</span>` : ''}
+                ${parseFloat(b.avg_rating) > 0 ? `<span>⭐ ${b.avg_rating}</span>` : ''}
+                ${parseInt(b.total_bookings) > 0 ? `<span>📋 ${b.total_bookings} loc.</span>` : ''}
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.4rem;flex-shrink:0;">
+              <div class="board-price">€${hourlyPrice ? hourlyPrice + '/h' : dailyPrice + '/j'}</div>
+              <button type="button" class="btn btn-outline" style="font-size:0.68rem;padding:0.3rem 0.65rem;" onclick="openEditModal(event, ${b.id})">✏️ Modifier</button>
+            </div>
+          </div>`;
+        }).join('')}</div>`;
+      } catch(_) {
+        container.innerHTML = `<div class="empty"><p style="color:var(--red);">Impossible de charger tes planches.</p></div>`;
+      }
+    }
+
+    async function loadBookings() {
+      const container = document.getElementById('bookings-list-container');
+      try {
+        const res = await fetch('/api/bookings/host');
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        const bookings = data.bookings || [];
+
+        // Update stats
+        document.getElementById('stat-bookings-count').textContent = bookings.length;
+
+        // Revenue = sum of confirmed + completed bookings (before Swell fee)
+        const revenue = bookings
+          .filter(b => b.status === 'confirmed' || b.status === 'completed')
+          .reduce((sum, b) => sum + (b.total_cents || 0), 0);
+        const hostRevenue = Math.round(revenue * 0.85); // host gets 85%
+        document.getElementById('stat-revenue').textContent = hostRevenue > 0 ? `€${(hostRevenue / 100).toFixed(0)}` : '€0';
+
+        if (bookings.length === 0) {
+          container.innerHTML = `
+            <div class="empty">
+              <div class="empty-icon">📋</div>
+              <h3>Aucune demande pour l'instant</h3>
+              <p>Les réservations de tes planches apparaîtront ici.</p>
+            </div>`;
+          return;
+        }
+
+        const statusLabels = { pending: 'en attente', confirmed: 'confirmé', completed: 'terminé', cancelled: 'annulé' };
+        const statusColors = { pending: '#fbbf24', confirmed: '#4ade80', completed: '#60a5fa', cancelled: '#ff6b6b' };
+
+        container.innerHTML = `<div style="display:flex;flex-direction:column;gap:0.75rem;">${bookings.map(b => {
+          const sc = statusColors[b.status] || '#aaa';
+          const sl = statusLabels[b.status] || b.status;
+          const startDate = new Date(b.start_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+          const isHourly = !!(b.start_time && b.end_time);
+          const startTime = b.start_time ? b.start_time.slice(0,5) : '';
+          const endTime = b.end_time ? b.end_time.slice(0,5) : '';
+          const durationStr = isHourly && b.duration_hours ? `${b.duration_hours}h` : '';
+          const endDateStr = isHourly ? startDate : new Date(b.end_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+          const earnings = Math.round((b.total_cents || 0) * 0.85 / 100);
+          const totalEur = ((b.total_cents || 0) / 100).toFixed(2);
+          const hourlyRate = b.hourly_rate_cents ? (b.hourly_rate_cents / 100).toFixed(0) : null;
+          return `<div class="booking-item" style="cursor:default;">
+            <div class="booking-info">
+              <div class="booking-board">${b.board_title || '—'}
+                ${durationStr ? ` <span style="font-size:0.72rem;background:var(--primary-soft);color:var(--primary);padding:0.1rem 0.35rem;border-radius:4px;margin-left:0.3rem;">⏱ ${durationStr}</span>` : ''}
+                ${isHourly && hourlyRate ? ` <span style="font-size:0.65rem;color:var(--text-muted);">€${hourlyRate}/h</span>` : ''}
+              </div>
+              <div class="booking-details">
+                ${b.renter_name ? `<strong>${b.renter_name}</strong>` : ''}
+                ${isHourly
+                  ? `<span style="display:inline-flex;align-items:center;gap:0.3rem;margin-top:0.25rem;font-size:0.8rem;">
+                       <span style="font-size:0.75rem;">🕐</span> ${startDate} · ${startTime}–${endTime}
+                     </span>`
+                  : `<span>${startDate} – ${endDateStr}</span>`
+                }
+                <span style="color:var(--text-muted);font-size:0.68rem;display:block;margin-top:0.15rem;">Client: €${totalEur} · Tu reçois: <strong style="color:var(--green);">€${earnings}</strong></span>
+                ${b.promo_code ? `<span style="display:inline-block;margin-top:0.25rem;font-size:0.65rem;background:rgba(255,107,53,0.1);color:var(--sunset);border:1px solid rgba(255,107,53,0.25);border-radius:100px;padding:0.15rem 0.5rem;">🎁 Code de bienvenue utilisé · votre paiement n'est pas impacté</span>` : ''}
+              </div>
+            </div>
+            <div class="booking-amount">
+              +€${earnings}
+              <div class="booking-status" style="background:${sc}18;color:${sc};border:1px solid ${sc}30;">${sl}</div>
+            </div>
+            ${b.board_id ? `<button class="btn btn-outline" style="font-size:0.68rem;padding:0.25rem 0.6rem;margin-left:0.5rem;align-self:center;flex-shrink:0;" onclick="openBoardCalendar(${b.board_id}, '${(b.board_title||'').replace(/'/g,"\\'")}')" title="Voir le calendrier">📅</button>` : ''}
+          </div>`;
+        }).join('')}</div>`;
+      } catch(_) {
+        container.innerHTML = `<div class="empty"><p style="color:var(--red);">Impossible de charger les réservations.</p></div>`;
+      }
+    }
+
+    // Open listing wizard in app.html
+    function openWizardFromHub(e) {
+      e.preventDefault();
+      sessionStorage.setItem('swell_host_source', '1');
+      window.location.href = '/app.html?source=host';
+    }
+
+    // Open Stripe payment setup panel
+    function openStripeSetup() {
+      // Navigate to app.html with a hash to open the payments tab
+      window.location.href = '/app.html?source=host#paiements';
+    }
+
+    // ── BOARD CALENDAR (HOURLY SLOT VIEW) ──────────────────────────
+    let calState = { boardId: null, boardTitle: '', year: null, month: null, slotsByDate: {} };
+
+    function openBoardCalendar(boardId, boardTitle) {
+      calState.boardId = boardId;
+      calState.boardTitle = boardTitle;
+      const now = new Date();
+      calState.year = now.getFullYear();
+      calState.month = now.getMonth();
+      calState.slotsByDate = {};
+      document.getElementById('cal-modal-title').textContent = boardTitle;
+      document.getElementById('board-cal-modal').classList.add('open');
+      loadCalData();
+    }
+
+    function closeCalModal() {
+      document.getElementById('board-cal-modal').classList.remove('open');
+    }
+
+    // Close on backdrop click
+    document.getElementById('board-cal-modal')?.addEventListener('click', function(e) {
+      if (e.target === this) closeCalModal();
+    });
+    // Close on Escape
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeCalModal(); });
+
+    async function loadCalData() {
+      const { year, month, boardId } = calState;
+      const from = `${year}-${String(month+1).padStart(2,'0')}-01`;
+      const last = new Date(year, month+1, 0).getDate();
+      const to = `${year}-${String(month+1).padStart(2,'0')}-${String(last).padStart(2,'0')}`;
+      try {
+        const res = await fetch(`/api/availability/${boardId}/slots-by-date?from=${from}&to=${to}`);
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        calState.slotsByDate = data.slotsByDate || {};
+        renderCal();
+      } catch(_) {
+        document.getElementById('cal-modal-body').innerHTML = '<p style="color:var(--red);text-align:center;padding:1rem;">Erreur de chargement. Réessaie.</p>';
+      }
+    }
+
+    function prevCalMonth() {
+      if (calState.month === 0) { calState.month = 11; calState.year--; }
+      else calState.month--;
+      renderCal();
+      loadCalData();
+    }
+
+    function nextCalMonth() {
+      if (calState.month === 11) { calState.month = 0; calState.year++; }
+      else calState.month++;
+      renderCal();
+      loadCalData();
+    }
+
+    function renderCal() {
+      const { year, month } = calState;
+      const FR_MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+      const FR_DAYS = ['Lu','Ma','Me','Je','Ve','Sa','Di'];
+      const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
+      const daysInMonth = new Date(year, month+1, 0).getDate();
+      const today = new Date().toISOString().slice(0,10);
+      const todayYear = new Date().getFullYear();
+      const todayMonth = new Date().getMonth();
+
+      // Build 4-slot grid: 08:00–12:00, 12:00–16:00, 16:00–20:00, 20:00–22:00
+      const SLOT_RANGES = [[8,12],[12,16],[16,20],[20,22]];
+
+      let html = `
+        <div class="cal-month-nav">
+          <button onclick="prevCalMonth()">← Préc.</button>
+          <span class="cal-month-label">${FR_MONTHS[month]} ${year}</span>
+          <button onclick="nextCalMonth()">Suiv. →</button>
+        </div>
+        <div class="cal-hint">Clique sur un créneau vert pour le bloquer — et inversement</div>
+        <div class="day-slots-grid">
+          <div class="slot-h"></div>
+          ${['08–12h','12–16h','16–20h','20–22h'].map(s => `<div class="slot-h">${s}</div>`).join('')}
+        </div>`;
+
+      // Generate weeks (Mon–Sun)
+      let date = 1;
+      const rows = [];
+      for (let w = 0; w < 6 && date <= daysInMonth; w++) {
+        const weekCells = [];
+        for (let d = 0; d < 7; d++) {
+          if ((w === 0 && d < firstDay) || date > daysInMonth) {
+            weekCells.push(null);
+          } else {
+            weekCells.push(date++);
+          }
+        }
+        rows.push(weekCells);
+      }
+
+      for (const row of rows) {
+        if (!row.some(d => d !== null)) continue;
+        html += `<div class="slot-day-row">`;
+        for (let d = 0; d < 7; d++) {
+          const dayNum = row[d];
+          if (dayNum === null) {
+            html += `<div></div><div></div><div></div><div></div><div></div>`;
+          } else {
+            const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
+            const isPast = dateStr < today;
+            const dowLabel = FR_DAYS[d];
+            html += `<div class="slot-day-label">${dowLabel} ${dayNum}</div>`;
+            for (const [sStart, sEnd] of SLOT_RANGES) {
+              const slots = calState.slotsByDate[dateStr] || [];
+              // Check if this 4h block overlaps with any available slot (≥2h)
+              const isAvailable = slots.some(s => s.start < sEnd && s.end > sStart);
+              // For booked/host-blocked: we use the "all occupied" info from slots-by-date
+              // A slot range is "booked" if it has no available sub-slot
+              const hasConflict = !isAvailable && !isPast;
+
+              const cls = isPast ? 'partial' : (isAvailable ? 'available' : 'booked');
+              const label = isPast ? '—' : (isAvailable ? `${sStart}h` : '✕');
+              html += `<div class="slot-cell ${cls}"
+                data-board="${calState.boardId}"
+                data-date="${dateStr}"
+                data-start="${sStart}"
+                data-end="${sEnd}"
+                title="${isPast ? 'Passé' : (isAvailable ? `Libre ${sStart}h–${sEnd}h — clic pour bloquer` : `Occupé — clic pour libérer`)}"
+                onclick="${isPast ? '' : `toggleHostSlot(this, ${calState.boardId}, '${dateStr}', ${sStart}, ${sEnd})`}"
+              >${label}</div>`;
+            }
+          }
+        }
+        html += `</div>`;
+      }
+
+      html += `
+        <div class="slot-legend">
+          <div class="slot-legend-item"><div class="slot-legend-dot available"></div> Libre</div>
+          <div class="slot-legend-item"><div class="slot-legend-dot booked"></div> Occupé / Réservé</div>
+          <div class="slot-legend-item"><div class="slot-legend-dot blocked"></div> Blocage host</div>
+        </div>`;
+
+      document.getElementById('cal-modal-body').innerHTML = html;
+    }
+
+    async function toggleHostSlot(el, boardId, date, startHour, endHour) {
+      el.style.opacity = '0.5';
+      try {
+        const res = await fetch(`/api/availability/${boardId}/toggle-slot`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ date, startHour, endHour })
+        });
+        if (!res.ok) throw new Error();
+        const result = await res.json();
+        // Refresh data then re-render
+        await loadCalData();
+        toast(result.blocked ? 'Créneau bloqué' : 'Créneau libéré', 'success');
+      } catch(_) {
+        el.style.opacity = '';
+        toast('Erreur — réessaie', 'error');
+      }
+    }
+
+    // Toast helper
+    function toast(msg, type) {
+      const existing = document.getElementById('host-toast');
+      if (existing) existing.remove();
+      const el = document.createElement('div');
+      el.id = 'host-toast';
+      const bg = type === 'success' ? 'var(--green)' : (type === 'info' ? 'var(--primary)' : 'var(--red)');
+      el.style.cssText = `position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:${bg};color:white;padding:0.55rem 1.2rem;border-radius:100px;font-size:0.82rem;font-weight:600;z-index:2000;box-shadow:0 4px 16px rgba(0,0,0,0.3);transition:opacity 0.3s`;
+      el.textContent = msg;
+      document.body.appendChild(el);
+      setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, 2200);
+    }
+
+    // ── EDIT BOARD MODAL ──────────────────────────────────────────────────────
+    let editState = {
+      boardId: null,
+      photos: [],       // URLs to keep
+      newPhotoFiles: [], // File objects to upload
+      loading: false
+    };
+
+    const BOARD_TYPES = ['shortboard','longboard','mid-length','fish','funboard','foam','sup','bodyboard'];
+    const BOARD_TYPE_LABELS = { shortboard:'Shortboard', longboard:'Longboard', 'mid-length':'Mid-length', fish:'Fish', funboard:'Funboard', foam:'Mousse', sup:'SUP', bodyboard:'Bodyboard' };
+    const CONDITIONS = ['like_new','good','fair'];
+    const CONDITION_LABELS = { like_new:'Comme neuf', good:'Bon état', fair:'Correct' };
+
+    function openEditModal(e, boardId) {
+      e.stopPropagation();
+      editState = { boardId, photos: [], newPhotoFiles: [], loading: false };
+      document.getElementById('edit-modal-body').innerHTML = '<div class="loading"><div class="spinner"></div> Chargement...</div>';
+      document.getElementById('edit-board-modal').classList.add('open');
+      loadEditData(boardId);
+    }
+
+    function closeEditModal() {
+      document.getElementById('edit-board-modal').classList.remove('open');
+    }
+
+    document.getElementById('edit-board-modal')?.addEventListener('click', function(e) {
+      if (e.target === this) closeEditModal();
+    });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeEditModal(); });
+
+    async function loadEditData(boardId) {
+      try {
+        const res = await fetch(`/api/boards/${boardId}`);
+        if (!res.ok) throw new Error();
+        const { board } = await res.json();
+        editState.photos = board.photos || [];
+        editState.boardId = boardId;
+        renderEditForm(board);
+      } catch(_) {
+        document.getElementById('edit-modal-body').innerHTML = '<p style="color:var(--red);text-align:center;padding:2rem;">Erreur de chargement. <button onclick="closeEditModal()" style="display:block;margin:1rem auto;background:none;border:none;color:var(--primary);cursor:pointer;">Fermer</button></p>';
+      }
+    }
+
+    function renderEditForm(board) {
+      const photos = editState.photos;
+      const hourlyRate = board.hourly_rate_cents ? (board.hourly_rate_cents / 100) : 8;
+      const estimatedVal = board.estimated_value_cents ? (board.estimated_value_cents / 100) : '';
+
+      document.getElementById('edit-modal-body').innerHTML = `
+        <form id="edit-board-form" onsubmit="submitEditBoard(event)" novalidate>
+          <input type="hidden" name="boardId" value="${board.id}">
+
+          <div class="edit-form-group">
+            <label class="edit-label">Titre de l'annonce</label>
+            <input type="text" name="title" class="edit-input" value="${escHtml(board.title || '')}" maxlength="80" required placeholder="ex: Fish 5'10 — Hossegor">
+          </div>
+
+          <div class="edit-form-group">
+            <label class="edit-label">Description</label>
+            <textarea name="description" class="edit-input edit-textarea" placeholder="Décris ta planche, son comportement, ce qui la rend unique...">${escHtml(board.description || '')}</textarea>
+          </div>
+
+          <div class="edit-row">
+            <div class="edit-form-group">
+              <label class="edit-label">Type de planche</label>
+              <select name="boardType" class="edit-select">
+                ${BOARD_TYPES.map(t => `<option value="${t}" ${board.board_type === t ? 'selected' : ''}>${BOARD_TYPE_LABELS[t]}</option>`).join('')}
+              </select>
+            </div>
+            <div class="edit-form-group">
+              <label class="edit-label">État</label>
+              <select name="condition" class="edit-select">
+                ${CONDITIONS.map(c => `<option value="${c}" ${board.condition === c ? 'selected' : ''}>${CONDITION_LABELS[c]}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+
+          <div class="edit-row">
+            <div class="edit-form-group">
+              <label class="edit-label">Taille (pieds)</label>
+              <input type="text" name="lengthFt" class="edit-input" value="${escHtml(board.length_ft || '')}" placeholder="ex: 6'2">
+            </div>
+            <div class="edit-form-group">
+              <label class="edit-label">Niveau requis</label>
+              <select name="skillLevel" class="edit-select">
+                <option value="all" ${(board.skill_level || 'all') === 'all' ? 'selected' : ''}>Tous niveaux</option>
+                <option value="beginner" ${board.skill_level === 'beginner' ? 'selected' : ''}>Débutants</option>
+                <option value="intermediate" ${board.skill_level === 'intermediate' ? 'selected' : ''}>Intermédiaires</option>
+                <option value="advanced" ${board.skill_level === 'advanced' ? 'selected' : ''}>Confirmés</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="edit-section-label">Prix</div>
+
+          <div class="edit-form-group">
+            <label class="edit-label">Tarif horaire (€/h)</label>
+            <div class="edit-slider-wrap">
+              <div class="edit-slider-row">
+                <input type="range" name="hourlyRateSlider" id="edit-hourly-slider" min="3" max="30" step="1" value="${Math.round(hourlyRate)}"
+                  class="edit-slider"
+                  oninput="document.getElementById('edit-hourly-val').textContent = this.value; document.getElementById('edit-hourly-input').value = this.value;">
+                <span class="edit-slider-val" id="edit-hourly-val">${Math.round(hourlyRate)}</span>
+              </div>
+              <input type="hidden" name="hourlyRate" id="edit-hourly-input" value="${Math.round(hourlyRate)}">
+              <div class="edit-slider-presets">
+                ${[3,5,8,10,15,20].map(v => `<button type="button" class="edit-preset-btn" onclick="document.getElementById('edit-hourly-slider').value=${v};document.getElementById('edit-hourly-val').textContent=${v};document.getElementById('edit-hourly-input').value=${v};">${v}€/h</button>`).join('')}
+              </div>
+            </div>
+          </div>
+
+          <div class="edit-form-group">
+            <label class="edit-label">Localisation</label>
+            <input type="text" name="location" class="edit-input" value="${escHtml(board.location || '')}" placeholder="Hossegor, France" list="edit-location-list">
+            <datalist id="edit-location-list">
+              <option value="Hossegor, France"><option value="Seignosse, France"><option value="Capbreton, France">
+              <option value="Biarritz, France"><option value="Anglet, France"><option value="Lacanau, France">
+              <option value="Montalivet, France"><option value="Biscarrosse, France">
+            </datalist>
+          </div>
+
+          <div class="edit-section-label">Photos <span style="color:var(--text-muted);font-weight:400;">(min. 3)</span></div>
+          <p class="edit-photo-hint">Les photos existantes sont conservées. Ajoute de nouvelles ou supprime celles que tu veux remplacer.</p>
+          <div class="edit-photo-grid" id="edit-photo-grid">
+            ${photos.map((url, i) => `
+              <div class="edit-photo-thumb">
+                <img src="${escHtml(url)}" alt="Photo ${i+1}">
+                <button type="button" class="edit-photo-remove" onclick="removeEditPhoto(${i})" title="Supprimer">×</button>
+              </div>`).join('')}
+            <label class="edit-photo-add">
+              <span style="font-size:1.2rem;">+</span>
+              <span>Ajouter</span>
+              <input type="file" accept="image/*" multiple onchange="addEditPhotos(this.files)">
+            </label>
+          </div>
+          <div id="edit-photo-error" class="edit-error"></div>
+
+          <div class="edit-section-label">Accessoires inclus</div>
+          <div class="edit-accessories">
+            <label class="edit-accessory-btn ${board.fins_included ? 'active' : ''}" onclick="this.classList.toggle('active');this.querySelector('input').checked = !this.querySelector('input').checked">
+              <input type="checkbox" name="finsIncluded" value="true" ${board.fins_included ? 'checked' : ''}> Dérives
+            </label>
+            <label class="edit-accessory-btn ${board.leash_included ? 'active' : ''}" onclick="this.classList.toggle('active');this.querySelector('input').checked = !this.querySelector('input').checked">
+              <input type="checkbox" name="leashIncluded" value="true" ${board.leash_included ? 'checked' : ''}> Leash
+            </label>
+            <label class="edit-accessory-btn ${board.bag_included ? 'active' : ''}" onclick="this.classList.toggle('active');this.querySelector('input').checked = !this.querySelector('input').checked">
+              <input type="checkbox" name="bagIncluded" value="true" ${board.bag_included ? 'checked' : ''}> Housse
+            </label>
+          </div>
+
+          <div class="edit-waiver-row">
+            <div>
+              <div class="edit-waiver-label">🛡️ Protection dommages</div>
+              <div class="edit-waiver-sub">0.50€/h ajouté à la réservation</div>
+            </div>
+            <label class="edit-toggle">
+              <input type="checkbox" name="damageWaiverEnabled" value="true" ${board.damage_waiver_enabled !== false ? 'checked' : ''}>
+              <span class="edit-toggle-track"><span class="edit-toggle-thumb"></span></span>
+            </label>
+          </div>
+
+          <div id="edit-error" class="edit-error"></div>
+          <button type="submit" class="edit-submit-btn" id="edit-submit-btn">Sauvegarder les modifications ✅</button>
+          <button type="button" class="edit-cancel-btn" onclick="closeEditModal()">Annuler</button>
+        </form>`;
+    }
+
+    function escHtml(str) {
+      return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    function removeEditPhoto(index) {
+      editState.photos.splice(index, 1);
+      renderEditPhotoGrid();
+    }
+
+    function addEditPhotos(files) {
+      for (const f of files) {
+        if (editState.newPhotoFiles.length >= 8 - editState.photos.length) break;
+        editState.newPhotoFiles.push(f);
+      }
+      renderEditPhotoGrid();
+    }
+
+    function renderEditPhotoGrid() {
+      const grid = document.getElementById('edit-photo-grid');
+      if (!grid) return;
+      let html = '';
+      editState.photos.forEach((url, i) => {
+        html += `<div class="edit-photo-thumb"><img src="${escHtml(url)}" alt="Photo ${i+1}"><button type="button" class="edit-photo-remove" onclick="removeEditPhoto(${i})" title="Supprimer">×</button></div>`;
+      });
+      const maxNew = Math.max(0, 8 - editState.photos.length - editState.newPhotoFiles.length);
+      if (editState.photos.length + editState.newPhotoFiles.length < 8) {
+        html += `<label class="edit-photo-add"><span style="font-size:1.2rem;">+</span><span>Ajouter</span><input type="file" accept="image/*" multiple onchange="addEditPhotos(this.files)"></label>`;
+      }
+      grid.innerHTML = html;
+    }
+
+    async function submitEditBoard(e) {
+      e.preventDefault();
+      const form = e.target;
+      const errEl = document.getElementById('edit-error');
+      const btn = document.getElementById('edit-submit-btn');
+      const overlay = document.getElementById('edit-submitting-overlay');
+      errEl.textContent = '';
+
+      // Validate min photos
+      const totalPhotos = editState.photos.length + editState.newPhotoFiles.length;
+      if (totalPhotos < 3) {
+        errEl.textContent = 'Minimum 3 photos requises — ajoute au moins ' + (3 - totalPhotos) + ' photo(s).';
+        return;
+      }
+
+      btn.disabled = true;
+      if (overlay) overlay.classList.add('active');
+
+      try {
+        const formData = new FormData();
+        formData.set('title', form.title.value.trim());
+        formData.set('description', form.description.value.trim());
+        formData.set('board_type', form.boardType.value);
+        formData.set('condition', form.condition.value);
+        formData.set('length_ft', form.lengthFt.value.trim());
+        formData.set('skill_level', form.skillLevel.value);
+        formData.set('hourlyRate', form.hourlyRate.value);
+        formData.set('location', form.location.value.trim());
+        formData.set('damageWaiverEnabled', form.damageWaiverEnabled.checked ? 'true' : 'false');
+        formData.set('finsIncluded', form.finsIncluded.checked ? 'true' : 'false');
+        formData.set('leashIncluded', form.leashIncluded.checked ? 'true' : 'false');
+        formData.set('bagIncluded', form.bagIncluded.checked ? 'true' : 'false');
+        formData.set('existingPhotos', JSON.stringify(editState.photos));
+        for (const f of editState.newPhotoFiles) formData.append('photos', f);
+
+        const res = await fetch(`/api/boards/${editState.boardId}`, { method: 'PUT', body: formData });
+        const data = await res.json();
+
+        if (!res.ok) {
+          errEl.textContent = data.error || 'Erreur lors de la sauvegarde.';
+          return;
+        }
+
+        closeEditModal();
+        toast('Annonce mise à jour ✅', 'success');
+        loadBoards(); // refresh the list
+
+      } catch(_) {
+        errEl.textContent = 'Impossible de sauvegarder — réessaie.';
+      } finally {
+        btn.disabled = false;
+        if (overlay) overlay.classList.remove('active');
+      }
+    }
+
+    // ── TAB NAVIGATION ─────────────────────────────────────────────────────────
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('tab-' + tabName + '-btn').classList.add('active');
+      document.getElementById('tab-panel-' + tabName).classList.add('active');
+      if (tabName === 'genome') loadGenome();
+    }
+
+    // ── GENOME TAB ──────────────────────────────────────────────────────────────
+    async function loadGenome() {
+      const container = document.getElementById('genome-container');
+      try {
+        const res = await fetch(API.genomeHostMe);
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        const genomes = data.genomes || [];
+
+        if (genomes.length === 0) {
+          container.innerHTML = `
+            <div class="empty">
+              <div class="empty-icon">🧬</div>
+              <h3>Aucune donnée génome</h3>
+              <p>Ton intelligence Swell sera populated automatiquement à mesure que tes planches sont louées.</p>
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = `<div class="genome-grid">${genomes.map(g => {
+          const score = g.survival_score || 0;
+          const scoreColor = score < 60 ? 'var(--red)' : score >= 85 ? 'var(--green)' : 'var(--yellow)';
+          const barColor = score < 60 ? 'linear-gradient(90deg,#ff6b6b,#ff8e8e)' : score >= 85 ? 'linear-gradient(90deg,#4ade80,#86efac)' : 'linear-gradient(90deg,#fbbf24,#fcd34d)';
+          const roiClass = g.roi_class || '';
+          const isAp = roiClass === 'A+';
+          const isWarn = score < 60;
+          const badge = isAp ? '<span class="genome-badge gold">★ A+</span>' : (isWarn ? '<span class="genome-badge warn">⚠️ Attention</span>' : '<span class="genome-badge ok">A+ à C</span>');
+          return `<div class="genome-card">
+            <div class="genome-card-head">
+              <div>
+                <div class="genome-id">${escHtml(g.genome_id || '')}</div>
+                <div class="genome-board-name">${escHtml(g.board_title || g.title || 'Planche')}</div>
+              </div>
+              ${badge}
+            </div>
+            <div class="genome-score-row">
+              <span class="genome-score-label">Survival Score</span>
+              <div class="genome-bar-wrap">
+                <div class="genome-bar-fill" style="width:${score}%;background:${barColor};"></div>
+              </div>
+              <span class="genome-score-val" style="color:${scoreColor};">${score}</span>
+            </div>
+            <div class="genome-meta">
+              <span class="genome-meta-item">📊 ${escHtml(roiClass || '—')}</span>
+              <span class="genome-meta-item">📍 ${g.location_count || g.locations || 0} location${(g.location_count || g.locations || 0) !== 1 ? 's' : ''}</span>
+              ${g.rental_count ? `<span class="genome-meta-item">🏄 ${g.rental_count} location${g.rental_count !== 1 ? 's' : ''}</span>` : ''}
+            </div>
+          </div>`;
+        }).join('')}</div>`;
+      } catch(_) {
+        container.innerHTML = `<div class="empty"><p style="color:var(--red);">Impossible de charger les données génome.</p></div>`;
+      }
+    }
+
+    init();
+
+  <script src="/js/host-sw.js"></script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw-v3.js?v=3').catch(() => {});
+  });
+}
+</body>
+</html>

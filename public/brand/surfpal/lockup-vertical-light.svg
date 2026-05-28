@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 126 100" width="126" height="100">
+  <!-- Mark centered -->
+  <g transform="translate(47,4)">
+    <g transform="translate(16,16)">
+      <ellipse cx="0" cy="-3" rx="6" ry="13" transform="rotate(-15)" fill="#f7b731" opacity="0.95"/>
+      <path d="M3.5 8 Q6 13 2.5 13 Q2 11 3.5 8Z" transform="rotate(-15)" fill="#f7b731" opacity="0.7"/>
+      <ellipse cx="0" cy="-3" rx="2.5" ry="6" transform="rotate(-15)" fill="#2ecc71" opacity="0.4"/>
+    </g>
+  </g>
+  <!-- Wordmark -->
+  <text x="63" y="82" text-anchor="middle"
+    font-family="system-ui, sans-serif" font-size="24" font-weight="800"
+    fill="#ffffff" letter-spacing="-0.5">
+    Surf<tspan fill="#f7b731">pal</tspan>
+  </text>
+</svg>
