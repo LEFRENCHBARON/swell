@@ -282,6 +282,6 @@ app.get('/', (req, res) => {
     res.redirect('/app.html');
   }
 });
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   logger.info({ port, env: process.env.NODE_ENV || 'development' }, 'Swell server started');
 });
