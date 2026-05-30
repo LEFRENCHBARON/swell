@@ -1,5 +1,6 @@
 // Entry point: wiring only — middleware, route mounts, app.listen.
 // No business logic, no queries, no route handlers live here.
+process.stderr.write('[boot] server.js loaded, pid=' + process.pid + ' node=' + process.version + '\n');
 
 // Registered first — before any require() — so module-load errors are caught.
 // Write to stderr synchronously: on Render, stdout is a pipe and pino/sonic-boom
