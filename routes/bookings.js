@@ -12,7 +12,9 @@ const { validatePromoCode, calcPromoDiscount, recordPromoRedemption } = require(
 const { grantReferralCredits } = require('../db/referrals');
 const { sendBookingConfirmationEmails } = require('../services/booking-emails');
 const Stripe = require('stripe');
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Lazy init — Stripe v17 throws synchronously if key is undefined, blocking app.listen
+let _stripe;
+function getStripe() { return _stripe || (_stripe = new Stripe(process.env.STRIPE_SECRET_KEY)); }
 
 
 // Service fee charged to the renter (Swell commission on rental amount only, not waiver)
@@ -211,7 +213,7 @@ router.post('/', requireAuth, async (req, res) => {
     let stripeSessionId = null;
 
     try {
-      const session = await stripe.checkout.sessions.create({
+      const session = await getStripe().checkout.sessions.create({
         payment_method_types: ['card'],
         mode: 'payment',
         line_items: [{
@@ -279,7 +281,7 @@ router.post('/payment-verify', requireAuth, async (req, res) => {
   try {
     let stripeVerified = false;
     try {
-      const stripeSession = await stripe.checkout.sessions.retrieve(sessionId);
+      const stripeSession = await getStripe().checkout.sessions.retrieve(sessionId);
       stripeVerified = stripeSession.payment_status === 'paid';
     } catch (err) {
       return res.status(402).json({ error: 'Payment not verified' });
@@ -334,7 +336,7 @@ router.post('/payment-verify', requireAuth, async (req, res) => {
         })();
         if (depositCents === 0) return;
 
-        const pi = await stripe.paymentIntents.create({
+        const pi = await getStripe().paymentIntents.create({
           amount: depositCents,
           currency: 'eur',
           capture_method: 'manual',

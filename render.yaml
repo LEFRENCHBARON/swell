@@ -2,9 +2,25 @@ services:
   - type: web
     runtime: node
     name: app
-    buildCommand: npm install
+    buildCommand: npm install && npm run build
     startCommand: npm start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: ADMIN_SECRET
+        sync: false
+      - key: IBAN_ENCRYPTION_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: POLSIA_API_KEY
+        sync: false
+      - key: POLSIA_API_URL
+        sync: false
+      - key: POLSIA_ANALYTICS_SLUG
+        sync: false

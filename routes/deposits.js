@@ -12,7 +12,9 @@ const { getBoardEstimatedValue } = require('../db/boards');
 const { sendTransactionalEmail } = require('../services/email');
 
 const Stripe = require('stripe');
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Lazy init — Stripe v17 throws synchronously if key is undefined, blocking app.listen
+let _stripe;
+function getStripe() { return _stripe || (_stripe = new Stripe(process.env.STRIPE_SECRET_KEY)); }
 const APP_URL = process.env.APP_URL || 'https://swell.polsia.app';
 const ADMIN_NOTIFY_EMAIL = process.env.ADMIN_NOTIFY_EMAIL;
 const CRON_SECRET = process.env.CRON_SECRET;
@@ -56,7 +58,7 @@ router.post('/:bookingId/create', requireAuth, async (req, res) => {
     // Create PaymentIntent with capture_method='manual' — funds are held, not captured.
     let piId, clientSecret;
     try {
-      const pi = await stripe.paymentIntents.create({
+      const pi = await getStripe().paymentIntents.create({
         amount: depositCents,
         currency: 'eur',
         capture_method: 'manual',
@@ -114,7 +116,7 @@ router.post('/:bookingId/confirm', requireAuth, async (req, res) => {
   try {
     let piState;
     try {
-      const piStatus = await stripe.paymentIntents.retrieve(paymentIntentId || booking.deposit_payment_intent_id);
+      const piStatus = await getStripe().paymentIntents.retrieve(paymentIntentId || booking.deposit_payment_intent_id);
       piState = piStatus.status;
     } catch (err) {
       return res.status(402).json({ error: 'Impossible de vérifier le statut de la caution' });
@@ -184,7 +186,7 @@ router.post('/:bookingId/release', requireAuth, async (req, res) => {
 
   // Cancel the PaymentIntent → releases the pre-auth hold
   if (piId) {
-    stripe.paymentIntents.cancel(piId).catch(err => console.error('[Deposits] Cancel PI failed (non-fatal):', err.message));
+    getStripe().paymentIntents.cancel(piId).catch(err => console.error('[Deposits] Cancel PI failed (non-fatal):', err.message));
   }
 
   await releaseBookingDeposit(bookingId);
@@ -235,7 +237,7 @@ router.post('/:bookingId/report-damage', requireAuth, async (req, res) => {
   // Trigger actual capture on Stripe via Polsia API
   const piId = booking.deposit_session_id;
   if (piId && captureCents > 0) {
-    stripe.paymentIntents.capture(piId, { amount_to_capture: captureCents })
+    getStripe().paymentIntents.capture(piId, { amount_to_capture: captureCents })
       .catch(err => console.error('[Deposits] Capture PI failed (non-fatal):', err.message));
   }
 
@@ -262,7 +264,7 @@ router.post('/cron', async (req, res) => {
     for (const booking of expired) {
       const piId = booking.deposit_session_id;
       if (piId) {
-        stripe.paymentIntents.cancel(piId).catch(err => {
+        getStripe().paymentIntents.cancel(piId).catch(err => {
           console.error(`[Deposits/cron] Cancel PI failed for booking ${booking.id}:`, err.message);
           errors.push({ bookingId: booking.id, error: err.message });
         });
