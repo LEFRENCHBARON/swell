@@ -12,6 +12,13 @@ process.on('unhandledRejection', (reason) => {
   process.stderr.write('[unhandledRejection] ' + String(reason) + '\n');
   process.exit(1);
 });
+let server; // assigned after app.listen(); referenced by SIGTERM handler below
+process.on('SIGTERM', () => {
+  process.stderr.write('[SIGTERM] Render requested shutdown — graceful close\n');
+  if (server) server.close(() => process.exit(0));
+  else process.exit(0);
+  setTimeout(() => process.exit(0), 10_000).unref();
+});
 
 const express = require('express');
 const compression = require('compression');
@@ -97,6 +104,9 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,
 }));
 
+// Health check — before session middleware so Render's probe never blocks on a cold Neon connection
+app.get('/health', (req, res) => res.json({ status: 'ok' }));
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -153,9 +163,6 @@ app.use(express.static(path.join(__dirname, 'public'), {
     }
   },
 }));
-
-// Health check (required for Render — no DB query)
-app.get('/health', (req, res) => res.json({ status: 'healthy' }));
 
 // CSRF protection — validates X-CSRF-Token header on POST/PUT/PATCH/DELETE.
 // Mounted on /api/* only; static pages and server-rendered routes are exempt.
@@ -295,7 +302,7 @@ app.get('/', (req, res) => {
     res.redirect('/app.html');
   }
 });
-const server = app.listen(port, '0.0.0.0', () => {
+server = app.listen(port, '0.0.0.0', () => {
   logger.info({ port, env: process.env.NODE_ENV || 'development' }, 'Swell server started');
 });
 
