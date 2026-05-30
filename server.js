@@ -282,6 +282,16 @@ app.get('/', (req, res) => {
     res.redirect('/app.html');
   }
 });
+process.on('uncaughtException', (err) => {
+  logger.fatal({ err: err.message, stack: err.stack }, 'uncaughtException — process will exit');
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason) => {
+  logger.fatal({ reason: String(reason) }, 'unhandledRejection — process will exit');
+  process.exit(1);
+});
+
 app.listen(port, '0.0.0.0', () => {
   logger.info({ port, env: process.env.NODE_ENV || 'development' }, 'Swell server started');
 });
