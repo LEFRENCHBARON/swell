@@ -1,5 +1,18 @@
 // Entry point: wiring only — middleware, route mounts, app.listen.
 // No business logic, no queries, no route handlers live here.
+
+// Registered first — before any require() — so module-load errors are caught.
+// Write to stderr synchronously: on Render, stdout is a pipe and pino/sonic-boom
+// may not flush before process.exit(1), making fatal logs invisible.
+process.on('uncaughtException', (err) => {
+  process.stderr.write('[uncaughtException] ' + err.stack + '\n');
+  process.exit(1);
+});
+process.on('unhandledRejection', (reason) => {
+  process.stderr.write('[unhandledRejection] ' + String(reason) + '\n');
+  process.exit(1);
+});
+
 const express = require('express');
 const compression = require('compression');
 const helmet = require('helmet');
@@ -282,16 +295,14 @@ app.get('/', (req, res) => {
     res.redirect('/app.html');
   }
 });
-process.on('uncaughtException', (err) => {
-  logger.fatal({ err: err.message, stack: err.stack }, 'uncaughtException — process will exit');
-  process.exit(1);
-});
-
-process.on('unhandledRejection', (reason) => {
-  logger.fatal({ reason: String(reason) }, 'unhandledRejection — process will exit');
-  process.exit(1);
-});
-
-app.listen(port, '0.0.0.0', () => {
+const server = app.listen(port, '0.0.0.0', () => {
   logger.info({ port, env: process.env.NODE_ENV || 'development' }, 'Swell server started');
+});
+
+// Catch port-binding failures (EADDRINUSE, EACCES) — without this, a listen
+// error emits on the server instance and becomes an uncaughtException with no
+// context about which port failed.
+server.on('error', (err) => {
+  process.stderr.write('[server.listen error] ' + err.message + '\n');
+  process.exit(1);
 });
