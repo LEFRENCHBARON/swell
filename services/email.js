@@ -2,10 +2,12 @@
 // Does NOT own email templates, campaign logic, or subscriber management.
 const { Resend } = require('resend');
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy init — Resend throws synchronously if key is undefined, blocking app.listen
+let _resend;
+function getResend() { return _resend || (_resend = new Resend(process.env.RESEND_API_KEY)); }
 
 async function sendTransactionalEmail({ to, subject, htmlBody, textBody, tag, replyTo }) {
-  const { data, error } = await resend.emails.send({
+  const { data, error } = await getResend().emails.send({
     from: process.env.EMAIL_FROM || 'Swell <noreply@swell.fr>',
     to,
     subject,
