@@ -108,6 +108,24 @@ app.use(helmet({
 // Health check — before session middleware so Render's probe never blocks on a cold Neon connection
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
+// Landing page — cached once at startup, served before session middleware so a cold Neon
+// connection never blocks the homepage. express.static would also match '/' → index.html
+// but would bypass the __POLSIA_SLUG__ replacement, so we handle it explicitly here.
+{
+  const _indexPath = path.join(__dirname, 'public', 'index.html');
+  const _slug = process.env.POLSIA_ANALYTICS_SLUG || '';
+  const _landingHtml = fs.existsSync(_indexPath)
+    ? fs.readFileSync(_indexPath, 'utf8').replace('__POLSIA_SLUG__', _slug)
+    : null;
+  app.get('/', (req, res) => {
+    if (_landingHtml) {
+      res.set('Cache-Control', 'no-cache');
+      return res.type('html').send(_landingHtml);
+    }
+    res.redirect('/app.html');
+  });
+}
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -291,18 +309,6 @@ app.get('/review', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'review.html'));
 });
 
-// Landing page with analytics slug injection
-app.get('/', (req, res) => {
-  const slug = process.env.POLSIA_ANALYTICS_SLUG || '';
-  const htmlPath = path.join(__dirname, 'public', 'index.html');
-  if (fs.existsSync(htmlPath)) {
-    let html = fs.readFileSync(htmlPath, 'utf8');
-    html = html.replace('__POLSIA_SLUG__', slug);
-    res.type('html').send(html);
-  } else {
-    res.redirect('/app.html');
-  }
-});
 server = app.listen(port, '0.0.0.0', () => {
   logger.info({ port, env: process.env.NODE_ENV || 'development' }, 'Swell server started');
 });
