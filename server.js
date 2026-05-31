@@ -126,6 +126,38 @@ app.get('/health', (req, res) => res.json({ status: 'ok' }));
   });
 }
 
+// /app.html — nonce-injected, CSP without 'unsafe-inline' for script-src.
+// Served before session middleware: only reads a file + injects a nonce, no DB needed.
+app.use(require('./routes/app-html'));
+
+// Static files — served before session middleware so a cold Neon connection never
+// blocks asset delivery. All files under public/ are publicly accessible by design.
+app.use(express.static(path.join(__dirname, 'public'), {
+  maxAge: process.env.NODE_ENV === 'production' ? '7d' : 0,
+  setHeaders: (res, filePath) => {
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-cache');
+    }
+    if (filePath.endsWith('sw.js') || filePath.endsWith('sw-v3.js')) {
+      res.setHeader('Cache-Control', 'no-store, max-age=0');
+    }
+    // CSP for static HTML pages (other than app.html which is handled above with a nonce).
+    if (filePath.endsWith('.html')) {
+      res.setHeader('Content-Security-Policy', [
+        "default-src 'self'",
+        "script-src 'self' 'unsafe-inline'",
+        "style-src 'self' 'unsafe-inline'",
+        "img-src 'self' data: https: blob:",
+        "font-src 'self' https://fonts.gstatic.com",
+        "connect-src 'self'",
+        "frame-src 'none'",
+        "object-src 'none'",
+        "upgrade-insecure-requests",
+      ].join('; '));
+    }
+  },
+}));
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -146,42 +178,8 @@ app.use(session({
   }
 }));
 
-// /app.html — nonce-injected, CSP without 'unsafe-inline' for script-src
-// Extracted to routes/app-html.js to keep server.js under 300 lines.
-app.use(require('./routes/app-html'));
-
-// /listings — server-rendered board listing (before static, takes priority over app.html fallback)
+// /listings — server-rendered board listing (needs DB queries, stays after session)
 app.use('/listings', require('./routes/listings'));
-
-// Static files with long-lived cache for assets (images, fonts, css, js)
-app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: process.env.NODE_ENV === 'production' ? '7d' : 0,
-  // HTML files intentionally excluded from long cache (served via explicit routes)
-  setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.html')) {
-      res.setHeader('Cache-Control', 'no-cache');
-    }
-    // Service workers: never cache — must always run fresh code
-    if (filePath.endsWith('sw.js') || filePath.endsWith('sw-v3.js')) {
-      res.setHeader('Cache-Control', 'no-store, max-age=0');
-    }
-    // CSP for static HTML pages (other than app.html, which is served by routes/app-html.js
-    // with per-request nonce injection and strict script-src without unsafe-inline).
-    if (filePath.endsWith('.html')) {
-      res.setHeader('Content-Security-Policy', [
-        "default-src 'self'",
-        "script-src 'self' 'unsafe-inline'",
-        "style-src 'self' 'unsafe-inline'",
-        "img-src 'self' data: https: blob:",
-        "font-src 'self' https://fonts.gstatic.com",
-        "connect-src 'self'",
-        "frame-src 'none'",
-        "object-src 'none'",
-        "upgrade-insecure-requests",
-      ].join('; '));
-    }
-  },
-}));
 
 // CSRF protection — validates X-CSRF-Token header on POST/PUT/PATCH/DELETE.
 // Mounted on /api/* only; static pages and server-rendered routes are exempt.
