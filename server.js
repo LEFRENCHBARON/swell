@@ -109,13 +109,11 @@ app.use(helmet({
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
 // Landing page — cached once at startup, served before session middleware so a cold Neon
-// connection never blocks the homepage. express.static would also match '/' → index.html
-// but would bypass the __POLSIA_SLUG__ replacement, so we handle it explicitly here.
+// connection never blocks the homepage.
 {
-  const _indexPath = path.join(__dirname, 'public', 'index.html');
-  const _slug = process.env.POLSIA_ANALYTICS_SLUG || '';
-  const _landingHtml = fs.existsSync(_indexPath)
-    ? fs.readFileSync(_indexPath, 'utf8').replace('__POLSIA_SLUG__', _slug)
+  const _landingPath = path.join(__dirname, 'public', 'landing.html');
+  const _landingHtml = fs.existsSync(_landingPath)
+    ? fs.readFileSync(_landingPath, 'utf8')
     : null;
   app.get('/', (req, res) => {
     if (_landingHtml) {

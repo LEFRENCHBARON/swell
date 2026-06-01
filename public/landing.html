@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Swell — Location de planches de surf entre particuliers</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --foam:#00B5A3;--fd:rgba(0,181,163,.14);--wave:#1B6CA8;
+  --sunset:#FF6B35;--sun:#FFB347;
+  --text:#e8edf5;--t2:rgba(232,237,245,.6);--t3:rgba(232,237,245,.28);
+  --bg:#0f1923;--card:#111e2a;
+  --bd:rgba(255,255,255,.07);--bd2:rgba(255,255,255,.13);
+  --r-md:12px;--r-lg:16px;--r-xl:20px;--pill:999px;
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);overflow-x:hidden}
+
+/* HEADER */
+.hdr{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 28px;height:58px;
+  display:flex;align-items:center;gap:20px;transition:all .3s}
+.hdr.scrolled{background:rgba(9,18,28,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--bd)}
+.logo{font-size:20px;font-weight:800;letter-spacing:-1px;text-decoration:none;color:var(--text)}
+.logo em{color:var(--foam);font-style:normal}
+.nav{display:flex;gap:2px;flex:1}
+.nav a{padding:5px 12px;font-size:13px;font-weight:500;color:var(--t2);text-decoration:none;
+  border-radius:var(--pill);transition:all .13s}
+.nav a:hover{color:var(--text);background:rgba(255,255,255,.07)}
+.hdr-ctas{display:flex;gap:7px;margin-left:auto}
+.btn-ghost{padding:6px 14px;border-radius:var(--pill);font-size:13px;font-weight:600;cursor:pointer;
+  font-family:var(--font);border:none;background:rgba(255,255,255,.07);color:var(--text);transition:all .13s;text-decoration:none;display:inline-flex;align-items:center}
+.btn-ghost:hover{background:rgba(255,255,255,.12)}
+.btn-cta{padding:7px 16px;border-radius:var(--pill);font-size:13px;font-weight:700;cursor:pointer;
+  font-family:var(--font);border:none;background:var(--foam);color:#fff;transition:all .13s;text-decoration:none;display:inline-flex;align-items:center}
+.btn-cta:hover{background:#00c9b5}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;padding:100px 24px 130px;text-align:center}
+.hero-bg{position:absolute;inset:0;
+  background:linear-gradient(-45deg,#060f18,#0A2540,#0B3670,#093838,#0A2540);
+  background-size:400% 400%;animation:ocean 16s ease infinite;z-index:0}
+@keyframes ocean{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.hero-glow{position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);
+  width:700px;height:450px;z-index:1;
+  background:radial-gradient(ellipse,rgba(0,181,163,.14) 0%,transparent 65%);pointer-events:none}
+.hero-glow2{position:absolute;bottom:0;left:0;right:0;height:300px;z-index:1;
+  background:linear-gradient(to top,var(--bg),transparent);pointer-events:none}
+.hero-content{position:relative;z-index:2}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;
+  border-radius:var(--pill);background:rgba(0,181,163,.1);border:1px solid rgba(0,181,163,.25);
+  font-size:11px;font-weight:600;color:var(--foam);margin-bottom:24px}
+.bdot{width:6px;height:6px;border-radius:50%;background:var(--foam);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.7)}}
+.hero-title{font-size:clamp(34px,6vw,66px);font-weight:800;letter-spacing:-2px;
+  line-height:1.06;margin-bottom:18px;max-width:720px}
+.accent{background:linear-gradient(120deg,var(--foam) 0%,#7ef5ea 60%,var(--foam) 100%);
+  background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;animation:shimmer 4s linear infinite}
+@keyframes shimmer{0%{background-position:0% center}100%{background-position:200% center}}
+.hero-sub{font-size:clamp(14px,1.8vw,17px);color:var(--t2);max-width:460px;
+  line-height:1.65;margin:0 auto 30px}
+.hero-ctas{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:36px}
+.btn-lg{padding:13px 26px;border-radius:var(--pill);font-size:14px;font-weight:700;cursor:pointer;
+  font-family:var(--font);transition:all .18s;border:none;text-decoration:none;
+  display:inline-flex;align-items:center;gap:7px}
+.btn-fl{background:var(--foam);color:#fff}
+.btn-fl:hover{background:#00c9b5;transform:translateY(-2px)}
+.btn-ol{background:rgba(255,255,255,.08);color:var(--text);border:1.5px solid rgba(255,255,255,.18)}
+.btn-ol:hover{background:rgba(255,255,255,.13);transform:translateY(-2px)}
+.trust-row{display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap}
+.avgrp{display:flex}
+.tav{width:26px;height:26px;border-radius:50%;border:2px solid rgba(9,18,28,.7);margin-left:-5px;
+  display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700}
+.tav:first-child{margin-left:0}
+.trust-txt{font-size:12px;color:var(--t2)}
+.trust-stars{color:var(--sun)}
+
+/* Wave */
+.wave-bot{position:absolute;bottom:-1px;left:0;right:0;line-height:0;z-index:3}
+
+/* STATS */
+.stats-wrap{background:var(--bg)}
+.stats-inner{max-width:840px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);
+  border:1px solid var(--bd);border-top:none}
+.sitem{padding:22px;text-align:center;border-right:1px solid var(--bd)}
+.sitem:last-child{border-right:none}
+.sv{font-size:30px;font-weight:800;letter-spacing:-1px;color:var(--foam);line-height:1;
+  display:flex;align-items:baseline;justify-content:center;gap:1px}
+.sl{font-size:11px;color:var(--t2);margin-top:4px}
+
+/* SECTIONS */
+.sect{padding:72px 24px;max-width:840px;margin:0 auto}
+.sbadge{display:inline-block;padding:4px 11px;border-radius:var(--pill);
+  background:var(--fd);color:var(--foam);font-size:10px;font-weight:700;letter-spacing:.06em;margin-bottom:11px}
+.stitle{font-size:clamp(24px,4vw,36px);font-weight:800;letter-spacing:-1px;margin-bottom:11px}
+.ssub{font-size:14px;color:var(--t2);line-height:1.65;max-width:480px}
+
+/* STEPS */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:36px}
+.step{padding:22px;background:var(--card);border:1px solid var(--bd);border-radius:var(--r-xl);
+  position:relative;overflow:hidden;transition:border-color .18s}
+.step:hover{border-color:rgba(0,181,163,.25)}
+.step::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--foam),transparent);opacity:.6}
+.stepn{font-size:32px;font-weight:800;color:rgba(0,181,163,.08);letter-spacing:-2px;margin-bottom:10px}
+.stepico{font-size:20px;margin-bottom:9px}
+.stept{font-size:14px;font-weight:700;margin-bottom:5px}
+.stepd{font-size:12px;color:var(--t2);line-height:1.65}
+
+/* BOARDS */
+.bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}
+.bcard{background:var(--card);border:1px solid var(--bd);border-radius:var(--r-xl);
+  overflow:hidden;cursor:pointer;transition:all .2s}
+.bcard:hover{border-color:rgba(255,255,255,.15);transform:translateY(-3px)}
+.bimg{height:130px;display:flex;align-items:center;justify-content:center;position:relative}
+.tpill{position:absolute;top:9px;left:9px;padding:2px 8px;border-radius:var(--pill);
+  font-size:9px;font-weight:600;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);color:rgba(255,255,255,.85)}
+.blen{font-size:26px;font-weight:800;color:rgba(255,255,255,.12);letter-spacing:-1px}
+.bbody{padding:11px 13px 13px}
+.btitle{font-size:13px;font-weight:600;margin-bottom:2px}
+.bloc{font-size:10px;color:var(--t3);margin-bottom:7px}
+.bfoot{display:flex;justify-content:space-between;align-items:center}
+.bprice{font-size:14px;font-weight:700;color:var(--foam)}
+.bprice small{font-size:9px;font-weight:400;color:var(--t3)}
+.brate{font-size:11px;color:rgba(255,179,71,.9)}
+
+/* FOR HOSTS */
+.host-sect{padding:72px 0;background:linear-gradient(180deg,var(--bg) 0%,#09131d 100%)}
+.host-inner{max-width:840px;margin:0 auto;padding:0 24px;
+  display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.perks{display:flex;flex-direction:column;gap:14px;margin-top:24px}
+.perk{display:flex;gap:11px;align-items:flex-start}
+.pico{width:34px;height:34px;border-radius:var(--r-md);background:var(--fd);
+  display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ptitle{font-size:13px;font-weight:700;margin-bottom:3px}
+.pdesc{font-size:11px;color:var(--t2);line-height:1.6}
+.earn-card{background:var(--card);border:1px solid rgba(0,181,163,.18);border-radius:var(--r-xl);padding:18px}
+.et{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:13px}
+.erow{display:flex;justify-content:space-between;padding:7px 0;
+  border-bottom:1px solid rgba(255,255,255,.05);font-size:12px}
+.erow:last-of-type{border-bottom:none}
+.ek{color:var(--t2)}.ev{font-weight:600;color:var(--foam)}
+.etot{display:flex;justify-content:space-between;padding:11px;
+  background:var(--fd);border-radius:var(--r-md);margin-top:11px}
+.etl{font-size:13px;font-weight:700;color:var(--foam)}
+.etv{font-size:19px;font-weight:800;color:var(--foam)}
+
+/* SPOTS */
+.spots-sect{padding:72px 0}
+.spots-hdr{padding:0 24px;max-width:840px;margin:0 auto 24px}
+.spots-scroll{padding:0 24px;display:flex;gap:9px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.spots-scroll::-webkit-scrollbar{display:none}
+.scard{flex-shrink:0;width:164px;background:var(--card);border:1px solid var(--bd);
+  border-radius:var(--r-xl);padding:13px;transition:all .18s;cursor:pointer}
+.scard:hover{border-color:rgba(0,181,163,.28);transform:translateY(-2px)}
+.swave{font-size:22px;margin-bottom:7px}
+.sname{font-size:12px;font-weight:700;margin-bottom:1px}
+.sreg{font-size:9px;color:var(--t3);margin-bottom:7px}
+.stags{display:flex;gap:4px;flex-wrap:wrap}
+.stag{padding:2px 6px;border-radius:var(--pill);font-size:9px;font-weight:600}
+.th{background:rgba(255,59,48,.1);color:#ff7070;border:1px solid rgba(255,59,48,.18)}
+.tm{background:rgba(255,179,0,.1);color:var(--sun);border:1px solid rgba(255,179,0,.16)}
+.tl{background:rgba(52,199,89,.1);color:#5ecc7b;border:1px solid rgba(52,199,89,.16)}
+
+/* TESTIMONIALS */
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:28px}
+.tcard{background:var(--card);border:1px solid var(--bd);border-radius:var(--r-xl);padding:18px;
+  transition:border-color .18s}
+.tcard:hover{border-color:var(--bd2)}
+.tstars{font-size:12px;color:var(--sun);margin-bottom:9px}
+.tquote{font-size:12px;color:var(--t2);line-height:1.65;margin-bottom:14px;font-style:italic}
+.tauthor{display:flex;align-items:center;gap:8px}
+.tavs{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.tname{font-size:12px;font-weight:600}
+.trole{font-size:10px;color:var(--t3)}
+
+/* FINAL CTA */
+.fcta{padding:80px 24px;text-align:center;position:relative;overflow:hidden}
+.fcta-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:500px;height:300px;pointer-events:none;
+  background:radial-gradient(ellipse,rgba(0,181,163,.1) 0%,transparent 65%)}
+.fcta-title{font-size:clamp(26px,5vw,44px);font-weight:800;letter-spacing:-1.5px;margin-bottom:12px;position:relative}
+.fcta-sub{font-size:14px;color:var(--t2);margin-bottom:28px;position:relative}
+
+/* FOOTER */
+.footer-wrap{border-top:1px solid var(--bd)}
+footer{padding:40px 24px 22px;max-width:840px;margin:0 auto}
+.ftop{display:flex;justify-content:space-between;gap:20px;margin-bottom:28px;flex-wrap:wrap}
+.flogo{font-size:18px;font-weight:800;letter-spacing:-1px;margin-bottom:6px}
+.flogo em{color:var(--foam);font-style:normal}
+.ftag{font-size:11px;color:var(--t3);line-height:1.5}
+.fcol{display:flex;flex-direction:column;gap:5px}
+.fcolt{font-size:9px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:3px}
+.fcol a{font-size:12px;color:var(--t2);text-decoration:none;transition:color .13s}
+.fcol a:hover{color:var(--text)}
+.fbot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+  padding-top:18px;border-top:1px solid rgba(255,255,255,.05)}
+.flegal{font-size:10px;color:var(--t3)}
+
+/* DIVIDER */
+.div{height:1px;background:linear-gradient(90deg,transparent,var(--bd),transparent)}
+
+/* RESPONSIVE */
+@media(max-width:620px){
+  .steps,.tgrid{grid-template-columns:1fr}
+  .bgrid{grid-template-columns:1fr 1fr}
+  .host-inner{grid-template-columns:1fr}
+  .stats-inner{grid-template-columns:1fr 1fr}
+  .nav{display:none}
+  .ftop{flex-direction:column}
+}
+@media(max-width:380px){.bgrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="hdr" id="hdr">
+  <a href="/" class="logo">S<em>.</em>well</a>
+  <nav class="nav">
+    <a href="#comment">Comment ça marche</a>
+    <a href="#spots">Nos spots</a>
+    <a href="#hotes">Devenir hôte</a>
+  </nav>
+  <div class="hdr-ctas">
+    <a href="/app.html" class="btn-ghost">Connexion</a>
+    <a href="/app.html" class="btn-cta">Commencer</a>
+  </div>
+</header>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge"><span class="bdot"></span>Lancé sur la Côte Atlantique · Hossegor, Biarritz, Lacanau</div>
+
+    <h1 class="hero-title">Votre prochaine vague<br><span class="accent">commence ici.</span></h1>
+
+    <p class="hero-sub">Louez une planche auprès de surfeurs locaux. Réservez en quelques minutes, surfez dans l'heure.</p>
+
+    <div class="hero-ctas">
+      <a href="/app.html" class="btn-lg btn-fl">🔍 Trouver une planche</a>
+      <a href="/host" class="btn-lg btn-ol">Proposer la mienne</a>
+    </div>
+
+    <div class="trust-row">
+      <div class="avgrp">
+        <div class="tav" style="background:linear-gradient(135deg,#1B6CA8,#00B5A3)">MR</div>
+        <div class="tav" style="background:linear-gradient(135deg,#0A2E1E,#1A5A3A)">SL</div>
+        <div class="tav" style="background:linear-gradient(135deg,#3A1A0A,#7A3A18)">JB</div>
+        <div class="tav" style="background:linear-gradient(135deg,#2A0A1A,#6A1A3A)">CD</div>
+        <div class="tav" style="background:rgba(255,255,255,.08);font-size:8px;color:var(--t2)">+39</div>
+      </div>
+      <span class="trust-txt"><span class="trust-stars">★★★★★</span> 4.9 · 43 surfeurs nous font confiance</span>
+    </div>
+  </div>
+
+  <div class="wave-bot">
+    <svg viewBox="0 0 1440 60" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0,30 C180,55 360,5 540,30 C720,55 900,5 1080,30 C1260,55 1380,10 1440,28 L1440,60 L0,60Z" fill="#0f1923"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ── STATS ── -->
+<div class="stats-wrap">
+  <div class="stats-inner">
+    <div class="sitem"><div class="sv"><span data-target="48">0</span></div><div class="sl">Planches disponibles</div></div>
+    <div class="sitem"><div class="sv"><span data-target="43">0</span></div><div class="sl">Surfeurs inscrits</div></div>
+    <div class="sitem"><div class="sv"><span data-target="127">0</span></div><div class="sl">Locations réalisées</div></div>
+    <div class="sitem"><div class="sv"><span data-target="22">0</span></div><div class="sl">Spots référencés</div></div>
+  </div>
+</div>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="sect" id="comment">
+  <div class="sbadge">Comment ça marche</div>
+  <h2 class="stitle">De zéro à l'eau en 3 étapes.</h2>
+  <p class="ssub">Pas de boutique, pas de longue durée. Juste des surfeurs locaux qui partagent leurs planches.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="stepn">01</div>
+      <div class="stepico">🔍</div>
+      <div class="stept">Choisissez votre planche</div>
+      <p class="stepd">Filtrez par type, taille, spot et dispo. Chaque planche a un profil complet avec photos et avis vérifiés.</p>
+    </div>
+    <div class="step">
+      <div class="stepn">02</div>
+      <div class="stepico">📅</div>
+      <div class="stept">Réservez votre créneau</div>
+      <p class="stepd">Choisissez votre date et durée (2h minimum). Paiement sécurisé. Le propriétaire confirme sous 1h.</p>
+    </div>
+    <div class="step">
+      <div class="stepn">03</div>
+      <div class="stepico">🌊</div>
+      <div class="stept">Surfez, puis rendez</div>
+      <p class="stepd">Récupérez la planche au spot. Surfez. Rendez-la en bon état. Le dépôt est remboursé automatiquement.</p>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ── FEATURED BOARDS ── -->
+<section class="sect" id="boards">
+  <div class="sbadge">Planches disponibles</div>
+  <h2 class="stitle">Trouvez votre vague.</h2>
+  <p class="ssub">Des planches entretenues par des surfeurs passionnés, disponibles dès aujourd'hui sur la côte.</p>
+  <div class="bgrid">
+    <div class="bcard" onclick="location.href='/app.html'">
+      <div class="bimg" style="background:linear-gradient(135deg,#0A2A5A,#1B4A9A)">
+        <span class="tpill">Shortboard</span><span class="blen">6'2</span>
+      </div>
+      <div class="bbody">
+        <div class="btitle">Pyzel Ghost 6'2</div>
+        <div class="bloc">📍 La Gravière, Hossegor</div>
+        <div class="bfoot"><div class="bprice">18€ <small>/ heure</small></div><div class="brate">★ 4.9 <span style="color:var(--t3)">(23)</span></div></div>
+      </div>
+    </div>
+    <div class="bcard" onclick="location.href='/app.html'">
+      <div class="bimg" style="background:linear-gradient(135deg,#0A2E1E,#1A5A3A)">
+        <span class="tpill">Longboard</span><span class="blen">9'0</span>
+      </div>
+      <div class="bbody">
+        <div class="btitle">Noserider 9'0</div>
+        <div class="bloc">📍 Grande Plage, Biarritz</div>
+        <div class="bfoot"><div class="bprice">12€ <small>/ heure</small></div><div class="brate">★ 4.7 <span style="color:var(--t3)">(11)</span></div></div>
+      </div>
+    </div>
+    <div class="bcard" onclick="location.href='/app.html'">
+      <div class="bimg" style="background:linear-gradient(135deg,#3A1A0A,#7A3A18)">
+        <span class="tpill">Fish</span><span class="blen">5'8</span>
+      </div>
+      <div class="bbody">
+        <div class="btitle">Firewire Dominator 5'8</div>
+        <div class="bloc">📍 La Piste, Capbreton</div>
+        <div class="bfoot"><div class="bprice">15€ <small>/ heure</small></div><div class="brate">★ 4.8 <span style="color:var(--t3)">(17)</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:20px">
+    <a href="/app.html" class="btn-lg btn-ol" style="font-size:13px;padding:10px 22px">Voir toutes les planches →</a>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ── FOR HOSTS ── -->
+<section class="host-sect" id="hotes">
+  <div class="host-inner">
+    <div>
+      <div class="sbadge">Pour les hôtes</div>
+      <h2 class="stitle">Votre planche travaille pendant que vous dormez.</h2>
+      <p class="ssub">Partagez votre board avec des surfeurs de confiance. Vous fixez les règles, on gère le reste.</p>
+      <div class="perks">
+        <div class="perk"><div class="pico">💰</div><div><div class="ptitle">Revenus complémentaires</div><p class="pdesc">Une shortboard à 18€/h génère en moyenne 380€/mois avec 3–4 locations par semaine.</p></div></div>
+        <div class="perk"><div class="pico">🔐</div><div><div class="ptitle">Protection totale</div><p class="pdesc">Dépôt de garantie systématique. Photos check-in/check-out. Assurance incluse sur chaque location.</p></div></div>
+        <div class="perk"><div class="pico">🧬</div><div><div class="ptitle">Swell Intelligence</div><p class="pdesc">Chaque location enrichit le génome de votre planche : ROI, usure, recommandations de prix en temps réel.</p></div></div>
+      </div>
+      <div style="margin-top:22px"><a href="/host" class="btn-lg btn-fl" style="font-size:13px;padding:11px 22px">Proposer ma planche →</a></div>
+    </div>
+    <div class="earn-card">
+      <div class="et">Simulation de revenus · Shortboard 6'2</div>
+      <div class="erow"><span class="ek">Prix de location</span><span class="ev">18€/h</span></div>
+      <div class="erow"><span class="ek">Sessions / semaine</span><span class="ev">3 × 3h</span></div>
+      <div class="erow"><span class="ek">Revenu brut / mois</span><span class="ev">648€</span></div>
+      <div class="erow"><span class="ek">Commission Swell (15%)</span><span style="font-weight:600;color:var(--t2)">–97€</span></div>
+      <div class="etot"><span class="etl">Revenu net / mois</span><span class="etv">551€</span></div>
+      <div style="font-size:9px;color:var(--t3);margin-top:7px;text-align:center">Basé sur les données réelles Hossegor · saison juin–septembre</div>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ── SPOTS ── -->
+<section class="spots-sect" id="spots">
+  <div class="spots-hdr">
+    <div class="sbadge">Nos spots</div>
+    <h2 class="stitle" style="font-size:clamp(22px,3.5vw,30px)">22 spots référencés sur la Côte Atlantique.</h2>
+  </div>
+  <div class="spots-scroll">
+    <div class="scard"><div class="swave">🌊</div><div class="sname">La Gravière</div><div class="sreg">Hossegor · 40</div><div class="stags"><span class="stag th">Expert</span><span class="stag th">Tubes</span></div></div>
+    <div class="scard"><div class="swave">🌊</div><div class="sname">Grande Plage</div><div class="sreg">Biarritz · 64</div><div class="stags"><span class="stag tl">Débutant</span><span class="stag tm">Longboard</span></div></div>
+    <div class="scard"><div class="swave">🌊</div><div class="sname">Lacanau Océan</div><div class="sreg">Lacanau · 33</div><div class="stags"><span class="stag tm">Interméd.</span><span class="stag tl">Tout niveau</span></div></div>
+    <div class="scard"><div class="swave">🌊</div><div class="sname">La Piste</div><div class="sreg">Capbreton · 40</div><div class="stags"><span class="stag tm">Technique</span><span class="stag tm">EPS reco.</span></div></div>
+    <div class="scard"><div class="swave">🌊</div><div class="sname">Côte des Basques</div><div class="sreg">Biarritz · 64</div><div class="stags"><span class="stag tl">Débutant</span></div></div>
+    <div class="scard"><div class="swave">🌊</div><div class="sname">Les Bourdaines</div><div class="sreg">Seignosse · 40</div><div class="stags"><span class="stag th">Expert</span></div></div>
+    <div class="scard"><div class="swave">🌊</div><div class="sname">Avalanche</div><div class="sreg">Anglet · 64</div><div class="stags"><span class="stag tm">Interméd.</span></div></div>
+    <div class="scard"><div class="swave">🌊</div><div class="sname">Cenitz</div><div class="sreg">Guéthary · 64</div><div class="stags"><span class="stag th">Reef</span><span class="stag th">Expert</span></div></div>
+    <div class="scard"><div class="swave">🌊</div><div class="sname">Le Santocha</div><div class="sreg">Capbreton · 40</div><div class="stags"><span class="stag tl">Famille</span></div></div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ── TESTIMONIALS ── -->
+<section class="sect">
+  <div class="sbadge">Ils l'ont testé</div>
+  <h2 class="stitle">La communauté parle.</h2>
+  <div class="tgrid">
+    <div class="tcard">
+      <div class="tstars">★★★★★</div>
+      <p class="tquote">"Planche oubliée à la maison avant un trip à Hossegor. En 10 minutes j'avais réservé une Pyzel chez un local. Planche parfaite, propriétaire au top."</p>
+      <div class="tauthor"><div class="tavs" style="background:linear-gradient(135deg,#1B6CA8,#00B5A3)">AD</div><div><div class="tname">Alex D.</div><div class="trole">Surfeur intermédiaire · Bordeaux</div></div></div>
+    </div>
+    <div class="tcard">
+      <div class="tstars">★★★★★</div>
+      <p class="tquote">"Je loue mes 3 planches depuis avril. La plateforme gère tout — paiements, dépôts, avis. Je reçois un virement chaque mois sans rien faire de plus."</p>
+      <div class="tauthor"><div class="tavs" style="background:linear-gradient(135deg,#0A2E1E,#1A5A3A)">MR</div><div><div class="tname">Marc R.</div><div class="trole">Hôte · Hossegor depuis 3 mois</div></div></div>
+    </div>
+    <div class="tcard">
+      <div class="tstars">★★★★★</div>
+      <p class="tquote">"Venue à Biarritz pour la semaine sans matériel. Grâce à Swell, j'ai surfé chaque matin avec du bon matos. Je ne voyagerai plus sans cette app."</p>
+      <div class="tauthor"><div class="tavs" style="background:linear-gradient(135deg,#2A0A1A,#6A1A3A)">CM</div><div><div class="tname">Camille M.</div><div class="trole">Surfeuse · Paris</div></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="div"></div>
+
+<!-- ── FINAL CTA ── -->
+<section class="fcta">
+  <div class="fcta-glow"></div>
+  <div class="sbadge" style="margin-bottom:14px">Rejoindre Swell</div>
+  <h2 class="fcta-title">Prêt à surfer autrement ?</h2>
+  <p class="fcta-sub">La Côte Atlantique vous attend. Vos prochaines vagues aussi.</p>
+  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;position:relative">
+    <a href="/app.html" class="btn-lg btn-fl">🔍 Trouver une planche</a>
+    <a href="/host" class="btn-lg btn-ol">Proposer la mienne</a>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<div class="footer-wrap">
+  <footer>
+    <div class="ftop">
+      <div><div class="flogo">S<em>.</em>well</div><div class="ftag">La marketplace P2P des planches de surf.<br>Côte Atlantique · swell.ai · 2026</div></div>
+      <div class="fcol"><div class="fcolt">Produit</div><a href="#comment">Comment ça marche</a><a href="#spots">Nos spots</a><a href="#hotes">Tarifs & commissions</a><a href="#hotes">Swell Intelligence</a></div>
+      <div class="fcol"><div class="fcolt">Hôtes</div><a href="/host">Devenir hôte</a><a href="#hotes">Calculer mes revenus</a><a href="#hotes">Protection & assurance</a><a href="/host">Dashboard hôte</a></div>
+      <div class="fcol"><div class="fcolt">Légal</div><a href="/mentions-legales">Mentions légales</a><a href="/cgu">CGU</a><a href="/confidentialite">Confidentialité</a><a href="mailto:hello@swell.ai">Contact</a></div>
+    </div>
+    <div class="fbot">
+      <div class="flegal">© 2026 Swell · swell.ai · Tous droits réservés</div>
+      <div style="font-size:10px;color:var(--t3)">Fait avec 🌊 sur la Côte Atlantique</div>
+    </div>
+  </footer>
+</div>
+
+<script>
+// Header scroll
+const hdr = document.getElementById('hdr');
+window.addEventListener('scroll', () => {
+  hdr.classList.toggle('scrolled', window.scrollY > 50);
+}, {passive:true});
+
+// Animated counters
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const el = e.target;
+    const target = parseInt(el.dataset.target);
+    let n = 0;
+    const step = Math.max(1, Math.ceil(target / 45));
+    const t = setInterval(() => {
+      n = Math.min(n + step, target);
+      el.textContent = n;
+      if (n >= target) clearInterval(t);
+    }, 28);
+    obs.unobserve(el);
+  });
+}, {threshold: 0.4});
+document.querySelectorAll('[data-target]').forEach(el => obs.observe(el));
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href');
+    if (id === '#') return;
+    e.preventDefault();
+    const target = document.querySelector(id);
+    if (target) target.scrollIntoView({behavior:'smooth'});
+  });
+});
+</script>
+</body>
+</html>
