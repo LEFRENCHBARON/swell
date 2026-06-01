@@ -305,46 +305,18 @@ footer{padding:40px 24px 22px;max-width:840px;margin:0 auto}
   </div>
 </section>
 
-<div class="div"></div>
+<div class="div" id="boards-divider"></div>
 
 <!-- ── FEATURED BOARDS ── -->
-<section class="sect" id="boards">
+<section class="sect" id="boards-section">
   <div class="sbadge">Planches disponibles</div>
   <h2 class="stitle">Trouvez votre vague.</h2>
   <p class="ssub">Des planches entretenues par des surfeurs passionnés, disponibles dès aujourd'hui sur la côte.</p>
-  <div class="bgrid">
-    <div class="bcard" onclick="location.href='/app.html'">
-      <div class="bimg" style="background:linear-gradient(135deg,#0A2A5A,#1B4A9A)">
-        <span class="tpill">Shortboard</span><span class="blen">6'2</span>
-      </div>
-      <div class="bbody">
-        <div class="btitle">Pyzel Ghost 6'2</div>
-        <div class="bloc">📍 La Gravière, Hossegor</div>
-        <div class="bfoot"><div class="bprice">18€ <small>/ heure</small></div><div class="brate">★ 4.9 <span style="color:var(--t3)">(23)</span></div></div>
-      </div>
-    </div>
-    <div class="bcard" onclick="location.href='/app.html'">
-      <div class="bimg" style="background:linear-gradient(135deg,#0A2E1E,#1A5A3A)">
-        <span class="tpill">Longboard</span><span class="blen">9'0</span>
-      </div>
-      <div class="bbody">
-        <div class="btitle">Noserider 9'0</div>
-        <div class="bloc">📍 Grande Plage, Biarritz</div>
-        <div class="bfoot"><div class="bprice">12€ <small>/ heure</small></div><div class="brate">★ 4.7 <span style="color:var(--t3)">(11)</span></div></div>
-      </div>
-    </div>
-    <div class="bcard" onclick="location.href='/app.html'">
-      <div class="bimg" style="background:linear-gradient(135deg,#3A1A0A,#7A3A18)">
-        <span class="tpill">Fish</span><span class="blen">5'8</span>
-      </div>
-      <div class="bbody">
-        <div class="btitle">Firewire Dominator 5'8</div>
-        <div class="bloc">📍 La Piste, Capbreton</div>
-        <div class="bfoot"><div class="bprice">15€ <small>/ heure</small></div><div class="brate">★ 4.8 <span style="color:var(--t3)">(17)</span></div></div>
-      </div>
-    </div>
+  <div class="bgrid" id="featured-bgrid">
+    <!-- chargé dynamiquement depuis /api/boards -->
+    <div style="grid-column:1/-1;text-align:center;padding:28px 0;color:var(--t3);font-size:13px">Chargement…</div>
   </div>
-  <div style="text-align:center;margin-top:20px">
+  <div id="featured-cta" style="text-align:center;margin-top:20px">
     <a href="/app.html" class="btn-lg btn-ol" style="font-size:13px;padding:10px 22px">Voir toutes les planches →</a>
   </div>
 </section>
@@ -488,6 +460,76 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (target) target.scrollIntoView({behavior:'smooth'});
   });
 });
+
+// Featured boards — top 3 by avg_rating (falls back to most recent)
+(async () => {
+  const GRADIENTS = {
+    shortboard: 'linear-gradient(135deg,#0A2A5A,#1B4A9A)',
+    longboard:  'linear-gradient(135deg,#0A2E1E,#1A5A3A)',
+    fish:       'linear-gradient(135deg,#3A1A0A,#7A3A18)',
+    funboard:   'linear-gradient(135deg,#2A0A3A,#5A1A7A)',
+    gun:        'linear-gradient(135deg,#0A0A2A,#1A1A5A)',
+  };
+  const grid  = document.getElementById('featured-bgrid');
+  const cta   = document.getElementById('featured-cta');
+  const divider = document.getElementById('boards-divider');
+  const section = document.getElementById('boards-section');
+
+  try {
+    const res = await fetch('/api/boards?limit=20');
+    if (!res.ok) throw new Error('api');
+    const { boards = [] } = await res.json();
+
+    if (boards.length === 0) {
+      // Hide entire section + its divider cleanly
+      if (divider) divider.style.display = 'none';
+      if (section) section.style.display = 'none';
+      return;
+    }
+
+    // Pick top 3: best rated first, then most recent
+    const top3 = boards
+      .slice()
+      .sort((a, b) => parseFloat(b.avg_rating || 0) - parseFloat(a.avg_rating || 0))
+      .slice(0, 3);
+
+    grid.innerHTML = top3.map(b => {
+      const photo    = b.photos && b.photos[0];
+      const type     = b.board_type || '';
+      const grad     = GRADIENTS[type] || 'linear-gradient(135deg,#0A2540,#1B6CA8)';
+      const price    = b.hourly_rate_cents ? Math.round(b.hourly_rate_cents / 100) + '€ <small>/ heure</small>' : Math.round(b.daily_price_cents / 100) + '€ <small>/ jour</small>';
+      const rating   = parseFloat(b.avg_rating || 0);
+      const rateHtml = rating > 0
+        ? `★ ${rating.toFixed(1)} <span style="color:var(--t3)">(${b.review_count})</span>`
+        : '';
+      const loc = b.spot_name ? `${b.spot_name}` : b.location || '';
+      const len = b.length_ft ? `${b.length_ft}ft` : '';
+      const imgHtml = photo
+        ? `<img src="${photo}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:0;">`
+        : `<span class="blen">${len}</span>`;
+
+      return `<div class="bcard" onclick="location.href='/app.html?board=${b.id}'">
+        <div class="bimg" style="${photo ? '' : 'background:' + grad}">
+          <span class="tpill">${type}</span>
+          ${imgHtml}
+        </div>
+        <div class="bbody">
+          <div class="btitle">${b.title || type}</div>
+          <div class="bloc">📍 ${loc}</div>
+          <div class="bfoot">
+            <div class="bprice">${price}</div>
+            ${rateHtml ? `<div class="brate">${rateHtml}</div>` : ''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+  } catch (_) {
+    // Network or API error — hide section silently, landing page still works
+    if (divider) divider.style.display = 'none';
+    if (section) section.style.display = 'none';
+  }
+})();
 </script>
 </body>
 </html>
