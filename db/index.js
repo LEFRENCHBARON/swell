@@ -9,6 +9,17 @@ const pool = new Pool({
   max: 5,                        // Neon free tier — rester sous la limite de connexions simultanées
   connectionTimeoutMillis: 5000, // Fail fast plutôt que d'attendre indéfiniment (évite les hangs 40-70 s)
   idleTimeoutMillis: 30000,      // Libère les connexions inactives après 30 s
+  keepAlive: true,               // TCP keepalive — détecte les connexions mortes côté Neon
+  keepAliveInitialDelayMillis: 10000, // 10 s avant le premier keepalive probe
+});
+
+// statement_timeout : pas un paramètre Pool — posé à chaque nouvelle connexion.
+// Avec PgBouncer (Neon pooler en mode transaction), SET n'est pas persistant ;
+// on le tente quand même en best-effort — ça protège au moins les connexions directes.
+pool.on('connect', (client) => {
+  client.query('SET statement_timeout = 10000').catch((err) =>
+    logger.warn({ err: err.message }, 'pg SET statement_timeout failed (normal en mode transaction pooling)')
+  );
 });
 
 // Without this handler, an error on an idle client (e.g. Neon suspending the
