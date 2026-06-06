@@ -16,11 +16,6 @@ const pool = new Pool({
 // statement_timeout : pas un paramètre Pool — posé à chaque nouvelle connexion.
 // Avec PgBouncer (Neon pooler en mode transaction), SET n'est pas persistant ;
 // on le tente quand même en best-effort — ça protège au moins les connexions directes.
-pool.on('connect', (client) => {
-  client.query('SET statement_timeout = 10000').catch((err) =>
-    logger.warn({ err: err.message }, 'pg SET statement_timeout failed (normal en mode transaction pooling)')
-  );
-});
 
 // Without this handler, an error on an idle client (e.g. Neon suspending the
 // connection after inactivity) becomes an uncaught exception that kills the process.
