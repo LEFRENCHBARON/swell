@@ -163,7 +163,7 @@ app.use(require('cookie-parser'));
 
 // Session store backed by Postgres
 app.use(session({
-  store: new pgSession({ pool, createTableIfMissing: true }),
+  store: new pgSession({ pool, createTableIfMissing: false }),
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
@@ -307,6 +307,15 @@ app.get('/review', (req, res) => {
 
 server = app.listen(port, '0.0.0.0', () => {
   logger.info({ port, env: process.env.NODE_ENV || 'development' }, 'Swell server started');
+  const bootTimeout = setTimeout(() => {
+    logger.error('[DB BOOT TEST] HANG — aucune reponse de Neon en 10s (connexion sortante bloquee ?)');
+  }, 10000);
+  pool.query('SELECT 1')
+    .then(() => { clearTimeout(bootTimeout); logger.info('[DB BOOT TEST] connexion OK'); })
+    .catch((e) => {
+      clearTimeout(bootTimeout);
+      logger.error({ message: e.message, code: e.code, errno: e.errno, syscall: e.syscall, address: e.address, port: e.port }, '[DB BOOT TEST] ECHEC connexion');
+    });
 });
 
 // Catch port-binding failures (EADDRINUSE, EACCES) — without this, a listen
