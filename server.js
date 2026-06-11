@@ -176,9 +176,12 @@ app.use(session({
   }
 }));
 
+app.use((req, res, next) => { console.log('PASSÉ: post-session [' + req.method + ' ' + req.path + ']'); next(); });
+
 // /listings — server-rendered board listing (needs DB queries, stays after session)
 app.use('/listings', require('./routes/listings'));
 
+app.use('/api', (req, res, next) => { console.log('PASSÉ: pre-csrf [' + req.method + ' ' + req.path + ']'); next(); });
 // CSRF protection — validates X-CSRF-Token header on POST/PUT/PATCH/DELETE.
 // Mounted on /api/* only; static pages and server-rendered routes are exempt.
 app.use('/api', csrfProtection);
@@ -211,6 +214,7 @@ app.use('/spots', require('./routes/spot-landing'));
 app.use('/spot', require('./routes/spot-pages'));
 app.use('/map', require('./routes/map'));
 app.use('/api/map', require('./routes/map'));
+app.use('/api', (req, res, next) => { console.log('PASSÉ: post-routes /api [' + req.method + ' ' + req.path + ']'); next(); });
 // /boards/:id — canonical board detail URL; SPA reads ?board= and opens modal
 app.get('/boards/:id', (req, res) => {
   const id = parseInt(req.params.id, 10);

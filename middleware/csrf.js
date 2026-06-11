@@ -21,6 +21,7 @@ const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
  *     the session token. Reject on mismatch (403).
  */
 function csrfProtection(req, res, next) {
+  console.log('PASSÉ: csrf [' + req.method + ' ' + req.path + ']');
   // Ensure token exists in session
   if (!req.session.csrfToken) {
     req.session.csrfToken = crypto.randomBytes(TOKEN_LENGTH).toString('hex');
