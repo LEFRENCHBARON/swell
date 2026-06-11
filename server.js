@@ -161,7 +161,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(require('cookie-parser'));
+app.use(require('cookie-parser')());
 
 // Session store backed by Postgres
 app.use(session({
