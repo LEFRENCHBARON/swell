@@ -16,7 +16,6 @@ function esc(str) {
 // GET /listings — server-rendered board listing (before static, takes priority over app.html fallback).
 // CSP meta tag uses per-request nonce set by server.js middleware.
 router.get('/', async (req, res) => {
-  console.log('PASSÉ: /listings handler');
   try {
     const spotFilter = req.query.spot || null;
     const allBoards = await listBoards({ limit: 200, offset: 0 });

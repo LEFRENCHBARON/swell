@@ -56,8 +56,6 @@ if (!process.env.IBAN_ENCRYPTION_KEY) {
   process.exit(1);
 }
 
-app.use((req, res, next) => { console.log('PASSÉ: entrée [' + req.method + ' ' + req.originalUrl + ']'); next(); });
-
 // Redirect session.surf → swell.polsia.app (301) to consolidate duplicate
 // content. All canonical tags, OG URLs, and sitemap entries point to
 // swell.polsia.app; session.surf must not be indexed separately.
@@ -178,12 +176,9 @@ app.use(session({
   }
 }));
 
-app.use((req, res, next) => { console.log('PASSÉ: post-session [' + req.method + ' ' + req.path + ']'); next(); });
-
 // /listings — server-rendered board listing (needs DB queries, stays after session)
 app.use('/listings', require('./routes/listings'));
 
-app.use('/api', (req, res, next) => { console.log('PASSÉ: pre-csrf [' + req.method + ' ' + req.path + ']'); next(); });
 // CSRF protection — validates X-CSRF-Token header on POST/PUT/PATCH/DELETE.
 // Mounted on /api/* only; static pages and server-rendered routes are exempt.
 app.use('/api', csrfProtection);
@@ -216,7 +211,6 @@ app.use('/spots', require('./routes/spot-landing'));
 app.use('/spot', require('./routes/spot-pages'));
 app.use('/map', require('./routes/map'));
 app.use('/api/map', require('./routes/map'));
-app.use('/api', (req, res, next) => { console.log('PASSÉ: post-routes /api [' + req.method + ' ' + req.path + ']'); next(); });
 // /boards/:id — canonical board detail URL; SPA reads ?board= and opens modal
 app.get('/boards/:id', (req, res) => {
   const id = parseInt(req.params.id, 10);
@@ -313,15 +307,6 @@ app.get('/review', (req, res) => {
 
 server = app.listen(port, '0.0.0.0', () => {
   logger.info({ port, env: process.env.NODE_ENV || 'development' }, 'Swell server started');
-  const bootTimeout = setTimeout(() => {
-    logger.error('[DB BOOT TEST] HANG — aucune reponse de Neon en 10s (connexion sortante bloquee ?)');
-  }, 10000);
-  pool.query('SELECT 1')
-    .then(() => { clearTimeout(bootTimeout); logger.info('[DB BOOT TEST] connexion OK'); })
-    .catch((e) => {
-      clearTimeout(bootTimeout);
-      logger.error({ message: e.message, code: e.code, errno: e.errno, syscall: e.syscall, address: e.address, port: e.port }, '[DB BOOT TEST] ECHEC connexion');
-    });
 });
 
 // Catch port-binding failures (EADDRINUSE, EACCES) — without this, a listen
