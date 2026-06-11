@@ -56,6 +56,8 @@ if (!process.env.IBAN_ENCRYPTION_KEY) {
   process.exit(1);
 }
 
+app.use((req, res, next) => { console.log('PASSÉ: entrée [' + req.method + ' ' + req.originalUrl + ']'); next(); });
+
 // Redirect session.surf → swell.polsia.app (301) to consolidate duplicate
 // content. All canonical tags, OG URLs, and sitemap entries point to
 // swell.polsia.app; session.surf must not be indexed separately.
