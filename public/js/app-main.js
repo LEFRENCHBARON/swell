@@ -2781,8 +2781,22 @@
       wizSyncToggles();
     }
 
+    // Append newly picked files to the current selection (not replace), capped at 8.
     function wizHandlePhotos(input) {
-      wizState.photoFiles = Array.from(input.files).slice(0, 8);
+      const incoming = Array.from(input.files || []);
+      for (const f of incoming) {
+        if (wizState.photoFiles.length >= 8) break;
+        const dup = wizState.photoFiles.some(e =>
+          e.name === f.name && e.size === f.size && e.lastModified === f.lastModified);
+        if (!dup) wizState.photoFiles.push(f);
+      }
+      // Reset so re-selecting the same file fires 'change' again.
+      input.value = '';
+      wizRenderPhotos();
+    }
+
+    // Render the current photoFiles into the thumbnail grid.
+    function wizRenderPhotos() {
       const grid = document.getElementById('wiz-photo-grid');
       if (!grid) return;
       grid.innerHTML = '';
@@ -3018,7 +3032,12 @@
     }
 
     // Legacy shim — called from profile dashboard "Ajouter une planche" button
-    function setupPhotoPreview() { /* wizard handles its own preview */ }
+    function setupPhotoPreview() {
+      // CSP (strict script-src, no unsafe-inline) blocks inline onchange handlers,
+      // so the wizard photo input is wired here instead of in the markup.
+      const wizInput = document.getElementById('wiz-photos-input');
+      if (wizInput) wizInput.addEventListener('change', (e) => wizHandlePhotos(e.target));
+    }
 
     // ==================== PROFILE/DASHBOARD ====================
     function switchProfileTab(tab, el) {
@@ -4776,7 +4795,7 @@
         case 'wizRemovePhoto': {
           const idx = parseInt(arg, 10);
           wizState.photoFiles.splice(idx, 1);
-          wizHandlePhotos({ files: wizState.photoFiles });
+          wizRenderPhotos();
           break;
         }
 

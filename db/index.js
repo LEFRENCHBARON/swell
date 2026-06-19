@@ -12,11 +12,13 @@ const pool = new Pool({
   idleTimeoutMillis: 30000,      // Libère les connexions inactives après 30 s
   keepAlive: true,               // TCP keepalive — détecte les connexions mortes côté Neon
   keepAliveInitialDelayMillis: 10000, // 10 s avant le premier keepalive probe
+  // statement_timeout côté serveur (7 s < query_timeout 8 s) : Neon tue la requête
+  // AVANT que Node l'abandonne, donc la connexion poolée est immédiatement réutilisable
+  // au lieu de rester occupée par une requête zombie — c'est ça qui ré-épuisait le pool.
+  // Passé en paramètre de démarrage via `options` (et non SET) car PgBouncer en mode
+  // transaction ne persiste pas les SET, mais propage bien les startup parameters.
+  options: '-c statement_timeout=7000',
 });
-
-// statement_timeout : pas un paramètre Pool — posé à chaque nouvelle connexion.
-// Avec PgBouncer (Neon pooler en mode transaction), SET n'est pas persistant ;
-// on le tente quand même en best-effort — ça protège au moins les connexions directes.
 
 // Without this handler, an error on an idle client (e.g. Neon suspending the
 // connection after inactivity) becomes an uncaught exception that kills the process.
