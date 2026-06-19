@@ -82,6 +82,16 @@ async function runCoreMigrations(client) {
     )
   `);
 
+  // Self-heal: add subscription columns if "users" predates them (idempotent)
+  await client.query(`
+    ALTER TABLE users
+      ADD COLUMN IF NOT EXISTS stripe_subscription_id  VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS subscription_status     VARCHAR(50),
+      ADD COLUMN IF NOT EXISTS subscription_plan       VARCHAR(255),
+      ADD COLUMN IF NOT EXISTS subscription_expires_at TIMESTAMPTZ,
+      ADD COLUMN IF NOT EXISTS subscription_updated_at TIMESTAMPTZ
+  `);
+
   // Unique constraint on email (required for UPSERT)
   await client.query(`
     CREATE UNIQUE INDEX IF NOT EXISTS users_email_unique_idx ON users (LOWER(email))

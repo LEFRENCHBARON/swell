@@ -46,9 +46,9 @@ CREATE TABLE users (
   updated_at                      TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE UNIQUE INDEX users_email_unique_idx ON users (LOWER(email));
-CREATE INDEX users_referral_code_idx ON users (referral_code);
-CREATE INDEX users_stripe_account_id_idx ON users (stripe_account_id);
+CREATE UNIQUE INDEX IF NOT EXISTS users_email_unique_idx ON users (LOWER(email));
+CREATE INDEX IF NOT EXISTS users_referral_code_idx ON users (referral_code);
+CREATE INDEX IF NOT EXISTS users_stripe_account_id_idx ON users (stripe_account_id);
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- surf_spots
@@ -96,9 +96,9 @@ CREATE TABLE IF NOT EXISTS boards (
   updated_at            TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX boards_host_id_idx    ON boards (host_id);
-CREATE INDEX boards_spot_id_idx    ON boards (spot_id);
-CREATE INDEX boards_is_listed_idx  ON boards (is_listed);
+CREATE INDEX IF NOT EXISTS boards_host_id_idx    ON boards (host_id);
+CREATE INDEX IF NOT EXISTS boards_spot_id_idx    ON boards (spot_id);
+CREATE INDEX IF NOT EXISTS boards_is_listed_idx  ON boards (is_listed);
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- bookings
@@ -132,10 +132,10 @@ CREATE TABLE IF NOT EXISTS bookings (
   updated_at                  TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX bookings_board_id_idx   ON bookings (board_id);
-CREATE INDEX bookings_renter_id_idx  ON bookings (renter_id);
-CREATE INDEX bookings_status_idx     ON bookings (status);
-CREATE INDEX bookings_start_date_idx ON bookings (start_date);
+CREATE INDEX IF NOT EXISTS bookings_board_id_idx   ON bookings (board_id);
+CREATE INDEX IF NOT EXISTS bookings_renter_id_idx  ON bookings (renter_id);
+CREATE INDEX IF NOT EXISTS bookings_status_idx     ON bookings (status);
+CREATE INDEX IF NOT EXISTS bookings_start_date_idx ON bookings (start_date);
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- board_blocked_dates
@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS messages (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX messages_booking_id_idx ON messages (booking_id);
+CREATE INDEX IF NOT EXISTS messages_booking_id_idx ON messages (booking_id);
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- reviews
@@ -192,8 +192,8 @@ CREATE TABLE IF NOT EXISTS reviews (
   created_at    TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX reviews_booking_id_idx  ON reviews (booking_id);
-CREATE INDEX reviews_reviewee_id_idx ON reviews (reviewee_id);
+CREATE INDEX IF NOT EXISTS reviews_booking_id_idx  ON reviews (booking_id);
+CREATE INDEX IF NOT EXISTS reviews_reviewee_id_idx ON reviews (reviewee_id);
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- booking_inspections
@@ -324,8 +324,8 @@ CREATE TABLE IF NOT EXISTS rental_events (
   created_at                      TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX rental_events_board_id_idx ON rental_events (board_id);
-CREATE INDEX rental_events_spot_id_idx  ON rental_events (spot_id);
+CREATE INDEX IF NOT EXISTS rental_events_board_id_idx ON rental_events (board_id);
+CREATE INDEX IF NOT EXISTS rental_events_spot_id_idx  ON rental_events (spot_id);
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- failure_zones  (SWELL_FAILURE_ATLAS)
@@ -386,8 +386,8 @@ CREATE TABLE IF NOT EXISTS consent_log (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX consent_log_user_id_idx    ON consent_log (user_id);
-CREATE INDEX consent_log_created_at_idx ON consent_log (created_at);
+CREATE INDEX IF NOT EXISTS consent_log_user_id_idx    ON consent_log (user_id);
+CREATE INDEX IF NOT EXISTS consent_log_created_at_idx ON consent_log (created_at);
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- email_logs
@@ -404,7 +404,7 @@ CREATE TABLE IF NOT EXISTS email_logs (
   sent_at        TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX email_logs_booking_id_idx ON email_logs (booking_id);
+CREATE INDEX IF NOT EXISTS email_logs_booking_id_idx ON email_logs (booking_id);
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- weekend_digest_sends  (idempotency — one row per user per week)
