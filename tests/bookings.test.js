@@ -3,9 +3,20 @@
 const request = require('supertest');
 const express = require('express');
 const session = require('express-session');
-const connectPgSimple = require('connect-pg-simple');
-const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
+
+// The bookings route talks to Stripe directly (getStripe().checkout.sessions.*).
+// Mock the SDK so tests never hit the network:
+//  - retrieve() resolves to a paid session → payment-verify reaches its booking logic
+//  - create() rejects → booking-create path leaves checkoutUrl null (handled gracefully)
+jest.mock('stripe', () => jest.fn().mockImplementation(() => ({
+  checkout: {
+    sessions: {
+      retrieve: jest.fn(() => Promise.resolve({ payment_status: 'paid' })),
+      create: jest.fn(() => Promise.reject(new Error('stripe disabled in tests'))),
+    },
+  },
+})));
 
 const mockQuery = require('../db/index');
 
@@ -15,13 +26,11 @@ function buildBookingsApp({ userId = 1, stripeChargesEnabled = true } = {}) {
   const app = express();
   app.use(express.json());
 
-  // In-memory session store (no DB needed for session itself)
+  // Default in-memory session store — tests don't need (or want) Postgres for
+  // sessions. The previous connect-pg-simple wiring passed `express.session`,
+  // which is undefined in Express 4, so the store constructor threw and every
+  // test in this file failed before its assertions even ran.
   app.use(session({
-    store: new (connectPgSimple(express.session))({
-      createTableIfMissing: false,
-      get: async (_sid, callback) => callback(null, {}),
-      set: async (_sid, session, callback) => callback(null),
-    }),
     secret: 'test-secret',
     resave: false,
     saveUninitialized: false,
@@ -29,10 +38,12 @@ function buildBookingsApp({ userId = 1, stripeChargesEnabled = true } = {}) {
     cookie: { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, sameSite: 'lax' }
   }));
 
-  // Inject session for tests
+  // Inject session for tests. The CSRF token is FIXED ('test-token') so that
+  // state-changing requests can present a matching header; a per-request random
+  // token could never be matched by a test that sends a literal header value.
   app.use((req, _res, next) => {
     req.session.userId = userId;
-    req.session.csrfToken = crypto.randomBytes(32).toString('hex');
+    req.session.csrfToken = 'test-token';
     next();
   });
 
@@ -115,6 +126,7 @@ describe('POST /api/bookings/check', () => {
     const app = buildBookingsApp();
     const res = await request(app)
       .post('/api/bookings/check')
+      .set('x-csrf-token', 'test-token')
       .send({ startDate: '2026-06-01', endDate: '2026-06-02' });
 
     expect(res.status).toBe(400);
@@ -126,6 +138,7 @@ describe('POST /api/bookings/check', () => {
     const app = buildBookingsApp();
     const res = await request(app)
       .post('/api/bookings/check')
+      .set('x-csrf-token', 'test-token')
       .send({ boardId: 999, startDate: '2026-06-01', endDate: '2026-06-02' });
 
     expect(res.status).toBe(404);
@@ -135,14 +148,19 @@ describe('POST /api/bookings/check', () => {
     mockQuery.mockImplementationOnce(() =>
       Promise.resolve({ rows: [mockBoard(1)], rowCount: 1 })
     );
-    // checkAvailability → isRangeAvailable
+    // checkAvailability → query 1: overlap conflicts count (0 = free)
     mockQuery.mockImplementationOnce(() =>
-      Promise.resolve({ rows: [], rowCount: 0 }) // isRangeAvailable
+      Promise.resolve({ rows: [{ conflicts: '0' }], rowCount: 1 })
+    );
+    // checkAvailability → query 2: isRangeAvailable blocked-dates count (0 = free)
+    mockQuery.mockImplementationOnce(() =>
+      Promise.resolve({ rows: [{ blocked_count: '0' }], rowCount: 1 })
     );
 
     const app = buildBookingsApp();
     const res = await request(app)
       .post('/api/bookings/check')
+      .set('x-csrf-token', 'test-token')
       .send({ boardId: 1, startDate: '2026-06-01', endDate: '2026-06-03' });
     // 2 days × 40€ = 80€ rental
     expect(res.status).toBe(200);
@@ -155,14 +173,15 @@ describe('POST /api/bookings/check', () => {
     mockQuery.mockImplementationOnce(() =>
       Promise.resolve({ rows: [mockBoard(1)], rowCount: 1 })
     );
-    // isSlotAvailable → true
-    mockQuery.mockImplementationOnce(() =>
-      Promise.resolve({ rows: [{ available: true }], rowCount: 1 })
-    );
+    // isSlotAvailable runs two queries (blocked slots, then bookings); empty
+    // rows on BOTH means the slot is free.
+    mockQuery.mockImplementationOnce(() => Promise.resolve({ rows: [], rowCount: 0 })); // blocked slots
+    mockQuery.mockImplementationOnce(() => Promise.resolve({ rows: [], rowCount: 0 })); // bookings
 
     const app = buildBookingsApp();
     const res = await request(app)
       .post('/api/bookings/check')
+      .set('x-csrf-token', 'test-token')
       .send({ boardId: 1, startDate: '2026-06-01', endDate: '2026-06-01', startTime: '09:00', endTime: '14:00' });
     // 5h × 6€/h = 30€
     expect(res.status).toBe(200);
@@ -179,6 +198,7 @@ describe('POST /api/bookings/check', () => {
     const app = buildBookingsApp();
     const res = await request(app)
       .post('/api/bookings/check')
+      .set('x-csrf-token', 'test-token')
       .send({ boardId: 1, startDate: '2026-06-01', endDate: '2026-06-01', startTime: '09:00', endTime: '10:00' });
 
     expect(res.status).toBe(400);
@@ -193,6 +213,7 @@ describe('POST /api/bookings/check', () => {
     const app = buildBookingsApp();
     const res = await request(app)
       .post('/api/bookings/check')
+      .set('x-csrf-token', 'test-token')
       .send({ boardId: 1, startDate: '2026-06-01', endDate: '2026-06-01', startTime: '06:00', endTime: '23:00' });
 
     expect(res.status).toBe(400);
@@ -210,6 +231,7 @@ describe('POST /api/bookings/check', () => {
     const app = buildBookingsApp();
     const res = await request(app)
       .post('/api/bookings/check')
+      .set('x-csrf-token', 'test-token')
       .send({ boardId: 1, startDate: '2026-06-01', endDate: '2026-06-01', startTime: '09:00', endTime: '14:00' });
 
     expect(res.status).toBe(409);
@@ -316,12 +338,16 @@ describe('POST /api/bookings', () => {
     const app = buildBookingsApp({ userId: 5 });
     const res = await request(app)
       .post('/api/bookings')
-      .set('x-csrf-token', app.locals?.csrfToken || 'test')
+      .set('x-csrf-token', 'test-token')
       .send({});
     expect(res.status).toBe(400);
   });
 
   it('returns 400 when booking own board', async () => {
+    // isEmailVerified gate runs first in POST /api/bookings.
+    mockQuery.mockImplementationOnce(() =>
+      Promise.resolve({ rows: [{ email_verified: true }], rowCount: 1 })
+    );
     mockQuery.mockImplementationOnce(() =>
       Promise.resolve({ rows: [mockHostBoard(1)], rowCount: 1 })
     );
@@ -337,6 +363,11 @@ describe('POST /api/bookings', () => {
   });
 
   it('returns 402 when host has no Stripe configured', async () => {
+    // isEmailVerified gate
+    mockQuery.mockImplementationOnce(() =>
+      Promise.resolve({ rows: [{ email_verified: true }], rowCount: 1 })
+    );
+    // getBoardById
     mockQuery.mockImplementationOnce(() =>
       Promise.resolve({ rows: [mockHostBoard(99, false)], rowCount: 1 })
     );
@@ -356,16 +387,20 @@ describe('POST /api/bookings', () => {
   });
 
   it('returns 409 when daily slot is already booked', async () => {
+    // Route order: isEmailVerified → getBoardById → getBoardHostPaymentStatus → checkAvailability
+    mockQuery.mockImplementationOnce(() =>
+      Promise.resolve({ rows: [{ email_verified: true }], rowCount: 1 })
+    );
     mockQuery.mockImplementationOnce(() =>
       Promise.resolve({ rows: [mockHostBoard(99, true)], rowCount: 1 })
     );
     mockQuery.mockImplementationOnce(() =>
       Promise.resolve({ rows: [{ stripe_charges_enabled: true }], rowCount: 1 })
     );
-    // checkAvailability → conflict
-    mockQuery.mockImplementationOnce(() => Promise.resolve({ rows: [], rowCount: 0 })); // getBoardById
-    mockQuery.mockImplementationOnce(() => Promise.resolve({ rows: [mockHostBoard(99, true)], rowCount: 1 })); // getBoardHostPaymentStatus
-    mockQuery.mockImplementationOnce(() => Promise.resolve(false)); // checkAvailability returns false
+    // checkAvailability query 1: 1 overlap conflict → not available, returns early → 409
+    mockQuery.mockImplementationOnce(() =>
+      Promise.resolve({ rows: [{ conflicts: '1' }], rowCount: 1 })
+    );
 
     const app = buildBookingsApp({ userId: 5 });
     const res = await request(app)
@@ -383,27 +418,28 @@ describe('POST /api/bookings', () => {
       status: 'pending', total_cents: 5000
     };
 
+    // Route order: isEmailVerified → getBoardById → getBoardHostPaymentStatus
+    // → checkAvailability (2 queries) → createBooking. The Stripe checkout call
+    // fails in tests (no real key) and is swallowed, so checkoutUrl stays null
+    // and updateBookingPayment is never reached.
+    mockQuery.mockImplementationOnce(() =>
+      Promise.resolve({ rows: [{ email_verified: true }], rowCount: 1 })
+    );
     mockQuery.mockImplementationOnce(() =>
       Promise.resolve({ rows: [mockHostBoard(99, true)], rowCount: 1 })
     );
     mockQuery.mockImplementationOnce(() =>
       Promise.resolve({ rows: [{ stripe_charges_enabled: true }], rowCount: 1 })
     );
-    // getBoardById (used inside requireAuth block)
+    // checkAvailability query 1: overlap conflicts (0 = free)
     mockQuery.mockImplementationOnce(() =>
-      Promise.resolve({ rows: [mockHostBoard(99, true)], rowCount: 1 })
+      Promise.resolve({ rows: [{ conflicts: '0' }], rowCount: 1 })
     );
-    // getBoardHostPaymentStatus
+    // checkAvailability query 2: isRangeAvailable blocked-dates count (0 = free)
     mockQuery.mockImplementationOnce(() =>
-      Promise.resolve({ rows: [{ stripe_charges_enabled: true }], rowCount: 1 })
+      Promise.resolve({ rows: [{ blocked_count: '0' }], rowCount: 1 })
     );
-    // checkAvailability (daily) → available
-    mockQuery.mockImplementationOnce(() => Promise.resolve(true));
     // createBooking
-    mockQuery.mockImplementationOnce(() =>
-      Promise.resolve({ rows: [mockBooking], rowCount: 1 })
-    );
-    // updateBookingPayment (when no checkout URL)
     mockQuery.mockImplementationOnce(() =>
       Promise.resolve({ rows: [mockBooking], rowCount: 1 })
     );

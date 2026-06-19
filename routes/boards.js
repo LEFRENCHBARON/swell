@@ -95,6 +95,21 @@ router.get('/my', requireAuth, async (req, res) => {
   }
 });
 
+// GET /api/boards/instant — homepage 'Disponibles maintenant' surface.
+// Returns boards with open hourly slots in next 24h, stripe-verified host,
+// and ≥3 photos. Sorted: verified hosts first, then by completed bookings.
+// MUST be declared before /:id, otherwise 'instant' is parsed as a board id.
+router.get('/instant', async (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit) || 6, 12);
+    const boards = await getInstantBoards({ limit });
+    res.json({ boards });
+  } catch (err) {
+    console.error('GET /api/boards/instant:', err);
+    res.status(500).json({ error: 'Failed to load instant boards' });
+  }
+});
+
 // GET /api/boards/:id
 router.get('/:id', async (req, res) => {
   try {
@@ -375,20 +390,6 @@ router.get('/host/:userId', async (req, res) => {
     res.json({ boards });
   } catch (err) {
     res.status(500).json({ error: 'Failed to load host boards' });
-  }
-});
-
-// GET /api/boards/instant — homepage 'Disponibles maintenant' surface.
-// Returns boards with open hourly slots in next 24h, stripe-verified host,
-// and ≥3 photos. Sorted: verified hosts first, then by completed bookings.
-router.get('/instant', async (req, res) => {
-  try {
-    const limit = Math.min(parseInt(req.query.limit) || 6, 12);
-    const boards = await getInstantBoards({ limit });
-    res.json({ boards });
-  } catch (err) {
-    console.error('GET /api/boards/instant:', err);
-    res.status(500).json({ error: 'Failed to load instant boards' });
   }
 });
 

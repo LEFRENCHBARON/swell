@@ -77,7 +77,7 @@ describe('GET /api/boards', () => {
 
 describe('GET /api/boards/:id', () => {
   it('returns board + reviews', async () => {
-    const mockBoard = { id: 5, title: 'Fish', host_id: 2, photos: [], daily_price_cents: 4000 };
+    const mockBoard = { id: 5, title: 'Fish', host_id: 2, photos: [], daily_price_cents: 4000, is_listed: true };
     mockQuery.mockImplementationOnce(() =>
       Promise.resolve({ rows: [mockBoard], rowCount: 1 })
     );
@@ -221,11 +221,8 @@ describe('GET /api/boards/instant', () => {
 
 describe('POST /api/boards/:id/delist', () => {
   it('returns 409 with activeBookings when host has future bookings', async () => {
-    // getBoardById
-    mockQuery.mockImplementationOnce(() =>
-      Promise.resolve({ rows: [{ id: 1, host_id: 5 }], rowCount: 1 })
-    );
-    // getFutureBookingsCount → 2 active bookings
+    // The delist route calls getFutureBookingsCount directly (no getBoardById
+    // pre-fetch) → 2 active bookings blocks the delist with a 409.
     mockQuery.mockImplementationOnce(() =>
       Promise.resolve({ rows: [{ count: '2' }], rowCount: 1 })
     );

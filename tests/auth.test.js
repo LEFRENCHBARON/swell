@@ -11,9 +11,15 @@ function buildApp() {
   const app = express();
   app.use(express.json());
 
-  // Minimal session middleware for tests
+  // Minimal session middleware for tests. Mirrors the express-session API the
+  // auth routes rely on: regenerate/destroy/save invoke their callback (session
+  // fixation protection calls req.session.regenerate() on login/register).
   app.use((req, _res, next) => {
-    req.session = { userId: null, csrfToken: crypto.randomBytes(32).toString('hex') };
+    const sess = { userId: null, csrfToken: crypto.randomBytes(32).toString('hex') };
+    sess.regenerate = (cb) => cb && cb();
+    sess.destroy = (cb) => cb && cb();
+    sess.save = (cb) => cb && cb();
+    req.session = sess;
     next();
   });
 
