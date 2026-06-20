@@ -3034,9 +3034,14 @@
     // Legacy shim — called from profile dashboard "Ajouter une planche" button
     function setupPhotoPreview() {
       // CSP (strict script-src, no unsafe-inline) blocks inline onchange handlers,
-      // so the wizard photo input is wired here instead of in the markup.
+      // so the wizard photo input + spot select are wired here instead of in the markup.
       const wizInput = document.getElementById('wiz-photos-input');
       if (wizInput) wizInput.addEventListener('change', (e) => wizHandlePhotos(e.target));
+      const spotSel = document.getElementById('wiz-spot-select');
+      if (spotSel && !spotSel.dataset.wired) {
+        spotSel.dataset.wired = '1';
+        spotSel.addEventListener('change', () => wizOnSpotChange());
+      }
     }
 
     // ==================== PROFILE/DASHBOARD ====================
