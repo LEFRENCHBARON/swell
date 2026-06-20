@@ -5316,7 +5316,13 @@
     }
 
     // Legacy shim — called from profile dashboard "Ajouter une planche" button
-    function setupPhotoPreview() { /* wizard handles its own preview */ }
+    function setupPhotoPreview() {
+      const wizInput = document.getElementById('wiz-photos-input');
+      if (wizInput && !wizInput.dataset.wired) {
+        wizInput.dataset.wired = '1';
+        wizInput.addEventListener('change', (e) => wizHandlePhotos(e.target));
+      }
+    }
 
     // ==================== PROFILE/DASHBOARD ====================
     function switchProfileTab(tab, el) {
