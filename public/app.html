@@ -5322,6 +5322,11 @@
         wizInput.dataset.wired = '1';
         wizInput.addEventListener('change', (e) => wizHandlePhotos(e.target));
       }
+      const spotSel = document.getElementById('wiz-spot-select');
+      if (spotSel && !spotSel.dataset.wired) {
+        spotSel.dataset.wired = '1';
+        spotSel.addEventListener('change', () => wizOnSpotChange());
+      }
     }
 
     // ==================== PROFILE/DASHBOARD ====================
