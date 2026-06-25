@@ -2782,16 +2782,58 @@
     }
 
     // Append newly picked files to the current selection (not replace), capped at 8.
-    function wizHandlePhotos(input) {
+    // Fallback decoder for browsers without createImageBitmap orientation support.
+    function wizDecodeViaImg(file) {
+      return new Promise((resolve) => {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+        img.src = url;
+      });
+    }
+
+    // Downscale to maxEdge px and re-encode as JPEG so real uploads stay well under
+    // Cloudinary's 10 MB free-tier limit. Returns a File (the original if it cannot help).
+    async function wizCompressImage(file, maxEdge = 1920, quality = 0.85) {
+      if (!file.type || !file.type.startsWith('image/')) return file;
+      let bitmap;
+      try {
+        bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+      } catch (_) {
+        bitmap = await wizDecodeViaImg(file);
+        if (!bitmap) return file;
+      }
+      let width = bitmap.width, height = bitmap.height;
+      if (width > maxEdge || height > maxEdge) {
+        const scale = maxEdge / Math.max(width, height);
+        width = Math.round(width * scale);
+        height = Math.round(height * scale);
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      canvas.getContext('2d').drawImage(bitmap, 0, 0, width, height);
+      if (bitmap.close) bitmap.close();
+      const blob = await new Promise((r) => canvas.toBlob(r, 'image/jpeg', quality));
+      if (!blob || blob.size >= file.size) return file;
+      const dot = file.name.lastIndexOf('.');
+      const name = (dot > 0 ? file.name.slice(0, dot) : file.name) + '.jpg';
+      return new File([blob], name, { type: 'image/jpeg', lastModified: file.lastModified });
+    }
+
+    async function wizHandlePhotos(input) {
       const incoming = Array.from(input.files || []);
+      // Reset immediately so re-selecting the same file fires 'change' again.
+      input.value = '';
       for (const f of incoming) {
         if (wizState.photoFiles.length >= 8) break;
-        const dup = wizState.photoFiles.some(e =>
-          e.name === f.name && e.size === f.size && e.lastModified === f.lastModified);
-        if (!dup) wizState.photoFiles.push(f);
+        const key = f.name + '|' + f.size + '|' + f.lastModified;
+        if (wizState.photoFiles.some((e) => e._origKey === key)) continue;
+        const compressed = await wizCompressImage(f);
+        compressed._origKey = key;
+        wizState.photoFiles.push(compressed);
       }
-      // Reset so re-selecting the same file fires 'change' again.
-      input.value = '';
       wizRenderPhotos();
     }
 
