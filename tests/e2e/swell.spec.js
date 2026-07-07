@@ -13,7 +13,7 @@ test('homepage loads with logo and CTA', async ({ page }) => {
   expect(res.status()).toBe(200);
 
   // Logo / brand name visible
-  await expect(page.locator('text=Swell').or(page.locator('text=Qiver'))).toBeVisible();
+  await expect(page.locator('text=Swell')).toBeVisible();
 
   // At least one call-to-action link pointing toward the app
   const cta = page.locator('a[href*="app.html"], a[href*="/app"]');
