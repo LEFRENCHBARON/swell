@@ -1,5 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- Maskable icon: extra padding for safe zone (80% center area) -->
   <rect width="512" height="512" fill="#060d1a"/>
   <defs>
     <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -7,7 +6,10 @@
       <stop offset="100%" stop-color="#ff8c5a"/>
     </linearGradient>
   </defs>
-  <!-- Q letter — centered in safe zone -->
-  <circle cx="256" cy="235" r="100" fill="none" stroke="url(#g)" stroke-width="36"/>
-  <line x1="310" y1="305" x2="370" y2="370" stroke="url(#g)" stroke-width="36" stroke-linecap="round"/>
+  <!-- Subtle wave accent (full bleed) -->
+  <path d="M0 380 Q128 350 256 370 Q384 390 512 360 L512 512 L0 512 Z" fill="#0a1628" opacity="0.6"/>
+  <!-- Breaking wave, scaled into the maskable safe zone -->
+  <g transform="translate(256 256) scale(0.85) translate(-256 -256)">
+    <path d="M112 356 C136 220 224 124 330 132 C398 138 424 192 404 240 C388 278 342 290 314 264 C294 244 300 212 326 202" fill="none" stroke="url(#g)" stroke-width="42" stroke-linecap="round"/>
+  </g>
 </svg>

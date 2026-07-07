@@ -8,8 +8,6 @@
   </defs>
   <!-- Subtle wave accent -->
   <path d="M0 380 Q128 350 256 370 Q384 390 512 360 L512 512 L0 512 Z" fill="#0a1628" opacity="0.6"/>
-  <!-- Q letter -->
-  <circle cx="256" cy="230" r="120" fill="none" stroke="url(#g)" stroke-width="42"/>
-  <!-- Q tail -->
-  <line x1="320" y1="310" x2="390" y2="390" stroke="url(#g)" stroke-width="42" stroke-linecap="round"/>
+  <!-- Breaking wave -->
+  <path d="M112 356 C136 220 224 124 330 132 C398 138 424 192 404 240 C388 278 342 290 314 264 C294 244 300 212 326 202" fill="none" stroke="url(#g)" stroke-width="42" stroke-linecap="round"/>
 </svg>
